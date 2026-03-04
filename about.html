@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Meet the team behind NexaFlow — our mission, values, and the story of how we're building the future of work."/>
+  <title>About Us — NexaFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css"/>
+  <link rel="stylesheet" href="styles/components.css"/>
+  <link rel="stylesheet" href="styles/pages.css"/>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+  <div class="ambient-orb ambient-orb-3"></div>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon"><svg viewBox="0 0 40 40" fill="none"><polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="url(#ng4)" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="4" fill="url(#ng4)"/><defs><linearGradient id="ng4" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00f5ff"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg></div>
+      <span class="nav-logo-text">NexaFlow</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="features.html">Features</a></li>
+      <li><a href="integrations.html">Integrations</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="blog.html">Blog</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-ghost">Sign In</a>
+      <a href="signup.html" class="btn btn-primary">Get Started Free</a>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+
+    <!-- Mission Hero -->
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero-eyebrow">
+          <span class="section-tag"><span class="section-tag-dot"></span>Our Story</span>
+        </div>
+        <h1 class="page-hero-title">We believe humans should<br/><span class="gradient-text">do human work</span></h1>
+        <p class="page-hero-subtitle">NexaFlow was founded on a simple idea: the most valuable thing a person can do at work is think, create, and connect with others — not manually move data between systems.</p>
+      </div>
+    </section>
+
+    <!-- Stats bar -->
+    <section class="about-stats-bar">
+      <div class="container">
+        <div class="grid-4">
+          <div class="about-stat glass-card">
+            <div class="about-stat-val">2021</div>
+            <div class="about-stat-lbl">Founded</div>
+          </div>
+          <div class="about-stat glass-card">
+            <div class="about-stat-val">48</div>
+            <div class="about-stat-lbl">Team Members</div>
+          </div>
+          <div class="about-stat glass-card">
+            <div class="about-stat-val">$24M</div>
+            <div class="about-stat-lbl">Series A Raised</div>
+          </div>
+          <div class="about-stat glass-card">
+            <div class="about-stat-val">12</div>
+            <div class="about-stat-lbl">Countries</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Story -->
+    <section class="section">
+      <div class="container">
+        <div class="about-story-grid">
+          <div class="about-story-text">
+            <h2 class="section-title">The story so far</h2>
+            <p>In 2021, our founders Marcus and Priya were leading engineering teams at a mid-size SaaS company. Every week, they watched talented engineers spend hours manually exporting CSVs, copy-pasting data between tools, and building fragile one-off scripts to glue systems together.</p>
+            <p>"There has to be a better way," Marcus said. There wasn't — not one that felt like it was built for engineers and non-engineers alike. Existing automation tools were either too simple or required you to be a DevOps expert to operate.</p>
+            <p>So they left and built NexaFlow. The vision: an automation platform with the power of code and the accessibility of a visual canvas, supercharged by AI agents that could reason about complex business logic.</p>
+            <p>Three years later, NexaFlow powers over 50,000 teams globally. We've processed over 2 billion workflow executions, saved our customers an estimated 12 million engineering hours, and we're just getting started.</p>
+          </div>
+          <div class="about-story-visual">
+            <div class="timeline-card-compact glass-card">
+              <div class="tcc-item">
+                <div class="tcc-year">2021</div>
+                <div class="tcc-content">
+                  <strong>Founded in San Francisco</strong>
+                  <p>Marcus Chen and Priya Patel quit their jobs and incorporated NexaFlow with $800K in pre-seed funding.</p>
+                </div>
+              </div>
+              <div class="tcc-item">
+                <div class="tcc-year">2022</div>
+                <div class="tcc-content">
+                  <strong>Public Beta &amp; First 1,000 Users</strong>
+                  <p>Launched public beta. Reached 1,000 active teams in the first month without paid marketing.</p>
+                </div>
+              </div>
+              <div class="tcc-item">
+                <div class="tcc-year">2023</div>
+                <div class="tcc-content">
+                  <strong>$8M Seed Round</strong>
+                  <p>Raised seed from Sequoia and Y Combinator. Launched Neural AI Agents feature to 10,000+ teams.</p>
+                </div>
+              </div>
+              <div class="tcc-item">
+                <div class="tcc-year">2024</div>
+                <div class="tcc-content">
+                  <strong>$24M Series A</strong>
+                  <p>Led by a16z. Launched Enterprise tier. Crossed 50,000 teams and 2 billion executions processed.</p>
+                </div>
+              </div>
+              <div class="tcc-item active">
+                <div class="tcc-year">2026</div>
+                <div class="tcc-content">
+                  <strong>NexaFlow 3.0 — AI Everywhere</strong>
+                  <p>GPT-5 native integration, self-healing workflows, and the launch of the NexaFlow Marketplace.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Values -->
+    <section class="section" style="background:linear-gradient(180deg,transparent,rgba(0,245,255,0.02),transparent)">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-tag"><span class="section-tag-dot"></span>Our Values</div>
+          <h2 class="section-title">What we believe in</h2>
+        </div>
+        <div class="grid-3">
+          <div class="value-card glass-card">
+            <div class="value-icon">🚀</div>
+            <h3 class="value-title">Build Fast, Ship Often</h3>
+            <p class="value-desc">We ship every week. Not because we're reckless — because we believe the fastest way to learn what's right is to put it in front of real people. We iterate relentlessly.</p>
+          </div>
+          <div class="value-card glass-card">
+            <div class="value-icon">🤝</div>
+            <h3 class="value-title">Customers First, Always</h3>
+            <p class="value-desc">We make decisions by asking "does this make our customers more successful?" Every feature ships with documentation, migration guides, and support. We don't ship half-baked.</p>
+          </div>
+          <div class="value-card glass-card">
+            <div class="value-icon">🌍</div>
+            <h3 class="value-title">Radical Transparency</h3>
+            <p class="value-desc">We publish our roadmap publicly, share our financials with the team, and post our incident reports in full detail. Trust is built through honesty, even when it's uncomfortable.</p>
+          </div>
+          <div class="value-card glass-card">
+            <div class="value-icon">💡</div>
+            <h3 class="value-title">Craft Over Speed</h3>
+            <p class="value-desc">Fast doesn't mean sloppy. We care deeply about the details — the micro-interaction, the error message, the API response shape. Quality is non-negotiable.</p>
+          </div>
+          <div class="value-card glass-card">
+            <div class="value-icon">⚖️</div>
+            <h3 class="value-title">Responsible AI</h3>
+            <p class="value-desc">AI agents act on behalf of real people. We take that seriously. Every agent decision is auditable, explainable, and reversible. We build guardrails, not black boxes.</p>
+          </div>
+          <div class="value-card glass-card">
+            <div class="value-icon">🌱</div>
+            <h3 class="value-title">Sustainability</h3>
+            <p class="value-desc">We offset 200% of our carbon emissions and run on 100% renewable energy. Tech companies have a responsibility to the planet. We take ours seriously.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-tag"><span class="section-tag-dot"></span>The Team</div>
+          <h2 class="section-title">Built by people who<br/><span class="gradient-text">care deeply</span></h2>
+          <p class="section-subtitle mx-auto">Our 48-person team is distributed across 12 countries. We hire for character first, craft second.</p>
+        </div>
+        <div class="grid-4">
+          <div class="team-card glass-card">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#00f5ff,#0080ff)">MC</div>
+            <div class="team-name">Marcus Chen</div>
+            <div class="team-role">Co-Founder &amp; CEO</div>
+            <p class="team-bio">Former VP Eng at Dropbox. Built distributed systems at Google for 6 years. Passionate about making complex things feel simple.</p>
+            <div class="team-links">
+              <a href="#" class="social-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+              <a href="#" class="social-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+            </div>
+          </div>
+          <div class="team-card glass-card">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">PP</div>
+            <div class="team-name">Priya Patel</div>
+            <div class="team-role">Co-Founder &amp; CTO</div>
+            <p class="team-bio">PhD in distributed systems from MIT. Built Kafka at LinkedIn. Holds 8 patents in real-time data processing.</p>
+            <div class="team-links">
+              <a href="#" class="social-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+              <a href="#" class="social-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg></a>
+            </div>
+          </div>
+          <div class="team-card glass-card">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#00ff87,#00b4d8)">JK</div>
+            <div class="team-name">James Kim</div>
+            <div class="team-role">VP of Product</div>
+            <p class="team-bio">Previously PM at Figma (led the auto-layout feature). Obsessed with making powerful tools feel effortless.</p>
+            <div class="team-links">
+              <a href="#" class="social-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+              <a href="#" class="social-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 .774 0 .774 0 0 .792 0 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+            </div>
+          </div>
+          <div class="team-card glass-card">
+            <div class="team-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">AL</div>
+            <div class="team-name">Aisha Lawson</div>
+            <div class="team-role">Head of AI Research</div>
+            <p class="team-bio">ML researcher formerly at DeepMind and OpenAI. Specializes in agentic AI systems and reinforcement learning from human feedback.</p>
+            <div class="team-links">
+              <a href="#" class="social-link"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg></a>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:var(--space-10)">
+          <p style="color:var(--color-text-muted);margin-bottom:var(--space-4)">We're hiring across engineering, design, sales, and customer success.</p>
+          <a href="#" class="btn btn-outline btn-lg">View Open Roles →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Investors -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="section-header text-center">
+          <h2 class="section-title">Backed by the best</h2>
+        </div>
+        <div class="investors-grid glass-card">
+          <div class="investor">
+            <div class="investor-name">a16z</div>
+            <div class="investor-label">Lead, Series A</div>
+          </div>
+          <div class="investor">
+            <div class="investor-name">Sequoia</div>
+            <div class="investor-label">Seed &amp; Series A</div>
+          </div>
+          <div class="investor">
+            <div class="investor-name">Y Combinator</div>
+            <div class="investor-label">W22 Batch</div>
+          </div>
+          <div class="investor">
+            <div class="investor-name">Stripe</div>
+            <div class="investor-label">Strategic Partner</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact CTA -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="cta-card glass-card" style="text-align:center;padding:var(--space-12)">
+          <div class="cta-glow"></div>
+          <h2 class="section-title">Want to get in touch?</h2>
+          <p class="section-subtitle mx-auto" style="margin-bottom:var(--space-8)">Whether you're a customer, investor, or just curious — we'd love to hear from you.</p>
+          <div style="display:flex;gap:var(--space-4);justify-content:center;flex-wrap:wrap">
+            <a href="mailto:hello@nexaflow.ai" class="btn btn-primary btn-lg">hello@nexaflow.ai</a>
+            <a href="#" class="btn btn-outline btn-lg">Join our Discord →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom" style="padding-top:0;border-top:none">
+          <p style="color:var(--color-text-muted);font-size:var(--fs-xs)">© 2026 NexaFlow Inc. San Francisco, CA.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>

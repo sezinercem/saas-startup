@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="NexaFlow pricing — Simple, transparent plans for every team size. Start free, scale as you grow."/>
+  <title>Pricing — NexaFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css"/>
+  <link rel="stylesheet" href="styles/components.css"/>
+  <link rel="stylesheet" href="styles/pages.css"/>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+  <div class="ambient-orb ambient-orb-3"></div>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon"><svg viewBox="0 0 40 40" fill="none"><polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="url(#ng2)" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="4" fill="url(#ng2)"/><defs><linearGradient id="ng2" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00f5ff"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg></div>
+      <span class="nav-logo-text">NexaFlow</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="features.html">Features</a></li>
+      <li><a href="integrations.html">Integrations</a></li>
+      <li><a href="pricing.html" style="color:var(--color-neon-cyan)">Pricing</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="blog.html">Blog</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-ghost">Sign In</a>
+      <a href="signup.html" class="btn btn-primary">Get Started Free</a>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+
+    <!-- Hero -->
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero-eyebrow">
+          <span class="section-tag"><span class="section-tag-dot"></span>Simple Pricing</span>
+        </div>
+        <h1 class="page-hero-title">Transparent pricing,<br/><span class="gradient-text">no surprises</span></h1>
+        <p class="page-hero-subtitle">Start free. Upgrade when you need more. Cancel any time. Every plan includes a 14-day free trial of the Pro tier.</p>
+
+        <!-- Billing Toggle -->
+        <div class="pricing-toggle" style="margin-top:var(--space-8)">
+          <span class="toggle-label active" id="monthlyLabel">Monthly</span>
+          <div class="toggle-switch" id="billingToggle" role="switch" aria-checked="false">
+            <div class="toggle-thumb"></div>
+          </div>
+          <span class="toggle-label" id="annualLabel">Annual <span class="badge badge-green" style="margin-left:var(--space-2)">Save 20%</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Cards -->
+    <section class="section" style="padding-top:var(--space-8)">
+      <div class="container">
+        <div class="pricing-cards-row">
+
+          <!-- Free -->
+          <div class="pricing-card-full glass-card">
+            <div class="pricing-tier">Free</div>
+            <div class="pricing-price-row">
+              <span class="price-currency">$</span>
+              <span class="price-amount" data-monthly="0" data-annual="0">0</span>
+              <span class="price-period">/mo</span>
+            </div>
+            <p class="pricing-desc">Perfect for individuals and side projects</p>
+            <a href="signup.html" class="btn btn-ghost" style="width:100%;margin-bottom:var(--space-6)">Start Free</a>
+            <div class="pricing-divider"></div>
+            <ul class="pricing-feature-list">
+              <li><span class="pf-check">✓</span> 1,000 executions/month</li>
+              <li><span class="pf-check">✓</span> 5 active workflows</li>
+              <li><span class="pf-check">✓</span> 20 integrations</li>
+              <li><span class="pf-check">✓</span> 7-day execution history</li>
+              <li><span class="pf-check">✓</span> Community support</li>
+              <li><span class="pf-cross">✗</span> AI Agents</li>
+              <li><span class="pf-cross">✗</span> Custom code nodes</li>
+              <li><span class="pf-cross">✗</span> Team features</li>
+            </ul>
+          </div>
+
+          <!-- Starter -->
+          <div class="pricing-card-full glass-card">
+            <div class="pricing-tier">Starter</div>
+            <div class="pricing-price-row">
+              <span class="price-currency">$</span>
+              <span class="price-amount" data-monthly="29" data-annual="23">29</span>
+              <span class="price-period">/mo</span>
+            </div>
+            <p class="pricing-desc">For solo developers and small teams</p>
+            <a href="signup.html" class="btn btn-outline" style="width:100%;margin-bottom:var(--space-6)">Start Trial</a>
+            <div class="pricing-divider"></div>
+            <ul class="pricing-feature-list">
+              <li><span class="pf-check">✓</span> 10,000 executions/month</li>
+              <li><span class="pf-check">✓</span> 50 active workflows</li>
+              <li><span class="pf-check">✓</span> 30 integrations</li>
+              <li><span class="pf-check">✓</span> 30-day history</li>
+              <li><span class="pf-check">✓</span> Email support</li>
+              <li><span class="pf-check">✓</span> Basic analytics</li>
+              <li><span class="pf-cross">✗</span> AI Agents</li>
+              <li><span class="pf-cross">✗</span> Custom code nodes</li>
+            </ul>
+          </div>
+
+          <!-- Pro (featured) -->
+          <div class="pricing-card-full glass-card pricing-featured-card">
+            <div class="pricing-popular-badge">Most Popular</div>
+            <div class="pricing-tier" style="color:var(--color-neon-cyan)">Pro</div>
+            <div class="pricing-price-row">
+              <span class="price-currency">$</span>
+              <span class="price-amount" data-monthly="99" data-annual="79">99</span>
+              <span class="price-period">/mo per workspace</span>
+            </div>
+            <p class="pricing-desc">For growing teams that need AI-powered automation</p>
+            <a href="signup.html" class="btn btn-primary" style="width:100%;margin-bottom:var(--space-6)">Start Free Trial</a>
+            <div class="pricing-divider"></div>
+            <ul class="pricing-feature-list">
+              <li><span class="pf-check">✓</span> 500,000 executions/month</li>
+              <li><span class="pf-check">✓</span> Unlimited workflows</li>
+              <li><span class="pf-check">✓</span> All 300+ integrations</li>
+              <li><span class="pf-check">✓</span> 90-day history</li>
+              <li><span class="pf-check">✓</span> Priority support (4h SLA)</li>
+              <li><span class="pf-check">✓</span> <strong>Neural AI Agents</strong></li>
+              <li><span class="pf-check">✓</span> Custom code nodes (JS + Python)</li>
+              <li><span class="pf-check">✓</span> Team collaboration (up to 10 seats)</li>
+              <li><span class="pf-check">✓</span> Advanced analytics</li>
+              <li><span class="pf-check">✓</span> Sub-workflows</li>
+            </ul>
+          </div>
+
+          <!-- Business -->
+          <div class="pricing-card-full glass-card">
+            <div class="pricing-tier">Business</div>
+            <div class="pricing-price-row">
+              <span class="price-currency">$</span>
+              <span class="price-amount" data-monthly="399" data-annual="319">399</span>
+              <span class="price-period">/mo per workspace</span>
+            </div>
+            <p class="pricing-desc">For scaling teams with advanced requirements</p>
+            <a href="signup.html" class="btn btn-outline" style="width:100%;margin-bottom:var(--space-6)">Start Trial</a>
+            <div class="pricing-divider"></div>
+            <ul class="pricing-feature-list">
+              <li><span class="pf-check">✓</span> 5,000,000 executions/month</li>
+              <li><span class="pf-check">✓</span> Unlimited workflows</li>
+              <li><span class="pf-check">✓</span> All integrations + early access</li>
+              <li><span class="pf-check">✓</span> 1-year history + export</li>
+              <li><span class="pf-check">✓</span> Priority support (1h SLA)</li>
+              <li><span class="pf-check">✓</span> Advanced AI Agents</li>
+              <li><span class="pf-check">✓</span> Unlimited team seats</li>
+              <li><span class="pf-check">✓</span> RBAC + custom roles</li>
+              <li><span class="pf-check">✓</span> SSO (SAML/OIDC)</li>
+              <li><span class="pf-check">✓</span> Audit logs</li>
+            </ul>
+          </div>
+
+          <!-- Enterprise -->
+          <div class="pricing-card-full glass-card">
+            <div class="pricing-tier">Enterprise</div>
+            <div class="pricing-price-row">
+              <span class="price-custom-lg">Custom</span>
+            </div>
+            <p class="pricing-desc">Tailored infrastructure for mission-critical workloads</p>
+            <a href="#" class="btn btn-ghost" style="width:100%;margin-bottom:var(--space-6)">Contact Sales</a>
+            <div class="pricing-divider"></div>
+            <ul class="pricing-feature-list">
+              <li><span class="pf-check">✓</span> Unlimited executions</li>
+              <li><span class="pf-check">✓</span> Dedicated infrastructure</li>
+              <li><span class="pf-check">✓</span> Private cloud / VPC deploy</li>
+              <li><span class="pf-check">✓</span> Unlimited history</li>
+              <li><span class="pf-check">✓</span> 24/7 dedicated support</li>
+              <li><span class="pf-check">✓</span> Custom AI model fine-tuning</li>
+              <li><span class="pf-check">✓</span> Custom integrations built for you</li>
+              <li><span class="pf-check">✓</span> Financial SLA (99.99% uptime)</li>
+              <li><span class="pf-check">✓</span> SOC2 + HIPAA BAA</li>
+              <li><span class="pf-check">✓</span> Dedicated success manager</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header text-center">
+          <h2 class="section-title">Compare plans<br/><span class="gradient-text">in detail</span></h2>
+        </div>
+        <div class="glass-card" style="overflow:auto;padding:var(--space-2)">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th style="text-align:left;width:30%">Feature</th>
+                <th>Free</th>
+                <th>Starter</th>
+                <th class="featured-col">Pro</th>
+                <th>Business</th>
+                <th>Enterprise</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="6" class="table-section-header">Executions &amp; Workflows</td></tr>
+              <tr><td>Monthly Executions</td><td>1K</td><td>10K</td><td class="featured-col"><strong>500K</strong></td><td>5M</td><td>Unlimited</td></tr>
+              <tr><td>Active Workflows</td><td>5</td><td>50</td><td class="featured-col"><strong>Unlimited</strong></td><td>Unlimited</td><td>Unlimited</td></tr>
+              <tr><td>Execution History</td><td>7 days</td><td>30 days</td><td class="featured-col"><strong>90 days</strong></td><td>1 year</td><td>Unlimited</td></tr>
+              <tr><td>Sub-workflows</td><td class="comparison-cross">✗</td><td class="comparison-cross">✗</td><td class="featured-col comparison-check">✓</td><td class="comparison-check">✓</td><td class="comparison-check">✓</td></tr>
+              <tr><td>Parallel Branches</td><td class="comparison-cross">✗</td><td class="comparison-partial">2 branches</td><td class="featured-col comparison-check">✓ Unlimited</td><td class="comparison-check">✓</td><td class="comparison-check">✓</td></tr>
+
+              <tr><td colspan="6" class="table-section-header">AI Features</td></tr>
+              <tr><td>AI Agent Access</td><td class="comparison-cross">✗</td><td class="comparison-cross">✗</td><td class="featured-col comparison-check">✓ Neural</td><td class="comparison-check">✓ Advanced</td><td class="comparison-check">✓ Custom Fine-tune</td></tr>
+              <tr><td>Natural Language Builder</td><td class="comparison-cross">✗</td><td class="comparison-cross">✗</td><td class="featured-col comparison-check">✓</td><td class="comparison-check">✓</td><td class="comparison-check">✓</td></tr>
+              <tr><td>AI Recommendations</td><td class="comparison-cross">✗</td><td class="comparison-partial">Basic</td><td class="featured-col comparison-check">✓ Full</td><td class="comparison-check">✓</td><td class="comparison-check">✓</td></tr>
+              <tr><td>Custom LLM Models</td><td class="comparison-cross">✗</td><td class="comparison-cross">✗</td><td class="featured-col comparison-cross">✗</td><td class="comparison-partial">GPT-4/Claude</td><td class="comparison-check">✓ Any model</td></tr>
+
+              <tr><td colspan="6" class="table-section-header">Integrations &amp; Code</td></tr>
+              <tr><td>Native Integrations</td><td>20</td><td>30</td><td class="featured-col"><strong>300+</strong></td><td>300+ Early Access</td><td>300+ Custom</td></tr>
+              <tr><td>Custom Code (JS/Python)</td><td class="comparison-cross">✗</td><td class="comparison-cross">✗</td><td class="featured-col comparison-check">✓</td><td class="comparison-check">✓</td><td class="comparison-check">✓</td></tr>
+              <tr><td>Webhook Triggers</td><td class="comparison-partial">1</td><td class="comparison-partial">5</td><td class="featured-col comparison-check">✓ Unlimited</td><td class="comparison-check">✓</td><td class="comparison-check">✓</td></tr>
+
+              <tr><td colspan="6" class="table-section-header">Security &amp; Compliance</td></tr>
+              <tr><td>SSO (SAML/OIDC)</td><td class="comparison-cross">✗</td><td class="comparison-cross">✗</td><td class="featured-col comparison-cross">✗</td><td class="comparison-check">✓</td><td class="comparison-check">✓</td></tr>
+              <tr><td>RBAC Roles</td><td class="comparison-cross">✗</td><td class="comparison-partial">3 roles</td><td class="featured-col comparison-partial">5 roles</td><td class="comparison-check">✓ Custom</td><td class="comparison-check">✓ Full ABAC</td></tr>
+              <tr><td>Audit Logs</td><td class="comparison-cross">✗</td><td class="comparison-cross">✗</td><td class="featured-col comparison-partial">Basic</td><td class="comparison-check">✓ Full + Export</td><td class="comparison-check">✓ SIEM Integration</td></tr>
+              <tr><td>SOC 2 Type II</td><td class="comparison-check">✓</td><td class="comparison-check">✓</td><td class="featured-col comparison-check">✓</td><td class="comparison-check">✓</td><td class="comparison-check">✓</td></tr>
+              <tr><td>HIPAA BAA</td><td class="comparison-cross">✗</td><td class="comparison-cross">✗</td><td class="featured-col comparison-cross">✗</td><td class="comparison-partial">Add-on</td><td class="comparison-check">✓ Included</td></tr>
+              <tr><td>Private VPC Deploy</td><td class="comparison-cross">✗</td><td class="comparison-cross">✗</td><td class="featured-col comparison-cross">✗</td><td class="comparison-cross">✗</td><td class="comparison-check">✓</td></tr>
+
+              <tr><td colspan="6" class="table-section-header">Support</td></tr>
+              <tr><td>Support Channel</td><td>Community</td><td>Email</td><td class="featured-col">Priority (4h)</td><td>Priority (1h)</td><td>24/7 Dedicated</td></tr>
+              <tr><td>Onboarding</td><td class="comparison-cross">✗</td><td class="comparison-cross">✗</td><td class="featured-col comparison-check">✓ Self-serve</td><td class="comparison-check">✓ Guided</td><td class="comparison-check">✓ White-glove</td></tr>
+              <tr><td>Uptime SLA</td><td>None</td><td>99.5%</td><td class="featured-col">99.9%</td><td>99.95%</td><td>99.99% + Financial</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-tag"><span class="section-tag-dot"></span>FAQ</div>
+          <h2 class="section-title">Frequently asked<br/><span class="gradient-text">questions</span></h2>
+        </div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question">
+              What counts as an "execution"?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                An execution is a single run of one workflow, from trigger to completion. If a workflow runs 1,000 times in a month, that counts as 1,000 executions. Sub-workflows count as separate executions. AI Agent reasoning steps are billed separately as "AI tokens" rather than executions.
+              </div>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              Can I switch plans mid-cycle?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                Yes. Upgrading is instant — you'll be prorated for the remainder of your billing period. Downgrading takes effect at the start of your next billing cycle. Your workflows and data are never deleted during a plan change.
+              </div>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              What happens if I exceed my execution limit?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                We'll send you a warning at 80% and 95% usage. When you hit 100%, you have two options: upgrade your plan, or enable "burst mode" which charges $0.0008 per additional execution. We never silently drop executions — you'll always know what's happening.
+              </div>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              Is there a free trial?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                Yes — every new account automatically starts with a 14-day free trial of the Pro plan. No credit card required. After 14 days, you'll be moved to the Free plan unless you choose to upgrade.
+              </div>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              How does annual billing work?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                Annual plans are billed upfront for 12 months at a 20% discount versus monthly pricing. You get the same features as the equivalent monthly plan. If you need to cancel, we'll refund the unused months on a pro-rata basis.
+              </div>
+            </div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              Do you offer non-profit or startup discounts?
+              <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                Yes. Non-profits receive 50% off all paid plans. Qualified startups (under 2 years old, under $2M raised) receive 6 months of the Pro plan free through our NexaFlow for Startups program. Contact us at <a href="#">startups@nexaflow.ai</a> to apply.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Logos -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="glass-card" style="padding:var(--space-8);text-align:center">
+          <p style="color:var(--color-text-muted);font-size:var(--fs-sm);margin-bottom:var(--space-6)">Trusted by teams at</p>
+          <div class="logos-track-wrapper"><div class="logos-track">
+            <div class="logo-item">Stripe</div><div class="logo-item">Vercel</div><div class="logo-item">Linear</div>
+            <div class="logo-item">Figma</div><div class="logo-item">Notion</div><div class="logo-item">Loom</div>
+            <div class="logo-item">Retool</div><div class="logo-item">Descript</div>
+            <div class="logo-item">Stripe</div><div class="logo-item">Vercel</div><div class="logo-item">Linear</div>
+            <div class="logo-item">Figma</div><div class="logo-item">Notion</div><div class="logo-item">Loom</div>
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom" style="padding-top:0;border-top:none">
+          <p style="color:var(--color-text-muted);font-size:var(--fs-xs)">© 2026 NexaFlow Inc. All rights reserved.</p>
+          <nav style="display:flex;gap:var(--space-6)">
+            <a href="features.html" style="color:var(--color-text-muted);text-decoration:none;font-size:var(--fs-xs)">Features</a>
+            <a href="integrations.html" style="color:var(--color-text-muted);text-decoration:none;font-size:var(--fs-xs)">Integrations</a>
+            <a href="about.html" style="color:var(--color-text-muted);text-decoration:none;font-size:var(--fs-xs)">About</a>
+          </nav>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>

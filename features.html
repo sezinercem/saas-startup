@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Explore every feature of NexaFlow — AI agents, visual builder, real-time execution, enterprise security and more."/>
+  <title>Features — NexaFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css"/>
+  <link rel="stylesheet" href="styles/components.css"/>
+  <link rel="stylesheet" href="styles/pages.css"/>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+  <div class="ambient-orb ambient-orb-3"></div>
+
+  <!-- Announcement Bar -->
+  <div class="announcement-bar" id="announcementBar">
+    🚀 <strong>NexaFlow 3.0</strong> is here — Neural AI Agents now available on all plans.
+    <a href="blog.html">Read the announcement →</a>
+    <button class="announcement-close" onclick="document.getElementById('announcementBar').remove()">×</button>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">
+        <svg viewBox="0 0 40 40" fill="none"><polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="url(#nfg)" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="4" fill="url(#nfg)"/><defs><linearGradient id="nfg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00f5ff"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg>
+      </div>
+      <span class="nav-logo-text">NexaFlow</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="features.html" style="color:var(--color-neon-cyan)">Features</a></li>
+      <li><a href="integrations.html">Integrations</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="blog.html">Blog</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-ghost">Sign In</a>
+      <a href="signup.html" class="btn btn-primary">Get Started Free</a>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+
+    <!-- Hero -->
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero-eyebrow">
+          <span class="section-tag"><span class="section-tag-dot"></span>Platform Features</span>
+        </div>
+        <h1 class="page-hero-title">
+          Every tool you need to<br/><span class="gradient-text">automate without limits</span>
+        </h1>
+        <p class="page-hero-subtitle">
+          NexaFlow combines a no-code visual builder, enterprise-grade AI agents, real-time
+          execution, and deep analytics into one unified platform — built for teams who move fast.
+        </p>
+      </div>
+    </section>
+
+    <!-- Feature Nav Tabs -->
+    <section class="section" style="padding-top:var(--space-8)">
+      <div class="container">
+        <div class="tab-nav" id="featureTabs">
+          <button class="tab-btn active" data-tab="ai">AI Engine</button>
+          <button class="tab-btn" data-tab="builder">Visual Builder</button>
+          <button class="tab-btn" data-tab="execution">Execution</button>
+          <button class="tab-btn" data-tab="security">Security</button>
+          <button class="tab-btn" data-tab="analytics">Analytics</button>
+          <button class="tab-btn" data-tab="integrations">Integrations</button>
+        </div>
+
+        <!-- AI Engine Tab -->
+        <div class="feature-tab-content" id="tab-ai">
+          <div class="feature-showcase">
+            <div class="feature-showcase-text">
+              <div class="section-tag"><span class="section-tag-dot"></span>AI Engine</div>
+              <h2 class="section-title">Neural Workflow Intelligence</h2>
+              <p class="section-subtitle">
+                Our proprietary AI engine doesn't just execute automation — it learns, adapts, and
+                proactively optimizes. Powered by a fine-tuned foundation model, NexaFlow understands
+                your business context and makes intelligent decisions at every step.
+              </p>
+              <div class="feature-list">
+                <div class="feature-list-item">
+                  <div class="feature-list-check">✓</div>
+                  <div>
+                    <strong>Self-learning agents</strong> — Agents observe outcomes and autonomously refine their decision logic over time
+                  </div>
+                </div>
+                <div class="feature-list-item">
+                  <div class="feature-list-check">✓</div>
+                  <div>
+                    <strong>Natural language workflows</strong> — Describe what you want in plain English; NexaFlow generates the workflow
+                  </div>
+                </div>
+                <div class="feature-list-item">
+                  <div class="feature-list-check">✓</div>
+                  <div>
+                    <strong>Anomaly detection</strong> — AI detects unusual patterns in your data flows and alerts before failures cascade
+                  </div>
+                </div>
+                <div class="feature-list-item">
+                  <div class="feature-list-check">✓</div>
+                  <div>
+                    <strong>Predictive scaling</strong> — Automatically provisions compute capacity based on predicted load
+                  </div>
+                </div>
+              </div>
+              <div class="feature-showcase-actions">
+                <a href="signup.html" class="btn btn-primary">Try AI Engine Free</a>
+                <a href="docs.html" class="btn btn-ghost">Read the Docs →</a>
+              </div>
+            </div>
+            <div class="feature-showcase-visual">
+              <div class="ai-demo-card glass-card">
+                <div class="ai-demo-header">
+                  <span class="badge badge-cyan">AI Agent</span>
+                  <span class="badge badge-green">Running</span>
+                </div>
+                <div class="ai-demo-prompt">
+                  <div class="ai-prompt-label">Instruction</div>
+                  <div class="ai-prompt-text">"When a new Stripe payment exceeds $1000, enrich the customer in Salesforce, notify the account manager in Slack, and create a success story draft in Notion."</div>
+                </div>
+                <div class="ai-demo-thinking">
+                  <div class="ai-thinking-dot"></div>
+                  <div class="ai-thinking-dot" style="animation-delay:0.2s"></div>
+                  <div class="ai-thinking-dot" style="animation-delay:0.4s"></div>
+                  <span>NexaFlow AI planning execution…</span>
+                </div>
+                <div class="ai-demo-steps">
+                  <div class="ai-step completed">
+                    <span class="ai-step-check">✓</span>
+                    <span>Trigger: Stripe webhook received ($1,240)</span>
+                  </div>
+                  <div class="ai-step completed">
+                    <span class="ai-step-check">✓</span>
+                    <span>Enriched customer in Salesforce (3 fields updated)</span>
+                  </div>
+                  <div class="ai-step active">
+                    <span class="ai-step-spinner"></span>
+                    <span>Sending Slack message to @sarah-johnson…</span>
+                  </div>
+                  <div class="ai-step pending">
+                    <span class="ai-step-dot"></span>
+                    <span>Creating Notion draft</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Sub-features -->
+          <div class="grid-3" style="margin-top:var(--space-12)">
+            <div class="feature-detail-card glass-card">
+              <div class="feature-detail-icon">🧠</div>
+              <h3>GPT-5 Native Integration</h3>
+              <p>Use the latest language models directly in your workflows for text generation, classification, summarization, and extraction — no API wrangling required.</p>
+            </div>
+            <div class="feature-detail-card glass-card">
+              <div class="feature-detail-icon">🔮</div>
+              <h3>Intent Recognition</h3>
+              <p>NexaFlow understands what users or data sources "mean", not just what they say. Build workflows that respond intelligently to ambiguous inputs.</p>
+            </div>
+            <div class="feature-detail-card glass-card">
+              <div class="feature-detail-icon">♻️</div>
+              <h3>Feedback Loops</h3>
+              <p>Mark workflow outcomes as good or bad. The AI engine uses this signal to continuously tune decision thresholds and routing logic.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Builder Tab -->
+        <div class="feature-tab-content hidden" id="tab-builder">
+          <div class="feature-showcase">
+            <div class="feature-showcase-text">
+              <div class="section-tag"><span class="section-tag-dot"></span>Visual Builder</div>
+              <h2 class="section-title">Build complex flows<br/><span class="gradient-text">without writing code</span></h2>
+              <p class="section-subtitle">
+                The NexaFlow canvas is a powerful visual programming environment. Place nodes, connect
+                them with wires, add conditions and loops — like Figma for automation.
+              </p>
+              <div class="feature-list">
+                <div class="feature-list-item">
+                  <div class="feature-list-check">✓</div>
+                  <div><strong>300+ pre-built nodes</strong> — Every major service has a dedicated node with full API coverage</div>
+                </div>
+                <div class="feature-list-item">
+                  <div class="feature-list-check">✓</div>
+                  <div><strong>Conditional branching</strong> — If/else, switch statements, and dynamic routing based on live data</div>
+                </div>
+                <div class="feature-list-item">
+                  <div class="feature-list-check">✓</div>
+                  <div><strong>Parallel execution</strong> — Run branches simultaneously and merge results with fan-in nodes</div>
+                </div>
+                <div class="feature-list-item">
+                  <div class="feature-list-check">✓</div>
+                  <div><strong>Sub-workflows</strong> — Encapsulate logic into reusable components shared across your team</div>
+                </div>
+                <div class="feature-list-item">
+                  <div class="feature-list-check">✓</div>
+                  <div><strong>Version control</strong> — Every save creates a snapshot; diff and rollback to any version</div>
+                </div>
+              </div>
+              <a href="signup.html" class="btn btn-primary" style="width:fit-content">Open the Builder →</a>
+            </div>
+            <div class="feature-showcase-visual">
+              <div class="builder-preview glass-card">
+                <div class="builder-toolbar">
+                  <div class="dash-dots"><span class="dash-dot red"></span><span class="dash-dot yellow"></span><span class="dash-dot green"></span></div>
+                  <div style="font-size:var(--fs-xs);color:var(--color-text-muted);font-family:var(--font-mono)">Flow: Customer Onboarding</div>
+                  <div style="display:flex;gap:var(--space-2)">
+                    <span class="badge badge-cyan">Saved</span>
+                    <span class="badge badge-green">Active</span>
+                  </div>
+                </div>
+                <div class="builder-canvas">
+                  <div class="canvas-node node-start">
+                    <div class="node-header">⚡ Trigger</div>
+                    <div class="node-body">New Stripe Customer</div>
+                  </div>
+                  <div class="canvas-wire"></div>
+                  <div class="canvas-node node-action">
+                    <div class="node-header">🧠 AI Enrich</div>
+                    <div class="node-body">Classify + Fill Profile</div>
+                  </div>
+                  <div class="canvas-branch">
+                    <div class="branch-line left"></div>
+                    <div class="branch-line right"></div>
+                  </div>
+                  <div class="canvas-row">
+                    <div class="canvas-node node-notify">
+                      <div class="node-header">💬 Slack</div>
+                      <div class="node-body">Alert Sales Team</div>
+                    </div>
+                    <div class="canvas-node node-crm">
+                      <div class="node-header">📋 CRM</div>
+                      <div class="node-body">Create Deal</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Execution Tab -->
+        <div class="feature-tab-content hidden" id="tab-execution">
+          <div class="feature-showcase">
+            <div class="feature-showcase-text">
+              <div class="section-tag"><span class="section-tag-dot"></span>Real-Time Execution</div>
+              <h2 class="section-title">Sub-millisecond triggers,<br/><span class="gradient-text">global scale</span></h2>
+              <p class="section-subtitle">
+                Built on a distributed event mesh with edge nodes in 28 regions. Every workflow
+                execution is fully observable, retryable, and auditable.
+              </p>
+              <div class="feature-list">
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>28 global edge regions</strong> — Executions run closest to your data source, minimizing latency</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>Guaranteed delivery</strong> — Exactly-once semantics with distributed transaction support</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>Automatic retries</strong> — Configurable exponential backoff with dead-letter queues</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>Live debugger</strong> — Pause, inspect, and step through running workflows in real-time</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>99.99% uptime SLA</strong> — Enterprise plans backed by financial SLA guarantees</div></div>
+              </div>
+              <div class="exec-stats">
+                <div class="exec-stat"><div class="exec-stat-val">4.2ms</div><div class="exec-stat-lbl">P99 Latency</div></div>
+                <div class="exec-stat"><div class="exec-stat-val">2.4M</div><div class="exec-stat-lbl">Daily Executions</div></div>
+                <div class="exec-stat"><div class="exec-stat-val">28</div><div class="exec-stat-lbl">Edge Regions</div></div>
+              </div>
+            </div>
+            <div class="feature-showcase-visual">
+              <div class="execution-map glass-card">
+                <div class="exec-map-header">
+                  <span class="exec-map-title">Global Execution Network</span>
+                  <span class="badge badge-green">All Systems Operational</span>
+                </div>
+                <div class="world-map-placeholder">
+                  <div class="map-dot" style="top:28%;left:22%" title="US-East"></div>
+                  <div class="map-dot" style="top:28%;left:15%" title="US-West"></div>
+                  <div class="map-dot" style="top:32%;left:45%" title="EU-West"></div>
+                  <div class="map-dot" style="top:35%;left:50%" title="EU-Central"></div>
+                  <div class="map-dot" style="top:42%;left:72%" title="AP-Southeast"></div>
+                  <div class="map-dot" style="top:38%;left:68%" title="AP-East"></div>
+                  <div class="map-dot" style="top:60%;left:32%" title="SA-East"></div>
+                  <div class="map-dot active" style="top:28%;left:23%" title="US-East (Primary)"></div>
+                  <!-- Connection arcs (visual only) -->
+                  <svg class="map-connections" viewBox="0 0 400 200" preserveAspectRatio="none">
+                    <path d="M88,56 Q180,20 180,64" stroke="rgba(0,245,255,0.2)" stroke-width="1" fill="none" stroke-dasharray="4 3"/>
+                    <path d="M88,56 Q240,10 200,70" stroke="rgba(0,245,255,0.15)" stroke-width="1" fill="none" stroke-dasharray="4 3"/>
+                    <path d="M88,56 Q250,30 272,76" stroke="rgba(139,92,246,0.2)" stroke-width="1" fill="none" stroke-dasharray="4 3"/>
+                  </svg>
+                </div>
+                <div class="map-legend">
+                  <div class="map-legend-item"><span class="map-dot-sm active"></span>Primary</div>
+                  <div class="map-legend-item"><span class="map-dot-sm"></span>Edge Node</div>
+                  <div class="map-legend-item" style="margin-left:auto;color:var(--color-neon-green);font-size:var(--fs-xs)">● 28/28 Online</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Tab -->
+        <div class="feature-tab-content hidden" id="tab-security">
+          <div class="feature-showcase">
+            <div class="feature-showcase-text">
+              <div class="section-tag"><span class="section-tag-dot"></span>Enterprise Security</div>
+              <h2 class="section-title">Zero-trust architecture,<br/><span class="gradient-text">compliance built in</span></h2>
+              <p class="section-subtitle">
+                Security isn't a feature — it's the foundation. NexaFlow is built on a zero-trust
+                model with end-to-end encryption, granular access controls, and full audit logging.
+              </p>
+              <div class="compliance-badges">
+                <div class="compliance-badge glass-card">
+                  <div class="compliance-icon">🛡️</div>
+                  <div class="compliance-name">SOC 2 Type II</div>
+                  <div class="compliance-status">Certified</div>
+                </div>
+                <div class="compliance-badge glass-card">
+                  <div class="compliance-icon">⚕️</div>
+                  <div class="compliance-name">HIPAA</div>
+                  <div class="compliance-status">Compliant</div>
+                </div>
+                <div class="compliance-badge glass-card">
+                  <div class="compliance-icon">🇪🇺</div>
+                  <div class="compliance-name">GDPR</div>
+                  <div class="compliance-status">Ready</div>
+                </div>
+                <div class="compliance-badge glass-card">
+                  <div class="compliance-icon">💳</div>
+                  <div class="compliance-name">PCI DSS</div>
+                  <div class="compliance-status">Level 1</div>
+                </div>
+              </div>
+              <div class="feature-list">
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>AES-256 encryption</strong> at rest and TLS 1.3 in transit</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>RBAC + ABAC</strong> — Role and attribute-based access control with custom policies</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>SSO / SAML 2.0</strong> — Integrate with Okta, Azure AD, Google Workspace</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>Immutable audit logs</strong> — Tamper-proof logging of every action, exportable to SIEM</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>Secret management</strong> — Credential vault with automatic rotation</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>Private cloud deploy</strong> — Run NexaFlow entirely inside your VPC</div></div>
+              </div>
+            </div>
+            <div class="feature-showcase-visual">
+              <div class="security-visual glass-card">
+                <h4 style="font-family:var(--font-display);font-size:var(--fs-base);margin-bottom:var(--space-4)">Audit Log — Live</h4>
+                <div class="audit-log">
+                  <div class="audit-entry">
+                    <span class="audit-time">13:42:01</span>
+                    <span class="audit-action success">EXECUTE</span>
+                    <span class="audit-detail">workflow:customer-onboarding by user:sarah@co.com</span>
+                  </div>
+                  <div class="audit-entry">
+                    <span class="audit-time">13:41:55</span>
+                    <span class="audit-action info">READ</span>
+                    <span class="audit-detail">secret:stripe-api-key accessed</span>
+                  </div>
+                  <div class="audit-entry">
+                    <span class="audit-time">13:41:40</span>
+                    <span class="audit-action warning">MODIFY</span>
+                    <span class="audit-detail">integration:salesforce updated by admin@co.com</span>
+                  </div>
+                  <div class="audit-entry">
+                    <span class="audit-time">13:40:12</span>
+                    <span class="audit-action success">LOGIN</span>
+                    <span class="audit-detail">SSO login from 192.168.1.4 (Okta)</span>
+                  </div>
+                  <div class="audit-entry">
+                    <span class="audit-time">13:39:58</span>
+                    <span class="audit-action danger">BLOCKED</span>
+                    <span class="audit-detail">Unauthorized IP 185.4.x.x denied access</span>
+                  </div>
+                  <div class="audit-entry">
+                    <span class="audit-time">13:38:22</span>
+                    <span class="audit-action success">EXECUTE</span>
+                    <span class="audit-detail">workflow:daily-report completed (847ms)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div class="feature-tab-content hidden" id="tab-analytics">
+          <div class="feature-showcase reverse">
+            <div class="feature-showcase-text">
+              <div class="section-tag"><span class="section-tag-dot"></span>Advanced Analytics</div>
+              <h2 class="section-title">Deep insight into<br/><span class="gradient-text">every execution</span></h2>
+              <p class="section-subtitle">
+                NexaFlow doesn't just run your workflows — it tells you everything about how they're
+                running. Custom dashboards, drill-down traces, and AI-powered recommendations.
+              </p>
+              <div class="feature-list">
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>Custom dashboards</strong> — Drag-and-drop metrics builder with 40+ chart types</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>Distributed tracing</strong> — Full OpenTelemetry support for step-level performance data</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>Cost analytics</strong> — See exactly how much each workflow costs per execution</div></div>
+                <div class="feature-list-item"><div class="feature-list-check">✓</div><div><strong>Forecasting</strong> — ML-based usage predictions to plan capacity and budget</div></div>
+              </div>
+            </div>
+            <div class="feature-showcase-visual">
+              <div class="analytics-preview glass-card">
+                <div class="analytics-header">
+                  <span style="font-family:var(--font-display);font-size:var(--fs-sm);font-weight:700">Analytics Overview</span>
+                  <span class="badge badge-cyan">Real-time</span>
+                </div>
+                <div class="analytics-grid">
+                  <div class="analytics-metric">
+                    <div class="am-val">98.7%</div>
+                    <div class="am-lbl">Success Rate</div>
+                    <div class="am-bar"><div class="am-fill" style="width:98.7%"></div></div>
+                  </div>
+                  <div class="analytics-metric">
+                    <div class="am-val">4.2ms</div>
+                    <div class="am-lbl">Avg Latency</div>
+                    <div class="am-bar"><div class="am-fill" style="width:25%;background:linear-gradient(90deg,#8b5cf6,#ec4899)"></div></div>
+                  </div>
+                  <div class="analytics-metric">
+                    <div class="am-val">$0.0008</div>
+                    <div class="am-lbl">Cost per Exec</div>
+                    <div class="am-bar"><div class="am-fill" style="width:15%;background:linear-gradient(90deg,#00ff87,#00b4d8)"></div></div>
+                  </div>
+                  <div class="analytics-metric">
+                    <div class="am-val">12</div>
+                    <div class="am-lbl">Active Agents</div>
+                    <div class="am-bar"><div class="am-fill" style="width:60%;background:linear-gradient(90deg,#fbbf24,#f59e0b)"></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Integrations preview Tab -->
+        <div class="feature-tab-content hidden" id="tab-integrations">
+          <div style="text-align:center;padding:var(--space-8) 0">
+            <h2 class="section-title">Connect <span class="gradient-text">300+ tools</span> instantly</h2>
+            <p class="section-subtitle mx-auto">Every integration works out of the box. No middleware, no config files.</p>
+            <div style="margin-top:var(--space-8)">
+              <a href="integrations.html" class="btn btn-primary btn-lg">Browse All Integrations →</a>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end container -->
+    </section>
+
+    <!-- Feature Details Grid -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="section-header text-center">
+          <h2 class="section-title">Every detail,<br/><span class="gradient-text">carefully designed</span></h2>
+        </div>
+        <div class="grid-3">
+          <div class="feature-detail-card glass-card">
+            <div class="feature-detail-icon">⚡</div>
+            <h3>Instant Triggers</h3>
+            <p>Webhooks, schedules, file watches, database changes, API polling — any event source can kick off a workflow in under 100ms.</p>
+          </div>
+          <div class="feature-detail-card glass-card">
+            <div class="feature-detail-icon">🔄</div>
+            <h3>Stateful Workflows</h3>
+            <p>Long-running workflows that can wait for human approval, poll external services, or pause for days without consuming resources.</p>
+          </div>
+          <div class="feature-detail-card glass-card">
+            <div class="feature-detail-icon">📝</div>
+            <h3>Template Library</h3>
+            <p>500+ pre-built workflow templates across DevOps, Marketing, Finance, HR, and Customer Success. Get started in seconds.</p>
+          </div>
+          <div class="feature-detail-card glass-card">
+            <div class="feature-detail-icon">🧪</div>
+            <h3>Testing Sandbox</h3>
+            <p>Full production-mirror sandbox environment. Test with real data snapshots without touching live systems.</p>
+          </div>
+          <div class="feature-detail-card glass-card">
+            <div class="feature-detail-icon">🌐</div>
+            <h3>Custom Code Nodes</h3>
+            <p>Drop into JavaScript or Python at any point in your workflow. Full npm/pip ecosystem access in sandboxed containers.</p>
+          </div>
+          <div class="feature-detail-card glass-card">
+            <div class="feature-detail-icon">🔗</div>
+            <h3>REST & GraphQL APIs</h3>
+            <p>Every workflow is automatically exposed as an API endpoint. Call NexaFlow from anywhere, or trigger via webhooks from any platform.</p>
+          </div>
+          <div class="feature-detail-card glass-card">
+            <div class="feature-detail-icon">👥</div>
+            <h3>Team Collaboration</h3>
+            <p>Real-time collaborative editing of workflows. Leave comments, assign owners, review and approve before publishing.</p>
+          </div>
+          <div class="feature-detail-card glass-card">
+            <div class="feature-detail-icon">📦</div>
+            <h3>Workflow Packages</h3>
+            <p>Bundle workflows, integrations, and credentials into shareable packages. Publish to the NexaFlow marketplace or keep private.</p>
+          </div>
+          <div class="feature-detail-card glass-card">
+            <div class="feature-detail-icon">🔔</div>
+            <h3>Smart Alerting</h3>
+            <p>AI-powered alerting that filters noise. Get paged only when something truly needs your attention, not on every hiccup.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="cta-card glass-card" style="text-align:center;padding:var(--space-16) var(--space-12)">
+          <div class="cta-glow"></div>
+          <h2 class="section-title">Ready to experience<br/><span class="gradient-text">all of it?</span></h2>
+          <p class="section-subtitle mx-auto" style="margin-bottom:var(--space-8)">Start your 14-day free trial. No credit card, no setup fees.</p>
+          <a href="signup.html" class="btn btn-primary btn-lg">Start Building Free →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom" style="padding-top:0;border-top:none;flex-direction:row">
+          <p style="color:var(--color-text-muted);font-size:var(--fs-xs)">© 2026 NexaFlow Inc. All rights reserved.</p>
+          <nav style="display:flex;gap:var(--space-6)">
+            <a href="pricing.html" style="color:var(--color-text-muted);text-decoration:none;font-size:var(--fs-xs)">Pricing</a>
+            <a href="docs.html" style="color:var(--color-text-muted);text-decoration:none;font-size:var(--fs-xs)">Docs</a>
+            <a href="about.html" style="color:var(--color-text-muted);text-decoration:none;font-size:var(--fs-xs)">About</a>
+            <a href="blog.html" style="color:var(--color-text-muted);text-decoration:none;font-size:var(--fs-xs)">Blog</a>
+          </nav>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>

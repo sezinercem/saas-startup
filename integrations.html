@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="NexaFlow integrates with 300+ tools — Slack, GitHub, Salesforce, AWS, Stripe and more. Connect your entire stack."/>
+  <title>Integrations — NexaFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css"/>
+  <link rel="stylesheet" href="styles/components.css"/>
+  <link rel="stylesheet" href="styles/pages.css"/>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+  <div class="ambient-orb ambient-orb-3"></div>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon"><svg viewBox="0 0 40 40" fill="none"><polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="url(#ng3)" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="4" fill="url(#ng3)"/><defs><linearGradient id="ng3" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00f5ff"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg></div>
+      <span class="nav-logo-text">NexaFlow</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="features.html">Features</a></li>
+      <li><a href="integrations.html" style="color:var(--color-neon-cyan)">Integrations</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="blog.html">Blog</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-ghost">Sign In</a>
+      <a href="signup.html" class="btn btn-primary">Get Started Free</a>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero-eyebrow">
+          <span class="section-tag"><span class="section-tag-dot"></span>300+ Integrations</span>
+        </div>
+        <h1 class="page-hero-title">Connect your <span class="gradient-text">entire stack</span></h1>
+        <p class="page-hero-subtitle">NexaFlow natively integrates with every major tool across your DevOps, CRM, marketing, and data stack. No custom middleware, no webhooks to maintain.</p>
+
+        <!-- Search -->
+        <div class="integration-search">
+          <div class="int-search-wrapper">
+            <svg class="int-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" id="integrationSearch" class="form-input int-search-input" placeholder="Search integrations (e.g. Slack, GitHub, AWS…)" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:var(--space-4)">
+      <div class="container">
+
+        <!-- Category Tabs -->
+        <div class="tab-nav" id="integrationTabs" style="margin-bottom:var(--space-8)">
+          <button class="tab-btn active" data-category="all">All (300+)</button>
+          <button class="tab-btn" data-category="communication">Communication</button>
+          <button class="tab-btn" data-category="crm">CRM &amp; Sales</button>
+          <button class="tab-btn" data-category="devops">DevOps</button>
+          <button class="tab-btn" data-category="data">Data &amp; Analytics</button>
+          <button class="tab-btn" data-category="cloud">Cloud &amp; Infra</button>
+          <button class="tab-btn" data-category="payments">Payments</button>
+          <button class="tab-btn" data-category="productivity">Productivity</button>
+        </div>
+
+        <!-- Featured Integrations -->
+        <div class="int-featured-section">
+          <h3 class="int-section-title">Featured</h3>
+          <div class="grid-4" id="integrationGrid">
+
+            <div class="integration-card glass-card" data-category="communication">
+              <div class="integration-logo">💬</div>
+              <div class="integration-name">Slack</div>
+              <div class="integration-category">Communication</div>
+              <div class="integration-desc">Send messages, create channels, manage users, and trigger workflows from Slack commands.</div>
+              <div class="integration-actions">
+                <span class="badge badge-green">Popular</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="devops">
+              <div class="integration-logo">🐙</div>
+              <div class="integration-name">GitHub</div>
+              <div class="integration-category">DevOps</div>
+              <div class="integration-desc">Trigger on PRs, issues, commits. Auto-review code, create releases, manage repositories.</div>
+              <div class="integration-actions">
+                <span class="badge badge-green">Popular</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="crm">
+              <div class="integration-logo">☁️</div>
+              <div class="integration-name">Salesforce</div>
+              <div class="integration-category">CRM &amp; Sales</div>
+              <div class="integration-desc">Sync leads, update opportunities, trigger workflows on deal stage changes. Full SOQL support.</div>
+              <div class="integration-actions">
+                <span class="badge badge-cyan">Enterprise</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="payments">
+              <div class="integration-logo">💳</div>
+              <div class="integration-name">Stripe</div>
+              <div class="integration-category">Payments</div>
+              <div class="integration-desc">React to payment events, manage subscriptions, handle refunds, create invoices automatically.</div>
+              <div class="integration-actions">
+                <span class="badge badge-green">Popular</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="cloud">
+              <div class="integration-logo">🟠</div>
+              <div class="integration-name">AWS</div>
+              <div class="integration-category">Cloud &amp; Infra</div>
+              <div class="integration-desc">Trigger Lambda functions, manage S3, EC2, RDS. Full AWS SDK coverage in every node.</div>
+              <div class="integration-actions">
+                <span class="badge badge-cyan">Enterprise</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="productivity">
+              <div class="integration-logo">📝</div>
+              <div class="integration-name">Notion</div>
+              <div class="integration-category">Productivity</div>
+              <div class="integration-desc">Create pages, update databases, query content. Use Notion as your automation command center.</div>
+              <div class="integration-actions">
+                <span class="badge badge-green">Popular</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="devops">
+              <div class="integration-logo">🦊</div>
+              <div class="integration-name">GitLab</div>
+              <div class="integration-category">DevOps</div>
+              <div class="integration-desc">Full GitLab CI/CD integration. Trigger pipelines, manage merge requests, track deployments.</div>
+              <div class="integration-actions">
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="data">
+              <div class="integration-logo">❄️</div>
+              <div class="integration-name">Snowflake</div>
+              <div class="integration-category">Data &amp; Analytics</div>
+              <div class="integration-desc">Query, transform, and load data. Use Snowflake results to drive workflow decisions at scale.</div>
+              <div class="integration-actions">
+                <span class="badge badge-cyan">Enterprise</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="communication">
+              <div class="integration-logo">📧</div>
+              <div class="integration-name">Gmail</div>
+              <div class="integration-category">Communication</div>
+              <div class="integration-desc">Send and receive emails, parse attachments, auto-reply, and route based on content.</div>
+              <div class="integration-actions">
+                <span class="badge badge-green">Popular</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="devops">
+              <div class="integration-logo">🔵</div>
+              <div class="integration-name">Jira</div>
+              <div class="integration-category">DevOps</div>
+              <div class="integration-desc">Create tickets, update sprints, sync with GitHub PRs. Keep Jira in sync with your actual work.</div>
+              <div class="integration-actions">
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="crm">
+              <div class="integration-logo">🟠</div>
+              <div class="integration-name">HubSpot</div>
+              <div class="integration-category">CRM &amp; Sales</div>
+              <div class="integration-desc">Sync contacts, update deal stages, trigger email sequences based on workflow outcomes.</div>
+              <div class="integration-actions">
+                <span class="badge badge-green">Popular</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="cloud">
+              <div class="integration-logo">🔷</div>
+              <div class="integration-name">Google Cloud</div>
+              <div class="integration-category">Cloud &amp; Infra</div>
+              <div class="integration-desc">BigQuery, Cloud Functions, Pub/Sub, GCS. Full GCP integration with service account auth.</div>
+              <div class="integration-actions">
+                <span class="badge badge-cyan">Enterprise</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="productivity">
+              <div class="integration-logo">📊</div>
+              <div class="integration-name">Google Sheets</div>
+              <div class="integration-category">Productivity</div>
+              <div class="integration-desc">Read, write, and append rows. Use spreadsheets as a lightweight database or config store.</div>
+              <div class="integration-actions">
+                <span class="badge badge-green">Popular</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="data">
+              <div class="integration-logo">🟣</div>
+              <div class="integration-name">PostgreSQL</div>
+              <div class="integration-category">Data &amp; Analytics</div>
+              <div class="integration-desc">Execute queries, trigger on row inserts/updates. Use PostgreSQL as a workflow trigger source.</div>
+              <div class="integration-actions">
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="communication">
+              <div class="integration-logo">💙</div>
+              <div class="integration-name">Microsoft Teams</div>
+              <div class="integration-category">Communication</div>
+              <div class="integration-desc">Post messages, create meeting invites, and manage Teams channels from your workflows.</div>
+              <div class="integration-actions">
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="devops">
+              <div class="integration-logo">🔵</div>
+              <div class="integration-name">Linear</div>
+              <div class="integration-category">DevOps</div>
+              <div class="integration-desc">Auto-create issues from bug reports, sync with PRs, update cycles. Keep Linear automatic.</div>
+              <div class="integration-actions">
+                <span class="badge badge-green">Popular</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="payments">
+              <div class="integration-logo">🅿️</div>
+              <div class="integration-name">PayPal</div>
+              <div class="integration-category">Payments</div>
+              <div class="integration-desc">Handle IPN events, create payment links, manage refunds and disputes automatically.</div>
+              <div class="integration-actions">
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="crm">
+              <div class="integration-logo">🟡</div>
+              <div class="integration-name">Zendesk</div>
+              <div class="integration-category">CRM &amp; Sales</div>
+              <div class="integration-desc">Auto-create tickets, route support requests with AI, update SLA timers, escalate issues.</div>
+              <div class="integration-actions">
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="productivity">
+              <div class="integration-logo">🗂️</div>
+              <div class="integration-name">Airtable</div>
+              <div class="integration-category">Productivity</div>
+              <div class="integration-desc">Query and update bases, trigger on record changes, sync with external data sources.</div>
+              <div class="integration-actions">
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+            <div class="integration-card glass-card" data-category="cloud">
+              <div class="integration-logo">🔵</div>
+              <div class="integration-name">Azure</div>
+              <div class="integration-category">Cloud &amp; Infra</div>
+              <div class="integration-desc">Functions, Blob Storage, Service Bus, CosmosDB. Enterprise Azure automation at scale.</div>
+              <div class="integration-actions">
+                <span class="badge badge-cyan">Enterprise</span>
+                <a href="signup.html" class="btn btn-sm btn-outline">Connect →</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Build your own CTA -->
+        <div class="int-custom-cta glass-card">
+          <div class="int-custom-icon">🔌</div>
+          <div>
+            <h3>Don't see your tool?</h3>
+            <p>Use our Custom Integration Builder to connect any REST API, GraphQL endpoint, or database in minutes — no coding required. Or contact us and we'll build it for you.</p>
+          </div>
+          <div style="display:flex;gap:var(--space-3);flex-shrink:0">
+            <a href="docs.html" class="btn btn-outline">Custom API →</a>
+            <a href="about.html" class="btn btn-ghost">Contact Us</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom" style="padding-top:0;border-top:none">
+          <p style="color:var(--color-text-muted);font-size:var(--fs-xs)">© 2026 NexaFlow Inc.</p>
+          <nav style="display:flex;gap:var(--space-6)">
+            <a href="pricing.html" style="color:var(--color-text-muted);text-decoration:none;font-size:var(--fs-xs)">Pricing</a>
+            <a href="docs.html" style="color:var(--color-text-muted);text-decoration:none;font-size:var(--fs-xs)">Docs</a>
+            <a href="about.html" style="color:var(--color-text-muted);text-decoration:none;font-size:var(--fs-xs)">About</a>
+          </nav>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>

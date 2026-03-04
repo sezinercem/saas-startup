@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="NexaFlow Blog — Product announcements, engineering deep dives, and automation guides."/>
+  <title>Blog — NexaFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css"/>
+  <link rel="stylesheet" href="styles/components.css"/>
+  <link rel="stylesheet" href="styles/pages.css"/>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+  <div class="ambient-orb ambient-orb-3"></div>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon"><svg viewBox="0 0 40 40" fill="none"><polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="url(#ng5)" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="4" fill="url(#ng5)"/><defs><linearGradient id="ng5" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00f5ff"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg></div>
+      <span class="nav-logo-text">NexaFlow</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="features.html">Features</a></li>
+      <li><a href="integrations.html">Integrations</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="blog.html" style="color:var(--color-neon-cyan)">Blog</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-ghost">Sign In</a>
+      <a href="signup.html" class="btn btn-primary">Get Started Free</a>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+
+    <section class="page-hero" style="padding-bottom:var(--space-10)">
+      <div class="container">
+        <div class="page-hero-eyebrow">
+          <span class="section-tag"><span class="section-tag-dot"></span>NexaFlow Blog</span>
+        </div>
+        <h1 class="page-hero-title">Ideas, updates, and<br/><span class="gradient-text">deep dives</span></h1>
+        <p class="page-hero-subtitle">Product announcements, engineering stories, automation guides, and thoughts on the future of work.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:var(--space-4)">
+      <div class="container">
+
+        <div class="tab-nav">
+          <button class="tab-btn active">All</button>
+          <button class="tab-btn">Product</button>
+          <button class="tab-btn">Engineering</button>
+          <button class="tab-btn">Guides</button>
+          <button class="tab-btn">Company</button>
+          <button class="tab-btn">Changelog</button>
+        </div>
+
+        <!-- Featured Post -->
+        <a href="#" class="blog-featured glass-card">
+          <div class="blog-featured-image">
+            <div class="blog-featured-emoji">🚀</div>
+          </div>
+          <div class="blog-featured-content">
+            <div class="blog-card-meta">
+              <span class="badge badge-cyan">Product</span>
+              <span class="blog-card-date">March 1, 2026</span>
+              <span class="blog-read-time">8 min read</span>
+            </div>
+            <h2 class="blog-featured-title">Introducing NexaFlow 3.0: AI Everywhere</h2>
+            <p class="blog-featured-excerpt">Today we're launching the biggest update in NexaFlow history. Every workflow now has access to a dedicated AI agent that can reason, plan, and adapt. We've rebuilt our execution engine from the ground up to support stateful multi-step reasoning — and added GPT-5 native integration across all plans.</p>
+            <div class="blog-author">
+              <div class="blog-author-avatar" style="background:linear-gradient(135deg,#00f5ff,#0080ff)">MC</div>
+              <span>Marcus Chen, CEO</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Post Grid -->
+        <div class="blog-grid">
+
+          <a href="#" class="blog-card glass-card">
+            <div class="blog-card-image">
+              <div class="blog-card-image-inner" style="background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(139,92,246,0.1))">🧠</div>
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge badge-purple">Engineering</span>
+                <span class="blog-card-date">Feb 20, 2026</span>
+              </div>
+              <h3 class="blog-card-title">How We Built Self-Healing Workflows</h3>
+              <p class="blog-card-excerpt">When a step in your workflow fails, NexaFlow 3.0 doesn't just retry — it thinks. We walk through the architecture behind our new fault-tolerance system and the ML model that decides when to retry, reroute, or escalate.</p>
+            </div>
+            <div class="blog-card-footer">
+              <div class="blog-author">
+                <div class="blog-author-avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">PP</div>
+                <span>Priya Patel</span>
+              </div>
+              <span class="blog-read-more">12 min →</span>
+            </div>
+          </a>
+
+          <a href="#" class="blog-card glass-card">
+            <div class="blog-card-image">
+              <div class="blog-card-image-inner" style="background:linear-gradient(135deg,rgba(0,255,135,0.1),rgba(0,180,216,0.1))">⚡</div>
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge badge-green">Guide</span>
+                <span class="blog-card-date">Feb 14, 2026</span>
+              </div>
+              <h3 class="blog-card-title">10 Workflows Every Sales Team Needs</h3>
+              <p class="blog-card-excerpt">From lead enrichment to deal-close celebrations, we've collected the most impactful automations from 50,000 sales teams using NexaFlow. Copy them into your workspace in one click.</p>
+            </div>
+            <div class="blog-card-footer">
+              <div class="blog-author">
+                <div class="blog-author-avatar" style="background:linear-gradient(135deg,#00ff87,#00b4d8)">JK</div>
+                <span>James Kim</span>
+              </div>
+              <span class="blog-read-more">6 min →</span>
+            </div>
+          </a>
+
+          <a href="#" class="blog-card glass-card">
+            <div class="blog-card-image">
+              <div class="blog-card-image-inner" style="background:linear-gradient(135deg,rgba(251,191,36,0.1),rgba(239,68,68,0.1))">🛡️</div>
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge badge-cyan">Product</span>
+                <span class="blog-card-date">Feb 5, 2026</span>
+              </div>
+              <h3 class="blog-card-title">NexaFlow Achieves SOC 2 Type II Certification</h3>
+              <p class="blog-card-excerpt">After a rigorous 12-month audit, NexaFlow has received SOC 2 Type II certification. Here's what that means for our customers and why we think trust infrastructure is as important as feature infrastructure.</p>
+            </div>
+            <div class="blog-card-footer">
+              <div class="blog-author">
+                <div class="blog-author-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">AL</div>
+                <span>Aisha Lawson</span>
+              </div>
+              <span class="blog-read-more">4 min →</span>
+            </div>
+          </a>
+
+          <a href="#" class="blog-card glass-card">
+            <div class="blog-card-image">
+              <div class="blog-card-image-inner" style="background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(236,72,153,0.1))">📊</div>
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge badge-purple">Engineering</span>
+                <span class="blog-card-date">Jan 28, 2026</span>
+              </div>
+              <h3 class="blog-card-title">Scaling to 2 Billion Executions: What We Learned</h3>
+              <p class="blog-card-excerpt">When we started, we thought scaling would be our biggest challenge. We were wrong — the hard part was maintaining observability at scale. An honest post-mortem on our infrastructure journey.</p>
+            </div>
+            <div class="blog-card-footer">
+              <div class="blog-author">
+                <div class="blog-author-avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">PP</div>
+                <span>Priya Patel</span>
+              </div>
+              <span class="blog-read-more">15 min →</span>
+            </div>
+          </a>
+
+          <a href="#" class="blog-card glass-card">
+            <div class="blog-card-image">
+              <div class="blog-card-image-inner" style="background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(0,128,255,0.1))">🏢</div>
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge badge-cyan">Company</span>
+                <span class="blog-card-date">Jan 15, 2026</span>
+              </div>
+              <h3 class="blog-card-title">We Raised $24M — Here's What We're Building</h3>
+              <p class="blog-card-excerpt">Today we're announcing our Series A led by a16z. We'll use it to triple our engineering team, expand to 50+ enterprise integrations, and launch NexaFlow for Startups — free Pro access for early-stage companies.</p>
+            </div>
+            <div class="blog-card-footer">
+              <div class="blog-author">
+                <div class="blog-author-avatar" style="background:linear-gradient(135deg,#00f5ff,#0080ff)">MC</div>
+                <span>Marcus Chen</span>
+              </div>
+              <span class="blog-read-more">7 min →</span>
+            </div>
+          </a>
+
+          <a href="#" class="blog-card glass-card">
+            <div class="blog-card-image">
+              <div class="blog-card-image-inner" style="background:linear-gradient(135deg,rgba(0,255,135,0.1),rgba(139,92,246,0.1))">🤖</div>
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-card-meta">
+                <span class="badge badge-green">Guide</span>
+                <span class="blog-card-date">Jan 8, 2026</span>
+              </div>
+              <h3 class="blog-card-title">The Complete Guide to AI Agent Workflows</h3>
+              <p class="blog-card-excerpt">AI agents are powerful — but only if you give them the right instructions. We cover prompt engineering for agents, how to set guardrails, and the five patterns that every AI workflow should follow.</p>
+            </div>
+            <div class="blog-card-footer">
+              <div class="blog-author">
+                <div class="blog-author-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">AL</div>
+                <span>Aisha Lawson</span>
+              </div>
+              <span class="blog-read-more">10 min →</span>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Newsletter CTA -->
+        <div class="newsletter-cta glass-card">
+          <div>
+            <h3>Stay in the loop</h3>
+            <p>New posts every week. No spam. Unsubscribe any time.</p>
+          </div>
+          <div class="newsletter-form">
+            <input type="email" class="form-input" placeholder="you@company.com" style="max-width:280px"/>
+            <button class="btn btn-primary">Subscribe →</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-bottom" style="padding-top:0;border-top:none">
+          <p style="color:var(--color-text-muted);font-size:var(--fs-xs)">© 2026 NexaFlow Inc.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>

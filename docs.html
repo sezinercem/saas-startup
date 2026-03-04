@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="NexaFlow Documentation — Get started, API reference, guides, and tutorials."/>
+  <title>Documentation — NexaFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css"/>
+  <link rel="stylesheet" href="styles/components.css"/>
+  <link rel="stylesheet" href="styles/pages.css"/>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="ambient-orb ambient-orb-1" style="opacity:0.06"></div>
+  <div class="ambient-orb ambient-orb-2" style="opacity:0.06"></div>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon"><svg viewBox="0 0 40 40" fill="none"><polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="url(#ng6)" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="4" fill="url(#ng6)"/><defs><linearGradient id="ng6" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00f5ff"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg></div>
+      <span class="nav-logo-text">NexaFlow</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="features.html">Features</a></li>
+      <li><a href="integrations.html">Integrations</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+      <li><a href="docs.html" style="color:var(--color-neon-cyan)">Docs</a></li>
+      <li><a href="blog.html">Blog</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-ghost">Sign In</a>
+      <a href="signup.html" class="btn btn-primary">Get Started Free</a>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+    <div class="docs-layout">
+
+      <!-- Sidebar -->
+      <aside class="docs-sidebar">
+        <div class="docs-search-bar">
+          <input type="text" placeholder="Search docs…" class="form-input" style="font-size:var(--fs-sm);padding:var(--space-2) var(--space-3)" />
+        </div>
+
+        <div class="docs-sidebar-section">
+          <div class="docs-sidebar-title">Getting Started</div>
+          <ul class="docs-sidebar-links">
+            <li><a href="#introduction" class="docs-sidebar-link active">Introduction</a></li>
+            <li><a href="#quickstart" class="docs-sidebar-link">Quick Start</a></li>
+            <li><a href="#first-workflow" class="docs-sidebar-link">Your First Workflow</a></li>
+            <li><a href="#concepts" class="docs-sidebar-link">Core Concepts</a></li>
+          </ul>
+        </div>
+
+        <div class="docs-sidebar-section">
+          <div class="docs-sidebar-title">Building Workflows</div>
+          <ul class="docs-sidebar-links">
+            <li><a href="#triggers" class="docs-sidebar-link">Triggers</a></li>
+            <li><a href="#nodes" class="docs-sidebar-link">Node Reference</a></li>
+            <li><a href="#conditions" class="docs-sidebar-link">Conditions &amp; Branching</a></li>
+            <li><a href="#loops" class="docs-sidebar-link">Loops &amp; Iteration</a></li>
+            <li><a href="#sub-workflows" class="docs-sidebar-link">Sub-Workflows</a></li>
+            <li><a href="#error-handling" class="docs-sidebar-link">Error Handling</a></li>
+            <li><a href="#testing" class="docs-sidebar-link">Testing &amp; Debugging</a></li>
+          </ul>
+        </div>
+
+        <div class="docs-sidebar-section">
+          <div class="docs-sidebar-title">AI Agents</div>
+          <ul class="docs-sidebar-links">
+            <li><a href="#agents-intro" class="docs-sidebar-link">What are AI Agents?</a></li>
+            <li><a href="#agent-builder" class="docs-sidebar-link">Agent Builder</a></li>
+            <li><a href="#agent-prompts" class="docs-sidebar-link">Prompt Engineering</a></li>
+            <li><a href="#agent-memory" class="docs-sidebar-link">Agent Memory</a></li>
+            <li><a href="#agent-tools" class="docs-sidebar-link">Giving Agents Tools</a></li>
+          </ul>
+        </div>
+
+        <div class="docs-sidebar-section">
+          <div class="docs-sidebar-title">API Reference</div>
+          <ul class="docs-sidebar-links">
+            <li><a href="#api-auth" class="docs-sidebar-link">Authentication</a></li>
+            <li><a href="#api-workflows" class="docs-sidebar-link">Workflows API</a></li>
+            <li><a href="#api-executions" class="docs-sidebar-link">Executions API</a></li>
+            <li><a href="#api-webhooks" class="docs-sidebar-link">Webhooks</a></li>
+            <li><a href="#api-sdk" class="docs-sidebar-link">SDK Reference</a></li>
+          </ul>
+        </div>
+
+        <div class="docs-sidebar-section">
+          <div class="docs-sidebar-title">Integrations</div>
+          <ul class="docs-sidebar-links">
+            <li><a href="#oauth" class="docs-sidebar-link">OAuth Setup</a></li>
+            <li><a href="#custom-api" class="docs-sidebar-link">Custom APIs</a></li>
+            <li><a href="#webhooks-in" class="docs-sidebar-link">Incoming Webhooks</a></li>
+          </ul>
+        </div>
+
+        <div class="docs-sidebar-section">
+          <div class="docs-sidebar-title">Administration</div>
+          <ul class="docs-sidebar-links">
+            <li><a href="#sso" class="docs-sidebar-link">SSO Configuration</a></li>
+            <li><a href="#rbac" class="docs-sidebar-link">RBAC &amp; Permissions</a></li>
+            <li><a href="#audit" class="docs-sidebar-link">Audit Logs</a></li>
+            <li><a href="#billing" class="docs-sidebar-link">Billing &amp; Usage</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <article class="docs-content" id="docs-main">
+
+        <div class="breadcrumbs">
+          <a href="docs.html">Docs</a>
+          <span class="breadcrumb-sep">›</span>
+          <span class="breadcrumb-current">Introduction</span>
+        </div>
+
+        <h1 id="introduction">Introduction to NexaFlow</h1>
+
+        <div class="alert alert-info">
+          <svg class="alert-info-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <div>You're reading the <strong>NexaFlow 3.0</strong> documentation. Looking for older versions? <a href="#">View v2.x docs →</a></div>
+        </div>
+
+        <p>NexaFlow is an AI-powered workflow automation platform that lets you connect any tools, automate any process, and deploy intelligent agents — without writing backend infrastructure code.</p>
+
+        <p>With NexaFlow you can:</p>
+        <ul>
+          <li>Build automation workflows with a visual drag-and-drop canvas</li>
+          <li>Connect 300+ services through native integrations</li>
+          <li>Deploy AI agents that reason and adapt to real-world situations</li>
+          <li>Execute millions of workflows per day with sub-millisecond latency</li>
+          <li>Monitor everything with real-time observability and analytics</li>
+        </ul>
+
+        <h2 id="quickstart">Quick Start</h2>
+
+        <p>Get your first workflow running in under 5 minutes.</p>
+
+        <h3>1. Create your account</h3>
+        <p>Sign up at <a href="signup.html">nexaflow.ai/signup</a>. You'll start on a 14-day Pro trial — no credit card needed.</p>
+
+        <h3>2. Connect your first integration</h3>
+        <p>From the dashboard, go to <strong>Integrations → Add Connection</strong>. Search for your service (Slack, GitHub, Stripe, etc.) and follow the OAuth prompts.</p>
+
+        <h3>3. Create a workflow</h3>
+        <p>Click <strong>+ New Workflow</strong>. The visual builder opens. Drag a trigger node from the left panel and drop it on the canvas. Then add action nodes and connect them with wires.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">JavaScript — Custom Code Node</span>
+            <button class="code-block-copy" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="code-comment">// Custom code nodes have access to all input data</span>
+<span class="code-keyword">const</span> { customer, payment } = <span class="code-function">$input</span>.data;
+
+<span class="code-comment">// Enrich with external API</span>
+<span class="code-keyword">const</span> enriched = <span class="code-keyword">await</span> <span class="code-function">$http</span>.get(<span class="code-string">`https://api.clearbit.com/v2/people/find?email=${customer.email}`</span>);
+
+<span class="code-comment">// Return data for the next node</span>
+<span class="code-keyword">return</span> {
+  customer: { ...customer, ...enriched.data },
+  paymentAmount: payment.amount / <span class="code-number">100</span>,
+  isHighValue: payment.amount > <span class="code-number">100000</span>
+};</pre>
+        </div>
+
+        <h2 id="concepts">Core Concepts</h2>
+
+        <h3>Workflows</h3>
+        <p>A <strong>workflow</strong> is a sequence of connected steps that execute in response to a trigger. Workflows can be simple (A → B) or complex (parallel branches, loops, human approval gates).</p>
+
+        <h3>Nodes</h3>
+        <p>Nodes are the building blocks of a workflow. Each node performs a single action: sending a message, querying a database, calling an API, running AI inference, or executing custom code. Nodes are connected by <strong>wires</strong> that pass data between them.</p>
+
+        <h3>Triggers</h3>
+        <p>Every workflow starts with a trigger. Triggers include:</p>
+        <ul>
+          <li><strong>Webhook</strong> — An HTTP POST to a generated endpoint URL</li>
+          <li><strong>Schedule</strong> — Cron-based timing (every hour, every Monday at 9am, etc.)</li>
+          <li><strong>Event</strong> — A specific event from a connected integration (new Slack message, GitHub PR opened, etc.)</li>
+          <li><strong>Manual</strong> — Triggered by clicking a button in the NexaFlow UI</li>
+          <li><strong>API</strong> — Triggered by calling the NexaFlow REST API</li>
+        </ul>
+
+        <h3>Executions</h3>
+        <p>Each time a workflow runs, that's an <strong>execution</strong>. You can view every execution in the Executions log — including input data, output data, duration of each step, and any errors that occurred.</p>
+
+        <div class="alert alert-warning">
+          <svg class="alert-warning-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>Executions count toward your monthly plan limit. Check your usage in <strong>Settings → Billing</strong>.</div>
+        </div>
+
+        <h2 id="api-auth">API Authentication</h2>
+
+        <p>All NexaFlow API requests require an API key. Generate one in <strong>Settings → API Keys</strong>.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">Shell — cURL</span>
+            <button class="code-block-copy" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="code-comment"># Trigger a workflow via the API</span>
+curl -X POST https://api.nexaflow.ai/v1/workflows/wf_abc123/trigger \
+  -H <span class="code-string">"Authorization: Bearer nf_sk_live_xxxxxxxxxxxx"</span> \
+  -H <span class="code-string">"Content-Type: application/json"</span> \
+  -d <span class="code-string">'{"customer_id": "cust_456", "event": "payment_completed"}'</span></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-lang">TypeScript — SDK</span>
+            <button class="code-block-copy" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="code-keyword">import</span> { NexaFlow } <span class="code-keyword">from</span> <span class="code-string">'@nexaflow/sdk'</span>;
+
+<span class="code-keyword">const</span> nf = <span class="code-keyword">new</span> <span class="code-function">NexaFlow</span>({ apiKey: process.env.NEXAFLOW_API_KEY });
+
+<span class="code-comment">// Trigger a workflow</span>
+<span class="code-keyword">const</span> execution = <span class="code-keyword">await</span> nf.workflows.<span class="code-function">trigger</span>(<span class="code-string">'wf_abc123'</span>, {
+  customer_id: <span class="code-string">'cust_456'</span>,
+  event: <span class="code-string">'payment_completed'</span>
+});
+
+console.<span class="code-function">log</span>(execution.id); <span class="code-comment">// exec_789xyz</span>
+
+<span class="code-comment">// Wait for completion</span>
+<span class="code-keyword">const</span> result = <span class="code-keyword">await</span> execution.<span class="code-function">waitForCompletion</span>();
+console.<span class="code-function">log</span>(result.output); <span class="code-comment">// { success: true, ... }</span></pre>
+        </div>
+
+        <h2 id="api-workflows">Workflows API</h2>
+
+        <div class="api-endpoint">
+          <span class="api-method get">GET</span>
+          <code>/v1/workflows</code>
+        </div>
+        <p>Returns a paginated list of all workflows in your workspace.</p>
+
+        <div class="api-endpoint">
+          <span class="api-method post">POST</span>
+          <code>/v1/workflows/{id}/trigger</code>
+        </div>
+        <p>Triggers a workflow execution with optional input data. Returns the execution object.</p>
+
+        <div class="api-endpoint">
+          <span class="api-method get">GET</span>
+          <code>/v1/executions/{id}</code>
+        </div>
+        <p>Returns a single execution by ID, including step-level trace data.</p>
+
+        <div class="api-endpoint">
+          <span class="api-method delete">DELETE</span>
+          <code>/v1/workflows/{id}</code>
+        </div>
+        <p>Permanently deletes a workflow and all its execution history. This action is irreversible.</p>
+
+        <div class="docs-nav-footer">
+          <a href="#" class="docs-nav-prev">← Intro</a>
+          <a href="#quickstart" class="docs-nav-next">Quick Start →</a>
+        </div>
+
+      </article>
+    </div>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>

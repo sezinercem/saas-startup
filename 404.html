@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>404 — Page Not Found — NexaFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css"/>
+  <link rel="stylesheet" href="styles/pages.css"/>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="ambient-orb ambient-orb-1"></div>
+  <div class="ambient-orb ambient-orb-2"></div>
+
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon"><svg viewBox="0 0 40 40" fill="none"><polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="url(#ng7)" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="4" fill="url(#ng7)"/><defs><linearGradient id="ng7" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00f5ff"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg></div>
+      <span class="nav-logo-text">NexaFlow</span>
+    </a>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-ghost">Sign In</a>
+      <a href="signup.html" class="btn btn-primary">Get Started</a>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+    <div class="error-page">
+      <div class="error-code-visual">
+        <div class="error-digit">4</div>
+        <div class="error-zero-wrapper">
+          <div class="error-zero-ring">
+            <svg viewBox="0 0 100 100" class="error-zero-svg">
+              <circle cx="50" cy="50" r="40" stroke="url(#errGrad)" stroke-width="4" fill="none" stroke-dasharray="251" stroke-dashoffset="251">
+                <animate attributeName="stroke-dashoffset" values="251;0;251" dur="3s" repeatCount="indefinite"/>
+              </circle>
+              <defs>
+                <linearGradient id="errGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#00f5ff"/>
+                  <stop offset="100%" stop-color="#8b5cf6"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <span class="error-zero-digit">0</span>
+        </div>
+        <div class="error-digit">4</div>
+      </div>
+
+      <div class="error-content">
+        <div class="error-badge">
+          <span class="badge badge-cyan">
+            <span class="section-tag-dot"></span>
+            Workflow Not Found
+          </span>
+        </div>
+        <h1 class="error-title">Execution terminated</h1>
+        <p class="error-subtitle">
+          The page you're looking for doesn't exist in this workflow. It may have been moved,
+          deleted, or perhaps you took a wrong branch at a condition node.
+        </p>
+
+        <!-- Terminal-style error -->
+        <div class="error-terminal">
+          <div class="terminal-header">
+            <div class="dash-dots">
+              <span class="dash-dot red"></span>
+              <span class="dash-dot yellow"></span>
+              <span class="dash-dot green"></span>
+            </div>
+            <span style="font-family:var(--font-mono);font-size:var(--fs-xs);color:var(--color-text-muted)">nexaflow — execution log</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-line"><span class="t-prompt">$</span> <span class="t-cmd">nexaflow exec get-page</span></div>
+            <div class="terminal-line t-output">Connecting to edge node us-east-1… <span style="color:var(--color-neon-green)">OK</span></div>
+            <div class="terminal-line t-output">Resolving route: <span style="color:var(--color-neon-cyan)">/unknown-page</span></div>
+            <div class="terminal-line t-output" style="color:#ef4444">✗ Error: Route not found (HTTP 404)</div>
+            <div class="terminal-line t-output" style="color:var(--color-text-muted)">Suggestion: Check workflow routing configuration</div>
+            <div class="terminal-line"><span class="t-cursor">█</span></div>
+          </div>
+        </div>
+
+        <div class="error-actions">
+          <a href="index.html" class="btn btn-primary btn-lg">↩ Back to Home</a>
+          <a href="docs.html" class="btn btn-outline btn-lg">View Documentation</a>
+        </div>
+
+        <div class="error-helpful-links">
+          <p>You might be looking for:</p>
+          <div class="error-links-grid">
+            <a href="features.html">→ Features</a>
+            <a href="pricing.html">→ Pricing</a>
+            <a href="integrations.html">→ Integrations</a>
+            <a href="dashboard.html">→ Dashboard</a>
+            <a href="login.html">→ Sign In</a>
+            <a href="signup.html">→ Sign Up</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

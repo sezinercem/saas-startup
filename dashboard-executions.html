@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executions — NexaFlow Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/dashboard.css" />
+  <link rel="stylesheet" href="styles/dashboard-inner.css" />
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="ambient-orb" style="top:-15%;left:30%;width:600px;height:600px;background:radial-gradient(circle,rgba(0,245,255,0.05) 0%,transparent 70%)"></div>
+
+  <div class="dash-layout">
+    <aside class="dash-sidebar">
+      <div class="dash-sidebar-logo">
+        <div class="sidebar-logo-icon">
+          <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+            <path d="M16 2L28 8V16C28 22.627 22.627 28 16 28C9.373 28 4 22.627 4 16V8L16 2Z" stroke="url(#sg)" stroke-width="2" fill="none"/>
+            <circle cx="16" cy="16" r="4" fill="url(#sg2)"/>
+            <path d="M16 8V12M16 20V24M8 16H12M20 16H24" stroke="url(#sg)" stroke-width="1.5" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="sg" x1="4" y1="2" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+              <linearGradient id="sg2" x1="12" y1="12" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#0080ff"/></linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="sidebar-logo-text">NexaFlow</span>
+      </div>
+      <nav class="dash-sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="dashboard.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</a>
+          <a href="dashboard-workflows.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h8M8 12h5M8 18h3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Workflows</a>
+          <a href="dashboard-agents.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>AI Agents</a>
+          <a href="dashboard-executions.html" class="sidebar-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Executions</a>
+          <a href="dashboard-analytics.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20h18M5 20V12l7-7 7 7v8"/></svg>Analytics</a>
+        </div>
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Configure</div>
+          <a href="dashboard-integrations.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>Integrations</a>
+          <a href="dashboard-team.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Team</a>
+          <a href="dashboard-settings.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/></svg>Settings</a>
+        </div>
+      </nav>
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">JS</div>
+        <div class="sidebar-user-info"><div class="sidebar-user-name">Jordan Smith</div><div class="sidebar-user-role">Admin</div></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4;margin-left:auto;flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </aside>
+
+    <main class="dash-main">
+      <header class="dash-topbar">
+        <div class="dash-topbar-left">
+          <h2 class="dash-page-title">Executions</h2>
+          <div class="dash-breadcrumb" style="margin:0;font-size:0.78rem"><a href="dashboard.html">Dashboard</a><span class="sep">/</span><span class="current">Executions</span></div>
+        </div>
+        <div class="dash-topbar-right">
+          <div style="display:flex;align-items:center;gap:0.35rem;font-size:0.78rem;color:#00ff87;background:rgba(0,255,135,0.08);padding:0.4rem 0.75rem;border-radius:8px;border:1px solid rgba(0,255,135,0.15)">
+            <span style="width:6px;height:6px;border-radius:50%;background:#00ff87;animation:pulse 2s infinite"></span>
+            Live — updating every 3s
+          </div>
+          <button class="btn-ghost" style="padding:0.5rem 1rem;font-size:0.8rem">Export CSV</button>
+        </div>
+      </header>
+
+      <div class="dash-content">
+
+        <!-- Stats -->
+        <div class="dash-stats-row">
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,245,255,0.06) 0%,transparent 60%)">
+            <div class="dash-stat-label">Today's Executions</div>
+            <div class="dash-stat-value" id="execToday">84,201</div>
+            <div class="dash-stat-delta up">↑ Live counting</div>
+          </div>
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,255,135,0.06) 0%,transparent 60%)">
+            <div class="dash-stat-label">Currently Running</div>
+            <div class="dash-stat-value" id="execRunning">47</div>
+            <div class="dash-stat-delta neutral">Across 18 workflows</div>
+          </div>
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(239,68,68,0.06) 0%,transparent 60%)">
+            <div class="dash-stat-label">Failed Today</div>
+            <div class="dash-stat-value" id="execFailed">12</div>
+            <div class="dash-stat-delta up">↓ 8 fewer than yesterday</div>
+          </div>
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(139,92,246,0.06) 0%,transparent 60%)">
+            <div class="dash-stat-label">Avg Duration</div>
+            <div class="dash-stat-value">4.2s</div>
+            <div class="dash-stat-delta up">↓ 0.3s faster</div>
+          </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="dash-filter-bar">
+          <div class="dash-filter-wrap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" class="dash-filter-input" placeholder="Search by workflow, ID, or trigger…" id="execSearch" />
+          </div>
+          <select class="dash-filter-select" id="execStatus">
+            <option value="">All Status</option>
+            <option value="success">Success</option>
+            <option value="running">Running</option>
+            <option value="failed">Failed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <select class="dash-filter-select" id="execTime">
+            <option>Last hour</option>
+            <option selected>Last 24h</option>
+            <option>Last 7 days</option>
+          </select>
+        </div>
+
+        <!-- Executions table -->
+        <div class="dash-table-container">
+          <div class="dash-table-header">
+            <div class="dash-table-title">Execution Log</div>
+            <div class="dash-table-count" id="execCount">84,201 today</div>
+          </div>
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>Execution ID</th>
+                <th>Workflow</th>
+                <th>Trigger</th>
+                <th>Started</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="execTableBody"></tbody>
+          </table>
+          <div class="dash-pagination">
+            <div class="dash-pagination-info" id="execPagination">Showing 1–25 of 84,201 executions</div>
+            <div class="dash-pagination-controls">
+              <button class="page-btn" disabled>←</button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <span style="color:var(--color-text-muted);font-size:0.8rem">…</span>
+              <button class="page-btn">3368</button>
+              <button class="page-btn">→</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Execution Detail (inline log) -->
+        <div class="inner-chart-card" style="margin-top:1.5rem">
+          <div class="inner-chart-header">
+            <div class="inner-chart-title">Execution Detail — <span id="detailExecId" style="font-family:var(--font-mono);color:var(--color-neon-cyan);font-size:0.8rem">Select a row to inspect</span></div>
+          </div>
+          <div class="log-stream" id="execDetailLog">
+            <div class="log-line" style="color:var(--color-text-muted);font-style:italic">
+              <span class="log-msg">Click any execution row above to view its step-by-step log output here…</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Execution Detail Panel -->
+  <div class="detail-panel-overlay" id="panelOverlay"></div>
+  <div class="detail-panel" id="execDetailPanel">
+    <div class="detail-panel-header">
+      <div>
+        <h3 style="font-size:1rem;font-weight:700;color:var(--color-text-primary);margin-bottom:0.25rem" id="detailPanelId">exec-xxxxx</h3>
+        <div id="detailPanelStatus"></div>
+      </div>
+      <button class="detail-panel-close" id="panelClose">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.25rem" id="detailPanelBody"></div>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script>
+    const statuses = ['success', 'success', 'success', 'success', 'success', 'success', 'success', 'success', 'running', 'failed', 'cancelled'];
+    const workflows = ['Customer Onboarding', 'Billing Reconciliation', 'Support Triage', 'Weekly Reports', 'Lead Scoring', 'Invoice Validation', 'Email Campaigns', 'Social Monitoring', 'Contract Review', 'Code Reviews'];
+    const triggers = ['Webhook', 'Schedule', 'Manual', 'API', 'Email', 'Form Submit'];
+
+    function randomExec(i) {
+      const status = statuses[Math.floor(Math.random() * statuses.length)];
+      const wf = workflows[Math.floor(Math.random() * workflows.length)];
+      const trigger = triggers[Math.floor(Math.random() * triggers.length)];
+      const minsAgo = Math.floor(Math.random() * 1440);
+      const dur = status === 'running' ? '—' : (Math.random() * 30 + 0.1).toFixed(1) + 's';
+      const id = 'exec-' + String(Math.floor(Math.random() * 999999)).padStart(6, '0');
+      const time = minsAgo < 60 ? minsAgo + 'm ago' : Math.floor(minsAgo / 60) + 'h ago';
+      return { id, wf, trigger, time, dur, status };
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('execTableBody');
+      tbody.innerHTML = '';
+      for (let i = 0; i < 25; i++) {
+        const ex = randomExec(i);
+        const statusClass = ex.status === 'success' ? 'success' : ex.status === 'running' ? 'running' : ex.status === 'failed' ? 'failed' : 'inactive';
+        const row = document.createElement('tr');
+        row.style.cursor = 'pointer';
+        row.innerHTML = `
+          <td style="font-family:var(--font-mono);font-size:0.78rem;color:var(--color-neon-cyan)">${ex.id}</td>
+          <td style="font-weight:600;color:var(--color-text-primary)">${ex.wf}</td>
+          <td><span style="font-size:0.75rem;background:rgba(255,255,255,0.05);padding:0.15rem 0.5rem;border-radius:4px;color:var(--color-text-secondary)">${ex.trigger}</span></td>
+          <td>${ex.time}</td>
+          <td style="font-family:var(--font-mono);font-size:0.8rem">${ex.dur}</td>
+          <td><span class="badge ${statusClass}"><span class="badge-dot"></span>${ex.status}</span></td>
+          <td>
+            <div class="table-actions">
+              <button class="action-icon-btn" title="Inspect"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+              <button class="action-icon-btn" title="Re-run"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></button>
+            </div>
+          </td>
+        `;
+        row.addEventListener('click', () => showExecDetail(ex));
+        tbody.appendChild(row);
+      }
+    }
+
+    renderTable();
+
+    const logSteps = [
+      ['info', 'Execution started', 'Trigger received — processing payload (342 bytes)'],
+      ['info', 'Step 1/6', 'HTTP Request node — GET https://api.stripe.com/v1/customers — 200 OK (124ms)'],
+      ['info', 'Step 2/6', 'AI Agent · EmailClassifier — classifying message content'],
+      ['success', 'Step 2/6', 'Classification: "billing_inquiry" (confidence: 0.94) — routing to billing branch'],
+      ['info', 'Step 3/6', 'Database node — querying PostgreSQL — SELECT * FROM invoices WHERE…'],
+      ['success', 'Step 3/6', 'Query returned 3 rows in 41ms'],
+      ['info', 'Step 4/6', 'Transform node — mapping fields to output schema'],
+      ['info', 'Step 5/6', 'HTTP POST — Sending response to Zendesk ticket #89,234'],
+      ['success', 'Step 5/6', 'Zendesk API responded 200 OK — ticket updated'],
+      ['info', 'Step 6/6', 'Slack notification node — posting to #billing-alerts'],
+      ['success', 'Execution complete', 'All 6 steps succeeded — duration: 2.14s — exit code: 0'],
+    ];
+
+    function showExecDetail(ex) {
+      const logEl = document.getElementById('execDetailLog');
+      document.getElementById('detailExecId').textContent = ex.id;
+      logEl.innerHTML = '';
+
+      const times = ['14:31:22.001', '14:31:22.108', '14:31:22.410', '14:31:22.534', '14:31:22.762', '14:31:22.803', '14:31:22.899', '14:31:23.012', '14:31:23.136', '14:31:23.204', '14:31:23.315'];
+      logSteps.forEach((step, i) => {
+        const line = document.createElement('div');
+        line.className = 'log-line';
+        line.innerHTML = `<span class="log-time">${times[i]}</span><span class="log-level ${step[0]}">${step[0].toUpperCase()}</span><span class="log-msg">[${step[1]}] ${step[2]}</span>`;
+        logEl.appendChild(line);
+      });
+    }
+
+    // Live counter
+    let execCount = 84201;
+    let runCount = 47;
+    setInterval(() => {
+      execCount += Math.floor(Math.random() * 8) + 1;
+      runCount = Math.max(30, Math.min(80, runCount + Math.floor(Math.random() * 7) - 3));
+      document.getElementById('execToday').textContent = execCount.toLocaleString();
+      document.getElementById('execRunning').textContent = runCount;
+    }, 3000);
+
+    // Panel close
+    document.getElementById('panelClose').addEventListener('click', () => {
+      document.getElementById('execDetailPanel').classList.remove('open');
+      document.getElementById('panelOverlay').classList.remove('open');
+    });
+    document.getElementById('panelOverlay').addEventListener('click', () => {
+      document.getElementById('execDetailPanel').classList.remove('open');
+      document.getElementById('panelOverlay').classList.remove('open');
+    });
+  </script>
+</body>
+</html>

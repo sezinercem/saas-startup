@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team — NexaFlow Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/dashboard.css" />
+  <link rel="stylesheet" href="styles/dashboard-inner.css" />
+  <style>
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .team-member-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 1.25rem;
+      transition: all 0.3s ease;
+    }
+    .team-member-card:hover {
+      border-color: rgba(0,245,255,0.12);
+      background: rgba(0,245,255,0.015);
+    }
+    .member-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.875rem;
+    }
+    .member-info {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+    }
+    .member-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 800;
+      font-family: var(--font-display);
+      color: var(--color-bg-primary);
+      flex-shrink: 0;
+    }
+    .member-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+    .member-email {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+    }
+    .member-role-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 99px;
+    }
+    .role-admin { background: rgba(0,245,255,0.1); color: var(--color-neon-cyan); border: 1px solid rgba(0,245,255,0.2); }
+    .role-editor { background: rgba(139,92,246,0.1); color: #8b5cf6; border: 1px solid rgba(139,92,246,0.2); }
+    .role-viewer { background: rgba(255,255,255,0.05); color: var(--color-text-muted); border: 1px solid rgba(255,255,255,0.08); }
+    .role-billing { background: rgba(245,158,11,0.1); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+    .member-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      padding: 0.875rem 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      margin: 0.875rem 0;
+    }
+    .member-stat-label { font-size: 0.65rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.15rem; }
+    .member-stat-value { font-size: 0.9rem; font-weight: 700; color: var(--color-text-primary); }
+    .member-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .member-last-active {
+      font-size: 0.72rem;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .online-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .invite-card {
+      background: rgba(0,245,255,0.02);
+      border: 1px dashed rgba(0,245,255,0.15);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      min-height: 180px;
+    }
+    .invite-card:hover {
+      border-color: rgba(0,245,255,0.3);
+      background: rgba(0,245,255,0.04);
+    }
+    .permissions-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .permissions-table th {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-text-muted);
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .permissions-table td {
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .permissions-table tr:last-child td { border-bottom: none; }
+    .perm-check { color: #00ff87; font-weight: 700; }
+    .perm-cross { color: rgba(255,255,255,0.15); }
+    .perm-partial { color: #f59e0b; }
+  </style>
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="ambient-orb" style="top:-15%;left:-5%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,255,135,0.05) 0%,transparent 70%)"></div>
+  <div class="ambient-orb" style="bottom:-20%;right:-5%;width:600px;height:600px;background:radial-gradient(circle,rgba(0,245,255,0.04) 0%,transparent 70%)"></div>
+
+  <div class="dash-layout">
+    <aside class="dash-sidebar">
+      <div class="dash-sidebar-logo">
+        <div class="sidebar-logo-icon">
+          <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+            <path d="M16 2L28 8V16C28 22.627 22.627 28 16 28C9.373 28 4 22.627 4 16V8L16 2Z" stroke="url(#sg)" stroke-width="2" fill="none"/>
+            <circle cx="16" cy="16" r="4" fill="url(#sg2)"/>
+            <path d="M16 8V12M16 20V24M8 16H12M20 16H24" stroke="url(#sg)" stroke-width="1.5" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="sg" x1="4" y1="2" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+              <linearGradient id="sg2" x1="12" y1="12" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#0080ff"/></linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="sidebar-logo-text">NexaFlow</span>
+      </div>
+      <nav class="dash-sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="dashboard.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</a>
+          <a href="dashboard-workflows.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h8M8 12h5M8 18h3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Workflows</a>
+          <a href="dashboard-agents.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>AI Agents</a>
+          <a href="dashboard-executions.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Executions</a>
+          <a href="dashboard-analytics.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20h18M5 20V12l7-7 7 7v8"/></svg>Analytics</a>
+        </div>
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Configure</div>
+          <a href="dashboard-integrations.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>Integrations</a>
+          <a href="dashboard-team.html" class="sidebar-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Team</a>
+          <a href="dashboard-settings.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/></svg>Settings</a>
+        </div>
+      </nav>
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">JS</div>
+        <div class="sidebar-user-info"><div class="sidebar-user-name">Jordan Smith</div><div class="sidebar-user-role">Admin</div></div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4;margin-left:auto;flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </aside>
+
+    <main class="dash-main">
+      <header class="dash-topbar">
+        <div class="dash-topbar-left">
+          <h2 class="dash-page-title">Team</h2>
+          <div class="dash-breadcrumb" style="margin:0;font-size:0.78rem"><a href="dashboard.html">Dashboard</a><span class="sep">/</span><span class="current">Team</span></div>
+        </div>
+        <div class="dash-topbar-right">
+          <button class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem;display:flex;align-items:center;gap:0.4rem" id="inviteBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Invite Member
+          </button>
+        </div>
+      </header>
+
+      <div class="dash-content">
+        <!-- Stats -->
+        <div class="dash-stats-row">
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,245,255,0.06) 0%,transparent 60%)">
+            <div class="dash-stat-label">Total Members</div>
+            <div class="dash-stat-value">5</div>
+            <div class="dash-stat-delta neutral">1 seat remaining</div>
+          </div>
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,255,135,0.06) 0%,transparent 60%)">
+            <div class="dash-stat-label">Online Now</div>
+            <div class="dash-stat-value">3</div>
+            <div class="dash-stat-delta up">Active in last 5 min</div>
+          </div>
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(139,92,246,0.06) 0%,transparent 60%)">
+            <div class="dash-stat-label">Pending Invites</div>
+            <div class="dash-stat-value">2</div>
+            <div class="dash-stat-delta neutral">Expires in 7 days</div>
+          </div>
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(245,158,11,0.06) 0%,transparent 60%)">
+            <div class="dash-stat-label">Plan Seats</div>
+            <div class="dash-stat-value">5/6</div>
+            <div class="dash-stat-delta neutral">Pro plan</div>
+          </div>
+        </div>
+
+        <!-- Team grid -->
+        <div class="team-grid" id="teamGrid">
+
+          <!-- Current user -->
+          <div class="team-member-card">
+            <div class="member-header">
+              <div class="member-info">
+                <div class="member-avatar" style="background:linear-gradient(135deg,#00f5ff,#0080ff)">JS</div>
+                <div>
+                  <div class="member-name">Jordan Smith <span style="font-size:0.7rem;color:var(--color-text-muted)">(you)</span></div>
+                  <div class="member-email">jordan@company.com</div>
+                </div>
+              </div>
+              <span class="member-role-badge role-admin">Admin</span>
+            </div>
+            <div class="member-stats">
+              <div><div class="member-stat-label">Workflows</div><div class="member-stat-value">14</div></div>
+              <div><div class="member-stat-label">Runs Today</div><div class="member-stat-value">2.4K</div></div>
+              <div><div class="member-stat-label">Joined</div><div class="member-stat-value">Jan '24</div></div>
+            </div>
+            <div class="member-footer">
+              <div class="member-last-active"><span class="online-dot" style="background:#00ff87"></span>Online now</div>
+              <div class="table-actions">
+                <button class="action-icon-btn" title="Edit member"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Member 2 -->
+          <div class="team-member-card">
+            <div class="member-header">
+              <div class="member-info">
+                <div class="member-avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">AK</div>
+                <div>
+                  <div class="member-name">Aisha Khan</div>
+                  <div class="member-email">aisha@company.com</div>
+                </div>
+              </div>
+              <span class="member-role-badge role-editor">Editor</span>
+            </div>
+            <div class="member-stats">
+              <div><div class="member-stat-label">Workflows</div><div class="member-stat-value">8</div></div>
+              <div><div class="member-stat-label">Runs Today</div><div class="member-stat-value">1.1K</div></div>
+              <div><div class="member-stat-label">Joined</div><div class="member-stat-value">Mar '24</div></div>
+            </div>
+            <div class="member-footer">
+              <div class="member-last-active"><span class="online-dot" style="background:#00ff87"></span>Online now</div>
+              <div class="table-actions">
+                <button class="action-icon-btn" title="Edit"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                <button class="action-icon-btn danger" title="Remove"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Member 3 -->
+          <div class="team-member-card">
+            <div class="member-header">
+              <div class="member-info">
+                <div class="member-avatar" style="background:linear-gradient(135deg,#00ff87,#00b4d8)">MC</div>
+                <div>
+                  <div class="member-name">Marcus Chen</div>
+                  <div class="member-email">marcus@company.com</div>
+                </div>
+              </div>
+              <span class="member-role-badge role-editor">Editor</span>
+            </div>
+            <div class="member-stats">
+              <div><div class="member-stat-label">Workflows</div><div class="member-stat-value">12</div></div>
+              <div><div class="member-stat-label">Runs Today</div><div class="member-stat-value">876</div></div>
+              <div><div class="member-stat-label">Joined</div><div class="member-stat-value">Jun '24</div></div>
+            </div>
+            <div class="member-footer">
+              <div class="member-last-active"><span class="online-dot" style="background:#00ff87"></span>Online now</div>
+              <div class="table-actions">
+                <button class="action-icon-btn" title="Edit"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                <button class="action-icon-btn danger" title="Remove"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Member 4 -->
+          <div class="team-member-card">
+            <div class="member-header">
+              <div class="member-info">
+                <div class="member-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">RP</div>
+                <div>
+                  <div class="member-name">Raj Patel</div>
+                  <div class="member-email">raj@company.com</div>
+                </div>
+              </div>
+              <span class="member-role-badge role-billing">Billing</span>
+            </div>
+            <div class="member-stats">
+              <div><div class="member-stat-label">Workflows</div><div class="member-stat-value">0</div></div>
+              <div><div class="member-stat-label">Runs Today</div><div class="member-stat-value">—</div></div>
+              <div><div class="member-stat-label">Joined</div><div class="member-stat-value">Sep '24</div></div>
+            </div>
+            <div class="member-footer">
+              <div class="member-last-active"><span class="online-dot" style="background:rgba(255,255,255,0.2)"></span>2 days ago</div>
+              <div class="table-actions">
+                <button class="action-icon-btn" title="Edit"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                <button class="action-icon-btn danger" title="Remove"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Member 5 -->
+          <div class="team-member-card">
+            <div class="member-header">
+              <div class="member-info">
+                <div class="member-avatar" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">LW</div>
+                <div>
+                  <div class="member-name">Leila Wang</div>
+                  <div class="member-email">leila@company.com</div>
+                </div>
+              </div>
+              <span class="member-role-badge role-viewer">Viewer</span>
+            </div>
+            <div class="member-stats">
+              <div><div class="member-stat-label">Workflows</div><div class="member-stat-value">0</div></div>
+              <div><div class="member-stat-label">Runs Today</div><div class="member-stat-value">—</div></div>
+              <div><div class="member-stat-label">Joined</div><div class="member-stat-value">Dec '24</div></div>
+            </div>
+            <div class="member-footer">
+              <div class="member-last-active"><span class="online-dot" style="background:rgba(255,255,255,0.2)"></span>5 hours ago</div>
+              <div class="table-actions">
+                <button class="action-icon-btn" title="Edit"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                <button class="action-icon-btn danger" title="Remove"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Invite card -->
+          <div class="invite-card" id="inviteCard">
+            <div style="width:44px;height:44px;border-radius:10px;background:rgba(0,245,255,0.08);border:1px dashed rgba(0,245,255,0.2);display:flex;align-items:center;justify-content:center">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(0,245,255,0.6)" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:0.875rem;font-weight:600;color:var(--color-text-secondary)">Invite a team member</div>
+              <div style="font-size:0.78rem;color:var(--color-text-muted);margin-top:0.2rem">1 seat available on your plan</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pending invites -->
+        <div class="inner-chart-card">
+          <div class="inner-chart-header">
+            <div class="inner-chart-title">Pending Invitations</div>
+            <button class="btn-ghost" style="padding:0.4rem 0.875rem;font-size:0.78rem">Resend All</button>
+          </div>
+          <table class="dash-table">
+            <thead>
+              <tr><th>Email</th><th>Role</th><th>Invited By</th><th>Sent</th><th>Expires</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>dev@company.com</td>
+                <td><span class="member-role-badge role-editor" style="font-size:0.68rem">Editor</span></td>
+                <td>Jordan Smith</td>
+                <td>2 days ago</td>
+                <td>5 days left</td>
+                <td><div class="table-actions">
+                  <button class="action-icon-btn" title="Resend"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></button>
+                  <button class="action-icon-btn danger" title="Cancel invite"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+                </div></td>
+              </tr>
+              <tr>
+                <td>ops@company.com</td>
+                <td><span class="member-role-badge role-viewer" style="font-size:0.68rem">Viewer</span></td>
+                <td>Aisha Khan</td>
+                <td>5 days ago</td>
+                <td>2 days left</td>
+                <td><div class="table-actions">
+                  <button class="action-icon-btn" title="Resend"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></button>
+                  <button class="action-icon-btn danger" title="Cancel invite"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Role permissions -->
+        <div class="inner-chart-card">
+          <div class="inner-chart-header">
+            <div class="inner-chart-title">Role Permissions</div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="permissions-table">
+              <thead>
+                <tr>
+                  <th style="width:35%">Permission</th>
+                  <th style="text-align:center">Admin</th>
+                  <th style="text-align:center">Editor</th>
+                  <th style="text-align:center">Viewer</th>
+                  <th style="text-align:center">Billing</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${[
+                  ['View workflows & executions', '✓', '✓', '✓', '✗'],
+                  ['Create & edit workflows', '✓', '✓', '✗', '✗'],
+                  ['Delete workflows', '✓', '~', '✗', '✗'],
+                  ['Manage AI agents', '✓', '✓', '✗', '✗'],
+                  ['View analytics', '✓', '✓', '✓', '✓'],
+                  ['Manage integrations', '✓', '~', '✗', '✗'],
+                  ['Invite & manage team', '✓', '✗', '✗', '✗'],
+                  ['Manage billing', '✓', '✗', '✗', '✓'],
+                  ['Access API keys', '✓', '✓', '✗', '✗'],
+                  ['Delete workspace', '✓', '✗', '✗', '✗'],
+                ].map(([perm, admin, editor, viewer, billing]) => {
+                  const fmt = v => v === '✓' ? `<span class="perm-check">✓</span>` : v === '✗' ? `<span class="perm-cross">✗</span>` : `<span class="perm-partial" title="Limited">~</span>`;
+                  return `<tr><td>${perm}</td><td style="text-align:center">${fmt(admin)}</td><td style="text-align:center">${fmt(editor)}</td><td style="text-align:center">${fmt(viewer)}</td><td style="text-align:center">${fmt(billing)}</td></tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Invite Modal -->
+  <div class="detail-panel-overlay" id="inviteOverlay"></div>
+  <div class="detail-panel" id="invitePanel" style="max-width:420px">
+    <div class="detail-panel-header">
+      <div>
+        <h3 style="font-size:1rem;font-weight:700;color:var(--color-text-primary);margin-bottom:0.25rem">Invite Team Member</h3>
+        <p style="font-size:0.8rem;color:var(--color-text-muted)">They'll receive an email invitation</p>
+      </div>
+      <button class="detail-panel-close" id="invitePanelClose">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1rem">
+      <div>
+        <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Email Address</label>
+        <input type="email" class="settings-input" id="inviteEmail" placeholder="colleague@company.com" />
+      </div>
+      <div>
+        <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Role</label>
+        <select class="settings-input" id="inviteRole" style="cursor:pointer">
+          <option value="admin">Admin — Full access</option>
+          <option value="editor" selected>Editor — Create & edit workflows</option>
+          <option value="viewer">Viewer — Read only</option>
+          <option value="billing">Billing — Billing & invoices only</option>
+        </select>
+      </div>
+      <div>
+        <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Message (optional)</label>
+        <textarea class="settings-input" rows="3" placeholder="Add a personal message to the invite email…" style="resize:none"></textarea>
+      </div>
+      <button class="btn-primary" style="padding:0.7rem;font-size:0.9rem" id="sendInviteBtn">Send Invitation</button>
+    </div>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script>
+    function openInvite() {
+      document.getElementById('invitePanel').classList.add('open');
+      document.getElementById('inviteOverlay').classList.add('open');
+    }
+    function closeInvite() {
+      document.getElementById('invitePanel').classList.remove('open');
+      document.getElementById('inviteOverlay').classList.remove('open');
+    }
+
+    document.getElementById('inviteBtn').addEventListener('click', openInvite);
+    document.getElementById('inviteCard').addEventListener('click', openInvite);
+    document.getElementById('invitePanelClose').addEventListener('click', closeInvite);
+    document.getElementById('inviteOverlay').addEventListener('click', closeInvite);
+
+    document.getElementById('sendInviteBtn').addEventListener('click', function() {
+      const email = document.getElementById('inviteEmail').value;
+      if (!email) return;
+      this.textContent = 'Sending…';
+      this.disabled = true;
+      setTimeout(() => {
+        this.textContent = '✓ Invitation Sent!';
+        setTimeout(closeInvite, 1500);
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

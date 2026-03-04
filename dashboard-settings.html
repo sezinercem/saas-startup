@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — NexaFlow Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/dashboard.css" />
+  <link rel="stylesheet" href="styles/dashboard-inner.css" />
+</head>
+<body>
+  <canvas id="bg-canvas"></canvas>
+  <div class="grid-overlay"></div>
+  <div class="ambient-orb" style="top:-20%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(0,128,255,0.07) 0%,transparent 70%)"></div>
+  <div class="ambient-orb" style="bottom:-20%;left:-5%;width:500px;height:500px;background:radial-gradient(circle,rgba(139,92,246,0.05) 0%,transparent 70%)"></div>
+
+  <div class="dash-layout">
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="dash-sidebar">
+      <div class="dash-sidebar-logo">
+        <div class="sidebar-logo-icon">
+          <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+            <path d="M16 2L28 8V16C28 22.627 22.627 28 16 28C9.373 28 4 22.627 4 16V8L16 2Z" stroke="url(#sg)" stroke-width="2" fill="none"/>
+            <circle cx="16" cy="16" r="4" fill="url(#sg2)"/>
+            <path d="M16 8V12M16 20V24M8 16H12M20 16H24" stroke="url(#sg)" stroke-width="1.5" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="sg" x1="4" y1="2" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+              <linearGradient id="sg2" x1="12" y1="12" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#0080ff"/></linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="sidebar-logo-text">NexaFlow</span>
+      </div>
+      <nav class="dash-sidebar-nav">
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Main</div>
+          <a href="dashboard.html" class="sidebar-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Overview
+          </a>
+          <a href="dashboard-workflows.html" class="sidebar-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h8M8 12h5M8 18h3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+            Workflows
+          </a>
+          <a href="dashboard-agents.html" class="sidebar-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M18 8l2 2-2 2"/></svg>
+            AI Agents
+          </a>
+          <a href="dashboard-executions.html" class="sidebar-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            Executions
+          </a>
+          <a href="dashboard-analytics.html" class="sidebar-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20h18M5 20V12l7-7 7 7v8"/></svg>
+            Analytics
+          </a>
+        </div>
+        <div class="sidebar-nav-section">
+          <div class="sidebar-nav-label">Configure</div>
+          <a href="dashboard-integrations.html" class="sidebar-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            Integrations
+          </a>
+          <a href="dashboard-team.html" class="sidebar-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Team
+          </a>
+          <a href="dashboard-settings.html" class="sidebar-link active">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            Settings
+          </a>
+        </div>
+      </nav>
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">JS</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Jordan Smith</div>
+          <div class="sidebar-user-role">Admin</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4;margin-left:auto;flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN ========== -->
+    <main class="dash-main">
+      <header class="dash-topbar">
+        <div class="dash-topbar-left">
+          <h2 class="dash-page-title">Settings</h2>
+          <div class="dash-breadcrumb" style="margin:0;font-size:0.78rem">
+            <a href="dashboard.html">Dashboard</a>
+            <span class="sep">/</span>
+            <span class="current">Settings</span>
+          </div>
+        </div>
+        <div class="dash-topbar-right">
+          <button class="btn-ghost" style="padding:0.5rem 1rem;font-size:0.8rem" id="saveBtn">Save Changes</button>
+          <button class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem" id="saveAllBtn">Save All</button>
+        </div>
+      </header>
+
+      <div class="dash-content">
+        <div class="settings-layout">
+
+          <!-- Settings Nav -->
+          <nav class="settings-nav">
+            <div class="settings-nav-section">
+              <div class="settings-nav-label">Account</div>
+              <a class="settings-nav-link active" data-section="profile">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>
+                Profile
+              </a>
+              <a class="settings-nav-link" data-section="security">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                Security
+              </a>
+              <a class="settings-nav-link" data-section="notifications">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+                Notifications
+              </a>
+            </div>
+            <div class="settings-nav-section">
+              <div class="settings-nav-label">Workspace</div>
+              <a class="settings-nav-link" data-section="workspace">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                Workspace
+              </a>
+              <a class="settings-nav-link" data-section="billing">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                Billing
+              </a>
+              <a class="settings-nav-link" data-section="api">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 9l3 3-3 3M13 15h3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                API Keys
+              </a>
+              <a class="settings-nav-link" data-section="webhooks">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                Webhooks
+              </a>
+            </div>
+            <div class="settings-nav-section">
+              <div class="settings-nav-label">Advanced</div>
+              <a class="settings-nav-link" data-section="audit">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                Audit Log
+              </a>
+              <a class="settings-nav-link danger" data-section="danger" style="color:#ef4444">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                Danger Zone
+              </a>
+            </div>
+          </nav>
+
+          <!-- Settings Content -->
+          <div class="settings-content">
+
+            <!-- PROFILE -->
+            <div class="settings-section" id="section-profile">
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Profile Information</div>
+                  <div class="settings-card-desc">Update your personal details and public profile</div>
+                </div>
+                <div class="settings-card-body">
+                  <!-- Avatar -->
+                  <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,0.05)">
+                    <div style="width:72px;height:72px;border-radius:16px;background:linear-gradient(135deg,#00f5ff,#0080ff);display:flex;align-items:center;justify-content:center;font-size:1.75rem;font-weight:800;font-family:var(--font-display);color:var(--color-bg-primary);flex-shrink:0">JS</div>
+                    <div>
+                      <div style="font-size:0.875rem;font-weight:500;color:var(--color-text-primary);margin-bottom:0.5rem">Profile Photo</div>
+                      <div style="display:flex;gap:0.5rem">
+                        <button class="btn-ghost" style="padding:0.4rem 0.875rem;font-size:0.78rem">Upload Photo</button>
+                        <button class="btn-ghost" style="padding:0.4rem 0.875rem;font-size:0.78rem;color:#ef4444;border-color:rgba(239,68,68,0.2)">Remove</button>
+                      </div>
+                      <div style="font-size:0.75rem;color:var(--color-text-muted);margin-top:0.4rem">JPG, PNG or GIF — max 2MB</div>
+                    </div>
+                  </div>
+
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+                    <div>
+                      <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">First Name</label>
+                      <input type="text" class="settings-input" value="Jordan" />
+                    </div>
+                    <div>
+                      <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Last Name</label>
+                      <input type="text" class="settings-input" value="Smith" />
+                    </div>
+                  </div>
+                  <div style="margin-bottom:1rem">
+                    <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Work Email</label>
+                    <input type="email" class="settings-input" value="jordan@company.com" />
+                  </div>
+                  <div style="margin-bottom:1rem">
+                    <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Job Title</label>
+                    <input type="text" class="settings-input" value="Head of Operations" />
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Bio</label>
+                    <textarea class="settings-input" rows="3" style="resize:vertical;line-height:1.6">Building automation systems that scale. Previously at Stripe and Google.</textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Appearance -->
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Appearance</div>
+                  <div class="settings-card-desc">Customize how NexaFlow looks for you</div>
+                </div>
+                <div class="settings-card-body">
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Theme</div>
+                      <div class="settings-row-desc">Choose your preferred color scheme</div>
+                    </div>
+                    <div style="display:flex;gap:0.5rem">
+                      <button style="padding:0.4rem 0.875rem;border-radius:8px;font-size:0.78rem;border:1px solid rgba(0,245,255,0.3);background:rgba(0,245,255,0.08);color:var(--color-neon-cyan);cursor:pointer;font-family:var(--font-body)">Dark</button>
+                      <button style="padding:0.4rem 0.875rem;border-radius:8px;font-size:0.78rem;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--color-text-muted);cursor:pointer;font-family:var(--font-body)">Light</button>
+                      <button style="padding:0.4rem 0.875rem;border-radius:8px;font-size:0.78rem;border:1px solid rgba(255,255,255,0.08);background:transparent;color:var(--color-text-muted);cursor:pointer;font-family:var(--font-body)">System</button>
+                    </div>
+                  </div>
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Accent Color</div>
+                      <div class="settings-row-desc">Primary color used throughout the interface</div>
+                    </div>
+                    <div style="display:flex;gap:0.5rem;align-items:center">
+                      <div style="width:24px;height:24px;border-radius:50%;background:#00f5ff;cursor:pointer;border:2px solid rgba(255,255,255,0.4)"></div>
+                      <div style="width:24px;height:24px;border-radius:50%;background:#0080ff;cursor:pointer;border:2px solid transparent"></div>
+                      <div style="width:24px;height:24px;border-radius:50%;background:#8b5cf6;cursor:pointer;border:2px solid transparent"></div>
+                      <div style="width:24px;height:24px;border-radius:50%;background:#00ff87;cursor:pointer;border:2px solid transparent"></div>
+                      <div style="width:24px;height:24px;border-radius:50%;background:#ec4899;cursor:pointer;border:2px solid transparent"></div>
+                    </div>
+                  </div>
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Compact Mode</div>
+                      <div class="settings-row-desc">Reduce spacing for more information density</div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" />
+                      <span class="toggle-track"></span>
+                    </label>
+                  </div>
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Particle Background</div>
+                      <div class="settings-row-desc">Animated neural network background effect</div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" checked />
+                      <span class="toggle-track"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECURITY -->
+            <div class="settings-section" id="section-security" style="display:none">
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Password</div>
+                  <div class="settings-card-desc">Change your password — last updated 30 days ago</div>
+                </div>
+                <div class="settings-card-body">
+                  <div style="margin-bottom:1rem">
+                    <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Current Password</label>
+                    <input type="password" class="settings-input" placeholder="••••••••••" />
+                  </div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
+                    <div>
+                      <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">New Password</label>
+                      <input type="password" class="settings-input" placeholder="••••••••••" />
+                    </div>
+                    <div>
+                      <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Confirm Password</label>
+                      <input type="password" class="settings-input" placeholder="••••••••••" />
+                    </div>
+                  </div>
+                  <button class="btn-primary" style="padding:0.6rem 1.25rem;font-size:0.85rem">Update Password</button>
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Two-Factor Authentication</div>
+                  <div class="settings-card-desc">Add an extra layer of security to your account</div>
+                </div>
+                <div class="settings-card-body">
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Authenticator App</div>
+                      <div class="settings-row-desc">Use Google Authenticator, Authy, or 1Password</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:0.75rem">
+                      <span style="font-size:0.78rem;color:#00ff87;background:rgba(0,255,135,0.1);padding:0.2rem 0.5rem;border-radius:4px;border:1px solid rgba(0,255,135,0.2)">Enabled</span>
+                      <button class="btn-ghost" style="padding:0.4rem 0.875rem;font-size:0.78rem">Reconfigure</button>
+                    </div>
+                  </div>
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">SMS Backup</div>
+                      <div class="settings-row-desc">Receive one-time codes via text message</div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" />
+                      <span class="toggle-track"></span>
+                    </label>
+                  </div>
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Recovery Codes</div>
+                      <div class="settings-row-desc">Download one-time backup codes</div>
+                    </div>
+                    <button class="btn-ghost" style="padding:0.4rem 0.875rem;font-size:0.78rem">View Codes</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Active Sessions</div>
+                  <div class="settings-card-desc">Manage devices where you're logged in</div>
+                </div>
+                <div class="settings-card-body">
+                  ${[
+                    { device: 'MacBook Pro 16"', location: 'San Francisco, CA', browser: 'Chrome 121', time: 'Active now', current: true },
+                    { device: 'iPhone 15 Pro', location: 'San Francisco, CA', browser: 'Safari Mobile', time: '2 hours ago', current: false },
+                    { device: 'Windows PC', location: 'New York, NY', browser: 'Firefox 122', time: '3 days ago', current: false },
+                  ].map(s => `
+                    <div class="settings-row">
+                      <div class="settings-row-left">
+                        <div class="settings-row-label" style="display:flex;align-items:center;gap:0.5rem">
+                          ${s.device}
+                          ${s.current ? '<span style="font-size:0.7rem;background:rgba(0,255,135,0.1);color:#00ff87;padding:0.1rem 0.4rem;border-radius:3px;border:1px solid rgba(0,255,135,0.2)">This device</span>' : ''}
+                        </div>
+                        <div class="settings-row-desc">${s.browser} · ${s.location} · ${s.time}</div>
+                      </div>
+                      ${!s.current ? '<button class="btn-ghost" style="padding:0.3rem 0.75rem;font-size:0.75rem;color:#ef4444;border-color:rgba(239,68,68,0.2);flex-shrink:0">Revoke</button>' : ''}
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- NOTIFICATIONS -->
+            <div class="settings-section" id="section-notifications" style="display:none">
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Email Notifications</div>
+                  <div class="settings-card-desc">Choose which emails you receive from NexaFlow</div>
+                </div>
+                <div class="settings-card-body">
+                  ${[
+                    ['Workflow failures', 'Get alerted when a workflow encounters a critical error', true],
+                    ['Weekly digest', 'Summary of executions, performance, and usage', true],
+                    ['Agent alerts', 'Notifications when AI agents exceed thresholds', true],
+                    ['Team activity', 'When teammates create or modify workflows', false],
+                    ['Product updates', 'New features, improvements, and changelog', true],
+                    ['Billing & invoices', 'Invoices, plan changes, and payment receipts', true],
+                    ['Marketing', 'Tips, tutorials, and NexaFlow community updates', false],
+                  ].map(([label, desc, checked]) => `
+                    <div class="settings-row">
+                      <div class="settings-row-left">
+                        <div class="settings-row-label">${label}</div>
+                        <div class="settings-row-desc">${desc}</div>
+                      </div>
+                      <label class="toggle-switch">
+                        <input type="checkbox" ${checked ? 'checked' : ''} />
+                        <span class="toggle-track"></span>
+                      </label>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Slack Notifications</div>
+                  <div class="settings-card-desc">Send alerts directly to your Slack workspace</div>
+                </div>
+                <div class="settings-card-body">
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Slack Integration</div>
+                      <div class="settings-row-desc">Connected to <strong style="color:var(--color-text-primary)">#nexaflow-alerts</strong> in Acme Corp</div>
+                    </div>
+                    <div style="display:flex;gap:0.5rem">
+                      <span style="font-size:0.78rem;color:#00ff87;background:rgba(0,255,135,0.1);padding:0.2rem 0.5rem;border-radius:4px;border:1px solid rgba(0,255,135,0.2)">Connected</span>
+                      <button class="btn-ghost" style="padding:0.3rem 0.75rem;font-size:0.75rem">Configure</button>
+                    </div>
+                  </div>
+                  ${[
+                    ['Critical failures only', 'Only ping Slack for P0 failures', true],
+                    ['Daily summary', 'Post daily execution summary at 9am', true],
+                    ['Agent warnings', 'Post when agents hit rate limits or errors', false],
+                  ].map(([label, desc, checked]) => `
+                    <div class="settings-row">
+                      <div class="settings-row-left">
+                        <div class="settings-row-label">${label}</div>
+                        <div class="settings-row-desc">${desc}</div>
+                      </div>
+                      <label class="toggle-switch">
+                        <input type="checkbox" ${checked ? 'checked' : ''} />
+                        <span class="toggle-track"></span>
+                      </label>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- WORKSPACE -->
+            <div class="settings-section" id="section-workspace" style="display:none">
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Workspace Settings</div>
+                  <div class="settings-card-desc">Manage your organization's workspace configuration</div>
+                </div>
+                <div class="settings-card-body">
+                  <div style="margin-bottom:1rem">
+                    <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Workspace Name</label>
+                    <input type="text" class="settings-input" value="Acme Corp" />
+                  </div>
+                  <div style="margin-bottom:1rem">
+                    <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Workspace URL</label>
+                    <div class="settings-input-group">
+                      <span style="display:flex;align-items:center;padding:0.6rem 0.875rem;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-right:none;border-radius:8px 0 0 8px;font-size:0.875rem;color:var(--color-text-muted);white-space:nowrap">app.nexaflow.io/</span>
+                      <input type="text" class="settings-input" value="acme-corp" style="border-radius:0 8px 8px 0;border-left:none" />
+                    </div>
+                  </div>
+                  <div style="margin-bottom:1.5rem">
+                    <label style="display:block;font-size:0.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:0.4rem">Timezone</label>
+                    <select class="settings-input" style="cursor:pointer">
+                      <option selected>America/Los_Angeles (UTC-8)</option>
+                      <option>America/New_York (UTC-5)</option>
+                      <option>Europe/London (UTC+0)</option>
+                      <option>Europe/Berlin (UTC+1)</option>
+                      <option>Asia/Tokyo (UTC+9)</option>
+                    </select>
+                  </div>
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Allow public workflow sharing</div>
+                      <div class="settings-row-desc">Team members can create shareable public links for workflows</div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" checked />
+                      <span class="toggle-track"></span>
+                    </label>
+                  </div>
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Require SSO for all members</div>
+                      <div class="settings-row-desc">Force all workspace members to log in via SSO</div>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" />
+                      <span class="toggle-track"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- BILLING -->
+            <div class="settings-section" id="section-billing" style="display:none">
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Current Plan</div>
+                  <div class="settings-card-desc">You are on the <strong style="color:var(--color-neon-cyan)">Pro plan</strong> — billed annually</div>
+                </div>
+                <div class="settings-card-body">
+                  <div style="background:linear-gradient(135deg,rgba(0,245,255,0.05),rgba(139,92,246,0.05));border:1px solid rgba(0,245,255,0.1);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem">
+                    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem">
+                      <div>
+                        <div style="font-size:1.25rem;font-weight:800;font-family:var(--font-display);color:var(--color-text-primary)">Pro Plan</div>
+                        <div style="font-size:0.875rem;color:var(--color-text-muted);margin-top:0.25rem">$99/month · Billed annually ($1,188/year)</div>
+                      </div>
+                      <span style="font-size:0.75rem;background:rgba(0,255,135,0.1);color:#00ff87;padding:0.3rem 0.75rem;border-radius:99px;border:1px solid rgba(0,255,135,0.2);font-weight:600">Active</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem">
+                      ${[
+                        ['100K', 'Executions/mo'],
+                        ['25', 'AI Agents'],
+                        ['50', 'Workflows'],
+                        ['5', 'Team seats'],
+                      ].map(([v, l]) => `
+                        <div>
+                          <div style="font-size:1rem;font-weight:700;color:var(--color-text-primary)">${v}</div>
+                          <div style="font-size:0.72rem;color:var(--color-text-muted)">${l}</div>
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+
+                  <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+                    <button class="btn-primary" style="padding:0.6rem 1.25rem;font-size:0.85rem">Upgrade to Business</button>
+                    <button class="btn-ghost" style="padding:0.6rem 1.25rem;font-size:0.85rem">View all plans</button>
+                    <button class="btn-ghost" style="padding:0.6rem 1.25rem;font-size:0.85rem;color:#ef4444;border-color:rgba(239,68,68,0.2);margin-left:auto">Cancel Plan</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Payment Method</div>
+                  <div class="settings-card-desc">Manage your billing information</div>
+                </div>
+                <div class="settings-card-body">
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label" style="display:flex;align-items:center;gap:0.75rem">
+                        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:0.25rem 0.5rem;font-family:var(--font-mono);font-size:0.75rem;color:var(--color-text-secondary)">VISA</div>
+                        Visa ending in 4242
+                      </div>
+                      <div class="settings-row-desc">Expires 08/2027 · Next charge: Apr 1, 2026 ($99.00)</div>
+                    </div>
+                    <button class="btn-ghost" style="padding:0.4rem 0.875rem;font-size:0.78rem;flex-shrink:0">Update</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Billing History</div>
+                  <div class="settings-card-desc">Download past invoices</div>
+                </div>
+                <div class="settings-card-body" style="padding:0">
+                  <table class="dash-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th><th>Description</th><th>Amount</th><th>Status</th><th>Invoice</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${[
+                        ['Mar 1, 2026', 'Pro Plan — March 2026', '$99.00', 'paid'],
+                        ['Feb 1, 2026', 'Pro Plan — February 2026', '$99.00', 'paid'],
+                        ['Jan 1, 2026', 'Pro Plan — January 2026', '$99.00', 'paid'],
+                        ['Dec 1, 2025', 'Pro Plan — December 2025', '$99.00', 'paid'],
+                      ].map(([date, desc, amount, status]) => `
+                        <tr>
+                          <td>${date}</td>
+                          <td>${desc}</td>
+                          <td style="font-weight:600;color:var(--color-text-primary)">${amount}</td>
+                          <td><span class="badge success"><span class="badge-dot"></span>${status}</span></td>
+                          <td><button class="action-icon-btn" title="Download PDF"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></button></td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- API KEYS -->
+            <div class="settings-section" id="section-api" style="display:none">
+              <div class="settings-card">
+                <div class="settings-card-header" style="display:flex;align-items:center;justify-content:space-between;flex-direction:row">
+                  <div>
+                    <div class="settings-card-title">API Keys</div>
+                    <div class="settings-card-desc">Use API keys to authenticate requests to the NexaFlow API</div>
+                  </div>
+                  <button class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem;display:flex;align-items:center;gap:0.4rem">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Create Key
+                  </button>
+                </div>
+                <div class="settings-card-body" style="padding:0">
+                  ${[
+                    { name: 'Production Key', prefix: 'nf_live_4xK9m...', created: 'Jan 15, 2026', last: '2 minutes ago', perms: 'Full Access' },
+                    { name: 'Development Key', prefix: 'nf_test_8yR2p...', created: 'Feb 3, 2026', last: '1 day ago', perms: 'Read Only' },
+                    { name: 'CI/CD Pipeline', prefix: 'nf_live_7wN4q...', created: 'Feb 20, 2026', last: '3 hours ago', perms: 'Workflows Only' },
+                  ].map(k => `
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.04);gap:1rem">
+                      <div style="flex:1">
+                        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.25rem">
+                          <span style="font-size:0.875rem;font-weight:600;color:var(--color-text-primary)">${k.name}</span>
+                          <span style="font-size:0.7rem;background:rgba(0,245,255,0.08);color:var(--color-neon-cyan);padding:0.15rem 0.5rem;border-radius:4px;border:1px solid rgba(0,245,255,0.15)">${k.perms}</span>
+                        </div>
+                        <div style="font-size:0.78rem;color:var(--color-text-muted);font-family:var(--font-mono)">${k.prefix}</div>
+                        <div style="font-size:0.72rem;color:var(--color-text-muted);margin-top:0.2rem">Created ${k.created} · Last used ${k.last}</div>
+                      </div>
+                      <div class="table-actions">
+                        <button class="action-icon-btn" title="Copy key">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                        </button>
+                        <button class="action-icon-btn danger" title="Revoke key">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                        </button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="settings-card">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Rate Limits</div>
+                  <div class="settings-card-desc">Current API usage and limits for your plan</div>
+                </div>
+                <div class="settings-card-body">
+                  ${[
+                    ['API Requests', '84,200', '100,000', 84],
+                    ['Workflow Executions', '67,400', '100,000', 67],
+                    ['AI Agent Calls', '23,800', '50,000', 48],
+                  ].map(([label, used, limit, pct]) => `
+                    <div style="margin-bottom:1.25rem">
+                      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">
+                        <span style="font-size:0.85rem;font-weight:500;color:var(--color-text-secondary)">${label}</span>
+                        <span style="font-size:0.8rem;color:var(--color-text-muted)">${used} / ${limit}</span>
+                      </div>
+                      <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden">
+                        <div style="height:100%;width:${pct}%;border-radius:99px;background:${pct > 80 ? 'linear-gradient(90deg,#f59e0b,#ef4444)' : 'linear-gradient(90deg,var(--color-neon-cyan),var(--color-neon-blue))'}"></div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- DANGER ZONE -->
+            <div class="settings-section" id="section-danger" style="display:none">
+              <div class="settings-card settings-danger">
+                <div class="settings-card-header">
+                  <div class="settings-card-title">Danger Zone</div>
+                  <div class="settings-card-desc">Irreversible and destructive actions</div>
+                </div>
+                <div class="settings-card-body">
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Export All Data</div>
+                      <div class="settings-row-desc">Download a complete archive of all your workspace data</div>
+                    </div>
+                    <button class="btn-ghost" style="padding:0.4rem 0.875rem;font-size:0.78rem;flex-shrink:0">Export</button>
+                  </div>
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Pause All Workflows</div>
+                      <div class="settings-row-desc">Temporarily pause all active workflows and agents</div>
+                    </div>
+                    <button class="btn-ghost" style="padding:0.4rem 0.875rem;font-size:0.78rem;color:#f59e0b;border-color:rgba(245,158,11,0.2);flex-shrink:0">Pause All</button>
+                  </div>
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label">Delete All Executions</div>
+                      <div class="settings-row-desc">Permanently delete all execution history — this cannot be undone</div>
+                    </div>
+                    <button class="btn-ghost" style="padding:0.4rem 0.875rem;font-size:0.78rem;color:#ef4444;border-color:rgba(239,68,68,0.2);flex-shrink:0">Delete History</button>
+                  </div>
+                  <div class="settings-row">
+                    <div class="settings-row-left">
+                      <div class="settings-row-label" style="color:#ef4444">Delete Workspace</div>
+                      <div class="settings-row-desc">Permanently delete this workspace, all workflows, agents, and data. This action is irreversible.</div>
+                    </div>
+                    <button style="padding:0.4rem 0.875rem;font-size:0.78rem;background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.3);border-radius:8px;cursor:pointer;font-family:var(--font-body);flex-shrink:0" onclick="alert('This action cannot be performed in demo mode.')">Delete Workspace</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script>
+    // Settings navigation
+    document.querySelectorAll('.settings-nav-link[data-section]').forEach(link => {
+      link.addEventListener('click', function() {
+        document.querySelectorAll('.settings-nav-link').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+
+        const section = this.dataset.section;
+        document.querySelectorAll('.settings-section').forEach(s => s.style.display = 'none');
+        const target = document.getElementById('section-' + section);
+        if (target) target.style.display = 'flex';
+      });
+    });
+
+    // Save button feedback
+    ['saveBtn', 'saveAllBtn'].forEach(id => {
+      const btn = document.getElementById(id);
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        const orig = btn.textContent;
+        btn.textContent = '✓ Saved';
+        btn.style.opacity = '0.8';
+        setTimeout(() => {
+          btn.textContent = orig;
+          btn.style.opacity = '';
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>
