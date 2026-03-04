@@ -10,332 +10,233 @@
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/dashboard.css" />
   <link rel="stylesheet" href="styles/dashboard-inner.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-client.js"></script>
   <style>
-    .integrations-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
-    }
-    .integration-card-dash {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 12px;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.875rem;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-    .integration-card-dash:hover {
-      border-color: rgba(0,245,255,0.15);
-      background: rgba(0,245,255,0.02);
-      transform: translateY(-1px);
-    }
-    .integration-card-dash.connected {
-      border-color: rgba(0,255,135,0.15);
-    }
-    .int-logo {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      flex-shrink: 0;
-    }
-    .int-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .int-card-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .int-card-name {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--color-text-primary);
-    }
-    .int-card-category {
-      font-size: 0.72rem;
-      color: var(--color-text-muted);
-    }
-    .int-card-desc {
-      font-size: 0.8rem;
-      color: var(--color-text-muted);
-      line-height: 1.5;
-    }
-    .int-card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 0.875rem;
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-    .int-usage {
-      font-size: 0.72rem;
-      color: var(--color-text-muted);
-    }
-    .int-connect-btn {
-      padding: 0.35rem 0.875rem;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: var(--font-body);
-      transition: all 0.2s;
-      border: 1px solid transparent;
-    }
-    .int-connect-btn.connect {
-      background: rgba(0,245,255,0.1);
-      color: var(--color-neon-cyan);
-      border-color: rgba(0,245,255,0.2);
-    }
-    .int-connect-btn.connect:hover {
-      background: rgba(0,245,255,0.2);
-    }
-    .int-connect-btn.disconnect {
-      background: rgba(239,68,68,0.08);
-      color: #ef4444;
-      border-color: rgba(239,68,68,0.15);
-    }
-    .int-connect-btn.disconnect:hover {
-      background: rgba(239,68,68,0.15);
-    }
-    .cat-tabs {
-      display: flex;
-      gap: 0.375rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-    }
+    .cat-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
     .cat-tab {
-      padding: 0.4rem 0.875rem;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: transparent;
-      color: var(--color-text-muted);
-      font-family: var(--font-body);
-      transition: all 0.2s;
+      padding: 6px 16px; border-radius: 20px; font-size: 12px; cursor: pointer;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(232,244,248,0.5); transition: all .2s;
     }
-    .cat-tab:hover { color: var(--color-text-primary); border-color: rgba(255,255,255,0.15); }
-    .cat-tab.active {
-      background: rgba(0,245,255,0.08);
-      border-color: rgba(0,245,255,0.25);
-      color: var(--color-neon-cyan);
+    .cat-tab.active { background: rgba(0,245,255,0.15); border-color: rgba(0,245,255,0.3); color: #00f5ff; }
+    .int-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .int-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 20px; transition: all .3s; position: relative;
     }
+    .int-card.connected { border-color: rgba(0,255,136,0.2); }
+    .int-card:hover { border-color: rgba(0,245,255,0.25); background: rgba(0,245,255,0.02); }
+    .int-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .int-emoji { font-size: 28px; }
+    .int-info { flex: 1; }
+    .int-name { font-size: 14px; font-weight: 600; color: #e8f4f8; margin: 0 0 2px; }
+    .int-cat { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: rgba(232,244,248,0.35); }
+    .int-desc { font-size: 12px; color: rgba(232,244,248,0.5); line-height: 1.5; margin-bottom: 14px; min-height: 36px; }
+    .int-stats { display: flex; gap: 16px; margin-bottom: 14px; }
+    .int-stat { display: flex; flex-direction: column; gap: 2px; }
+    .int-stat-val { font-size: 14px; font-weight: 600; color: #e8f4f8; font-family: 'JetBrains Mono', monospace; }
+    .int-stat-lbl { font-size: 10px; color: rgba(232,244,248,0.35); }
+    .int-footer { display: flex; align-items: center; justify-content: space-between; }
+    .int-connected-at { font-size: 10px; color: rgba(232,244,248,0.3); }
+    .connect-btn {
+      padding: 6px 16px; border-radius: 8px; font-size: 12px; cursor: pointer;
+      border: 1px solid; transition: all .25s; font-weight: 500;
+    }
+    .connect-btn.connect {
+      background: rgba(0,245,255,0.1); border-color: rgba(0,245,255,0.3); color: #00f5ff;
+    }
+    .connect-btn.connect:hover { background: rgba(0,245,255,0.2); }
+    .connect-btn.disconnect {
+      background: rgba(255,77,109,0.08); border-color: rgba(255,77,109,0.25); color: #ff4d6d;
+    }
+    .connect-btn.disconnect:hover { background: rgba(255,77,109,0.15); }
+    .connect-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .connected-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: #00ff88;
+      box-shadow: 0 0 6px #00ff88; flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+    .connecting-spinner {
+      width: 14px; height: 14px; border: 2px solid rgba(0,245,255,0.2);
+      border-top-color: #00f5ff; border-radius: 50%; animation: spin .7s linear infinite;
+      display: inline-block; vertical-align: middle; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-  <canvas id="bg-canvas"></canvas>
-  <div class="grid-overlay"></div>
-  <div class="ambient-orb" style="top:-20%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(139,92,246,0.07) 0%,transparent 70%)"></div>
-
-  <div class="dash-layout">
-    <aside class="dash-sidebar">
-      <div class="dash-sidebar-logo">
-        <div class="sidebar-logo-icon">
-          <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
-            <path d="M16 2L28 8V16C28 22.627 22.627 28 16 28C9.373 28 4 22.627 4 16V8L16 2Z" stroke="url(#sg)" stroke-width="2" fill="none"/>
-            <circle cx="16" cy="16" r="4" fill="url(#sg2)"/>
-            <path d="M16 8V12M16 20V24M8 16H12M20 16H24" stroke="url(#sg)" stroke-width="1.5" stroke-linecap="round"/>
-            <defs>
-              <linearGradient id="sg" x1="4" y1="2" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
-              <linearGradient id="sg2" x1="12" y1="12" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#0080ff"/></linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <span class="sidebar-logo-text">NexaFlow</span>
+<div class="dash-layout">
+  <!-- sidebar injected by shell.js -->
+  <main class="dash-main">
+    <div class="dash-topbar">
+      <div>
+        <h1 class="dash-page-title">Integrations</h1>
+        <p class="dash-page-sub">Connect your tools and services</p>
       </div>
-      <nav class="dash-sidebar-nav">
-        <div class="sidebar-nav-section">
-          <div class="sidebar-nav-label">Main</div>
-          <a href="dashboard.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</a>
-          <a href="dashboard-workflows.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h8M8 12h5M8 18h3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Workflows</a>
-          <a href="dashboard-agents.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>AI Agents</a>
-          <a href="dashboard-executions.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Executions</a>
-          <a href="dashboard-analytics.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20h18M5 20V12l7-7 7 7v8"/></svg>Analytics</a>
-        </div>
-        <div class="sidebar-nav-section">
-          <div class="sidebar-nav-label">Configure</div>
-          <a href="dashboard-integrations.html" class="sidebar-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>Integrations</a>
-          <a href="dashboard-team.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Team</a>
-          <a href="dashboard-settings.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/></svg>Settings</a>
-        </div>
-      </nav>
-      <div class="sidebar-user">
-        <div class="sidebar-user-avatar">JS</div>
-        <div class="sidebar-user-info"><div class="sidebar-user-name">Jordan Smith</div><div class="sidebar-user-role">Admin</div></div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4;margin-left:auto;flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>
+      <div style="display:flex;gap:12px;align-items:center">
+        <span id="connected-count" style="font-size:12px;color:rgba(232,244,248,0.5)">—</span>
       </div>
-    </aside>
+    </div>
 
-    <main class="dash-main">
-      <header class="dash-topbar">
-        <div class="dash-topbar-left">
-          <h2 class="dash-page-title">Integrations</h2>
-          <div class="dash-breadcrumb" style="margin:0;font-size:0.78rem"><a href="dashboard.html">Dashboard</a><span class="sep">/</span><span class="current">Integrations</span></div>
-        </div>
-        <div class="dash-topbar-right">
-          <div class="dash-filter-wrap" style="max-width:280px">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            <input type="text" class="dash-filter-input" placeholder="Search integrations…" id="intSearch" />
-          </div>
-        </div>
-      </header>
+    <!-- Stats -->
+    <div class="dash-stats-row">
+      <div class="dash-stat-card"><div class="dsc-label">Total</div><div class="dsc-value" id="s-total">—</div></div>
+      <div class="dash-stat-card"><div class="dsc-label">Connected</div><div class="dsc-value" style="color:#00ff88" id="s-conn">—</div></div>
+      <div class="dash-stat-card"><div class="dsc-label">API Calls Today</div><div class="dsc-value" id="s-api">—</div></div>
+      <div class="dash-stat-card"><div class="dsc-label">Webhooks</div><div class="dsc-value" id="s-hooks">—</div></div>
+    </div>
 
-      <div class="dash-content">
-        <!-- Stats -->
-        <div class="dash-stats-row">
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,255,135,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">Connected</div>
-            <div class="dash-stat-value">12</div>
-            <div class="dash-stat-delta up">All healthy</div>
-          </div>
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,245,255,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">Available</div>
-            <div class="dash-stat-value">300+</div>
-            <div class="dash-stat-delta neutral">One-click setup</div>
-          </div>
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(139,92,246,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">API Calls Today</div>
-            <div class="dash-stat-value">1.2M</div>
-            <div class="dash-stat-delta up">↑ 8% vs yesterday</div>
-          </div>
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(245,158,11,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">Webhooks Active</div>
-            <div class="dash-stat-value">34</div>
-            <div class="dash-stat-delta neutral">Across 12 services</div>
-          </div>
-        </div>
+    <!-- Search & Category Tabs -->
+    <div class="dash-filter-bar" style="margin-top:24px">
+      <input id="q" class="dash-filter-input" placeholder="Search integrations…" oninput="filt()" />
+      <select id="f-status" class="dash-filter-select" onchange="filt()">
+        <option value="">All</option>
+        <option value="connected">Connected</option>
+        <option value="disconnected">Disconnected</option>
+      </select>
+    </div>
+    <div class="cat-tabs" id="cat-tabs" style="margin-top:16px"></div>
 
-        <!-- Category tabs -->
-        <div class="cat-tabs" id="catTabs">
-          <button class="cat-tab active" data-cat="all">All (32)</button>
-          <button class="cat-tab" data-cat="connected">Connected (12)</button>
-          <button class="cat-tab" data-cat="crm">CRM</button>
-          <button class="cat-tab" data-cat="communication">Communication</button>
-          <button class="cat-tab" data-cat="data">Data & Analytics</button>
-          <button class="cat-tab" data-cat="devops">DevOps</button>
-          <button class="cat-tab" data-cat="payments">Payments</button>
-          <button class="cat-tab" data-cat="productivity">Productivity</button>
-        </div>
+    <!-- Grid -->
+    <div class="int-grid" id="int-grid">
+      <div style="text-align:center;padding:60px;color:rgba(232,244,248,0.3);grid-column:1/-1">Loading integrations…</div>
+    </div>
+  </main>
+</div>
 
-        <!-- Grid -->
-        <div class="integrations-grid" id="intGrid"></div>
-      </div>
-    </main>
-  </div>
+<script src="js/shell.js"></script>
+<script>
+let all = [], activeCat = 'all', connecting = new Set();
 
-  <script src="js/particles.js"></script>
-  <script>
-    const integrations = [
-      { emoji: '🔵', name: 'Salesforce', cat: 'crm', desc: 'Sync leads, contacts, deals, and activity data bidirectionally with your CRM.', connected: true, calls: '48K/day', webhooks: 6 },
-      { emoji: '🟠', name: 'HubSpot', cat: 'crm', desc: 'Connect HubSpot contacts, companies, deals, and email campaigns.', connected: true, calls: '32K/day', webhooks: 4 },
-      { emoji: '🟣', name: 'Slack', cat: 'communication', desc: 'Send messages, create channels, and trigger workflows from Slack events.', connected: true, calls: '12K/day', webhooks: 3 },
-      { emoji: '📧', name: 'Gmail', cat: 'communication', desc: 'Read, send, and classify emails. Trigger workflows on new messages.', connected: true, calls: '28K/day', webhooks: 2 },
-      { emoji: '🐙', name: 'GitHub', cat: 'devops', desc: 'Trigger workflows on PRs, issues, commits, and deployments.', connected: true, calls: '8K/day', webhooks: 8 },
-      { emoji: '💳', name: 'Stripe', cat: 'payments', desc: 'Automate billing, invoicing, subscription management, and charge events.', connected: true, calls: '22K/day', webhooks: 5 },
-      { emoji: '📊', name: 'BigQuery', cat: 'data', desc: 'Query and write to Google BigQuery datasets as workflow steps.', connected: true, calls: '15K/day', webhooks: 0 },
-      { emoji: '🔷', name: 'Jira', cat: 'devops', desc: 'Create, update, and track Jira issues from automated workflows.', connected: true, calls: '6K/day', webhooks: 3 },
-      { emoji: '📮', name: 'Mailchimp', cat: 'communication', desc: 'Add subscribers, send campaigns, and track email performance metrics.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '🔴', name: 'Intercom', cat: 'crm', desc: 'Sync customer data, create conversations, and trigger support workflows.', connected: true, calls: '9K/day', webhooks: 2 },
-      { emoji: '📦', name: 'Snowflake', cat: 'data', desc: 'Read and write to Snowflake data warehouse. Run SQL queries as workflow steps.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '🟡', name: 'Zendesk', cat: 'crm', desc: 'Create, update, and resolve support tickets automatically from workflows.', connected: true, calls: '11K/day', webhooks: 4 },
-      { emoji: '📅', name: 'Google Calendar', cat: 'productivity', desc: 'Create events, check availability, and trigger workflows on calendar changes.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '📝', name: 'Notion', cat: 'productivity', desc: 'Read and write Notion pages, databases, and blocks from workflows.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '🔗', name: 'Linear', cat: 'devops', desc: 'Create issues, update project status, and sync with GitHub automatically.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '💜', name: 'Twilio', cat: 'communication', desc: 'Send SMS, WhatsApp messages, and make voice calls from workflows.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '🟤', name: 'Airtable', cat: 'data', desc: 'Read and write Airtable bases as structured workflow data sources.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '🔶', name: 'AWS S3', cat: 'devops', desc: 'Upload, download, and process files from Amazon S3 buckets.', connected: true, calls: '4K/day', webhooks: 1 },
-      { emoji: '🟩', name: 'Mixpanel', cat: 'data', desc: 'Track events, query funnels, and export user analytics data.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '🎨', name: 'Figma', cat: 'productivity', desc: 'Access design files, comments, and trigger workflows on design events.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '🐳', name: 'Docker', cat: 'devops', desc: 'Build, push, and deploy Docker containers from automated workflows.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '📡', name: 'Segment', cat: 'data', desc: 'Receive and send Segment track, identify, and group events.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '💰', name: 'QuickBooks', cat: 'payments', desc: 'Sync invoices, expenses, and customer data with QuickBooks Online.', connected: false, calls: '', webhooks: 0 },
-      { emoji: '📱', name: 'Webflow', cat: 'productivity', desc: 'Trigger workflows from Webflow form submissions and CMS changes.', connected: false, calls: '', webhooks: 0 },
-    ];
+async function load() {
+  const uid = window.__currentUser?.id;
+  if (!uid) return;
 
-    function renderIntegrations(list) {
-      const grid = document.getElementById('intGrid');
-      grid.innerHTML = '';
+  const { data } = await window.sb
+    .from('integrations')
+    .select('*')
+    .eq('user_id', uid)
+    .order('category')
+    .order('name');
 
-      list.forEach(int => {
-        const card = document.createElement('div');
-        card.className = `integration-card-dash ${int.connected ? 'connected' : ''}`;
+  all = data || [];
+  renderStats();
+  renderCatTabs();
+  filt();
+}
 
-        card.innerHTML = `
-          <div class="int-card-header">
-            <div class="int-card-info">
-              <div class="int-logo" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06)">${int.emoji}</div>
-              <div>
-                <div class="int-card-name">${int.name}</div>
-                <div class="int-card-category">${int.cat.charAt(0).toUpperCase() + int.cat.slice(1)}</div>
-              </div>
-            </div>
-            ${int.connected ? '<span class="badge success" style="font-size:0.65rem"><span class="badge-dot"></span>connected</span>' : ''}
-          </div>
-          <div class="int-card-desc">${int.desc}</div>
-          <div class="int-card-footer">
-            <div class="int-usage">${int.connected ? `${int.calls} · ${int.webhooks} webhooks` : '—'}</div>
-            <button class="int-connect-btn ${int.connected ? 'disconnect' : 'connect'}" data-name="${int.name}">
-              ${int.connected ? 'Disconnect' : 'Connect'}
-            </button>
-          </div>
-        `;
+function renderStats() {
+  const conn = all.filter(i => i.connected).length;
+  const apiCalls = all.filter(i => i.connected).reduce((s, i) => s + (i.api_calls_today||0), 0);
+  const webhooks = all.filter(i => i.connected).reduce((s, i) => s + (i.webhooks_count||0), 0);
+  document.getElementById('s-total').textContent = all.length;
+  document.getElementById('s-conn').textContent = conn;
+  document.getElementById('s-api').textContent = window.fmtNum(apiCalls);
+  document.getElementById('s-hooks').textContent = webhooks;
+  document.getElementById('connected-count').textContent = `${conn} of ${all.length} connected`;
+}
 
-        grid.appendChild(card);
-      });
+function renderCatTabs() {
+  const cats = ['all', ...new Set(all.map(i => i.category))].sort();
+  document.getElementById('cat-tabs').innerHTML = cats.map(c => `
+    <button class="cat-tab ${c === activeCat ? 'active' : ''}" onclick="setCat('${c}')">
+      ${c === 'all' ? 'All' : c.charAt(0).toUpperCase()+c.slice(1)}
+    </button>
+  `).join('');
+}
 
-      // Connect/disconnect toggle
-      grid.querySelectorAll('.int-connect-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-          e.stopPropagation();
-          const origText = btn.textContent.trim();
-          btn.textContent = origText === 'Connect' ? 'Connecting…' : 'Disconnecting…';
-          btn.disabled = true;
-          setTimeout(() => {
-            if (origText === 'Connect') {
-              btn.textContent = 'Disconnect';
-              btn.className = 'int-connect-btn disconnect';
-              btn.closest('.integration-card-dash').classList.add('connected');
-            } else {
-              btn.textContent = 'Connect';
-              btn.className = 'int-connect-btn connect';
-              btn.closest('.integration-card-dash').classList.remove('connected');
-            }
-            btn.disabled = false;
-          }, 1200);
-        });
-      });
+function setCat(cat) {
+  activeCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => {
+    t.classList.toggle('active', t.textContent.trim().toLowerCase() === (cat === 'all' ? 'all' : cat));
+  });
+  filt();
+}
+
+function filt() {
+  const q = document.getElementById('q').value.toLowerCase();
+  const fs = document.getElementById('f-status').value;
+
+  const filtered = all.filter(i => {
+    if (activeCat !== 'all' && i.category !== activeCat) return false;
+    if (q && !i.name.toLowerCase().includes(q) && !i.description.toLowerCase().includes(q)) return false;
+    if (fs === 'connected' && !i.connected) return false;
+    if (fs === 'disconnected' && i.connected) return false;
+    return true;
+  });
+  renderGrid(filtered);
+}
+
+function renderGrid(items) {
+  const grid = document.getElementById('int-grid');
+  if (!items.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:60px;color:rgba(232,244,248,0.3);grid-column:1/-1">No integrations found</div>';
+    return;
+  }
+
+  grid.innerHTML = items.map(i => {
+    const isConnecting = connecting.has(i.id);
+    let btnHtml;
+    if (isConnecting) {
+      btnHtml = `<button class="connect-btn connect" disabled><span class="connecting-spinner"></span>Connecting…</button>`;
+    } else if (i.connected) {
+      btnHtml = `<button class="connect-btn disconnect" onclick="toggle('${i.id}',true)">Disconnect</button>`;
+    } else {
+      btnHtml = `<button class="connect-btn connect" onclick="toggle('${i.id}',false)">Connect</button>`;
     }
 
-    renderIntegrations(integrations);
+    const connAt = i.connected && i.connected_at
+      ? `Connected ${window.fmtTime(i.connected_at)}`
+      : i.connected ? 'Connected' : 'Not connected';
 
-    // Category filter
-    document.getElementById('catTabs').querySelectorAll('.cat-tab').forEach(tab => {
-      tab.addEventListener('click', function() {
-        document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-        const cat = this.dataset.cat;
-        if (cat === 'all') renderIntegrations(integrations);
-        else if (cat === 'connected') renderIntegrations(integrations.filter(i => i.connected));
-        else renderIntegrations(integrations.filter(i => i.cat === cat));
-      });
-    });
+    return `<div class="int-card ${i.connected ? 'connected' : ''}">
+      <div class="int-header">
+        <span class="int-emoji">${i.emoji||'🔗'}</span>
+        <div class="int-info">
+          <div class="int-name">${i.name}</div>
+          <div class="int-cat">${i.category}</div>
+        </div>
+        ${i.connected ? '<span class="connected-dot"></span>' : ''}
+      </div>
+      <div class="int-desc">${i.description||'No description.'}</div>
+      ${i.connected ? `<div class="int-stats">
+        <div class="int-stat"><div class="int-stat-val">${window.fmtNum(i.api_calls_today||0)}</div><div class="int-stat-lbl">API calls today</div></div>
+        <div class="int-stat"><div class="int-stat-val">${i.webhooks_count||0}</div><div class="int-stat-lbl">Webhooks</div></div>
+      </div>` : '<div style="height:40px"></div>'}
+      <div class="int-footer">
+        <span class="int-connected-at">${connAt}</span>
+        ${btnHtml}
+      </div>
+    </div>`;
+  }).join('');
+}
 
-    // Search
-    document.getElementById('intSearch').addEventListener('input', function() {
-      const q = this.value.toLowerCase();
-      if (!q) { renderIntegrations(integrations); return; }
-      renderIntegrations(integrations.filter(i => i.name.toLowerCase().includes(q) || i.desc.toLowerCase().includes(q) || i.cat.toLowerCase().includes(q)));
-    });
-  </script>
+async function toggle(id, isConnected) {
+  connecting.add(id);
+  filt(); // re-render to show spinner
+
+  await new Promise(r => setTimeout(r, 1200)); // simulate OAuth/API handshake
+
+  const updates = isConnected
+    ? { connected: false, api_calls_today: 0, webhooks_count: 0 }
+    : { connected: true, connected_at: new Date().toISOString(), api_calls_today: Math.floor(Math.random()*200+10), webhooks_count: Math.floor(Math.random()*5+1) };
+
+  const { data } = await window.sb.from('integrations').update(updates).eq('id', id).select().single();
+
+  connecting.delete(id);
+  if (data) {
+    const idx = all.findIndex(i => i.id === id);
+    if (idx >= 0) all[idx] = data;
+  }
+  renderStats();
+  filt();
+  window.showToast(isConnected ? 'Integration disconnected' : 'Integration connected!', isConnected ? 'warning' : 'success');
+}
+
+window.addEventListener('shellReady', load);
+if (window.__shellReady) load();
+</script>
 </body>
 </html>

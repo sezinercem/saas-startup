@@ -1,210 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Workflows — NexaFlow Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/main.css"/>
-  <link rel="stylesheet" href="styles/dashboard.css"/>
-  <link rel="stylesheet" href="styles/dashboard-inner.css"/>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Workflows — NexaFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/main.css" /><link rel="stylesheet" href="styles/dashboard.css" /><link rel="stylesheet" href="styles/dashboard-inner.css" />
+  <style>
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .3s}
+    .modal-overlay.open{opacity:1;pointer-events:all}
+    .modal{background:var(--color-bg-secondary);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:2rem;width:100%;max-width:520px;transform:translateY(20px);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+    .modal-overlay.open .modal{transform:translateY(0)}
+    .mhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+    .mtitle{font-size:1.05rem;font-weight:700;color:var(--color-text-primary)}
+    .mclose{width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:transparent;color:var(--color-text-muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .mclose:hover{border-color:rgba(239,68,68,.3);color:#ef4444}
+    .ff{margin-bottom:1rem}.ff label{display:block;font-size:.8rem;font-weight:500;color:var(--color-text-secondary);margin-bottom:.35rem}
+    .ff input,.ff textarea,.ff select{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:.65rem .875rem;font-size:.875rem;color:var(--color-text-primary);font-family:var(--font-body);transition:all .2s}
+    .ff input:focus,.ff textarea:focus,.ff select:focus{outline:none;border-color:rgba(0,245,255,.3);box-shadow:0 0 0 3px rgba(0,245,255,.05)}
+    .ff textarea{resize:vertical;line-height:1.6}.ff select{cursor:pointer}
+    .frow{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+    .mact{display:flex;gap:.75rem;margin-top:1.5rem}.mact button{flex:1}
+    .dov{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:400;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .2s}
+    .dov.open{opacity:1;pointer-events:all}
+    .dbox{background:var(--color-bg-secondary);border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:1.5rem;max-width:380px;width:100%;text-align:center;transform:scale(.95);transition:transform .2s}
+    .dov.open .dbox{transform:scale(1)}
+  </style>
 </head>
-<body class="dashboard-body">
-  <canvas id="bg-canvas"></canvas>
-  <div class="grid-overlay" style="opacity:0.4"></div>
-  <div class="ambient-orb ambient-orb-1" style="opacity:0.05"></div>
-  <div class="ambient-orb ambient-orb-2" style="opacity:0.05"></div>
-
-  <div class="dashboard-layout">
-
-    <!-- Sidebar (same as main dashboard) -->
-    <aside class="sidebar">
-      <div class="sidebar-logo">
-        <div class="nav-logo-icon" style="width:32px;height:32px"><svg viewBox="0 0 40 40" fill="none"><polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="url(#wfLogo)" stroke-width="1.5" fill="none"/><circle cx="20" cy="20" r="4" fill="url(#wfLogo)"/><defs><linearGradient id="wfLogo" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#00f5ff"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient></defs></svg></div>
-        <span class="nav-logo-text" style="font-size:1.1rem">NexaFlow</span>
-      </div>
-      <nav class="sidebar-nav">
-        <div class="sidebar-section">
-          <div class="sidebar-section-label">Main</div>
-          <ul class="sidebar-links">
-            <li><a href="dashboard.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a></li>
-            <li><a href="dashboard-workflows.html" class="sidebar-link active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><path d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>Workflows<span class="sidebar-count">24</span></a></li>
-            <li><a href="dashboard-agents.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>AI Agents<span class="sidebar-count">12</span></a></li>
-            <li><a href="#" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>Executions</a></li>
-            <li><a href="#" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>Analytics</a></li>
-          </ul>
-        </div>
-        <div class="sidebar-section">
-          <div class="sidebar-section-label">Workspace</div>
-          <ul class="sidebar-links">
-            <li><a href="#" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><path d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"/></svg>Integrations</a></li>
-            <li><a href="dashboard-settings.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Settings</a></li>
-          </ul>
-        </div>
-      </nav>
-      <div class="sidebar-user">
-        <div class="user-avatar-sm" style="background:linear-gradient(135deg,#00f5ff,#0080ff)">JD</div>
-        <div class="user-info"><div class="user-name">John Doe</div><div class="user-plan">Pro Plan</div></div>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
+<body>
+  <canvas id="bg-canvas"></canvas><div class="grid-overlay"></div>
+  <div class="ambient-orb" style="top:-15%;left:-5%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,245,255,.06) 0%,transparent 70%)"></div>
+  <div class="dash-layout">
     <main class="dash-main">
       <header class="dash-topbar">
         <div class="dash-topbar-left">
-          <h1 class="dash-page-title">Workflows</h1>
-          <div class="dash-breadcrumb"><span>NexaFlow</span><span class="breadcrumb-sep">›</span><span class="breadcrumb-active">Workflows</span></div>
+          <h2 class="dash-page-title">Workflows</h2>
+          <div class="dash-breadcrumb" style="margin:0;font-size:.78rem"><a href="dashboard.html">Dashboard</a><span class="sep">/</span><span class="current">Workflows</span></div>
         </div>
         <div class="dash-topbar-right">
-          <div class="dash-search">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            <input type="text" placeholder="Search workflows…" class="dash-search-input"/>
-            <kbd class="kbd">⌘K</kbd>
+          <div class="dash-search-wrap">
+            <svg class="dash-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" placeholder="Search…" class="dash-search-input" id="si" /><kbd class="dash-search-kbd">⌘K</kbd>
           </div>
-          <select class="wf-sort-select">
-            <option>Sort: Last Modified</option>
-            <option>Sort: Name A–Z</option>
-            <option>Sort: Executions</option>
-            <option>Sort: Status</option>
-          </select>
-          <a href="#" class="btn btn-primary btn-sm">+ New Workflow</a>
+          <button class="btn-primary" style="padding:.5rem 1rem;font-size:.8rem;display:flex;align-items:center;gap:.4rem" id="newBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Workflow
+          </button>
         </div>
       </header>
-
       <div class="dash-content">
-
-        <!-- Stats row -->
-        <div class="kpi-grid">
-          <div class="kpi-card glass-card">
-            <div class="kpi-header"><div class="kpi-label">Total Workflows</div><div class="kpi-icon" style="background:rgba(0,245,255,0.1)">⚙️</div></div>
-            <div class="kpi-value">24</div>
-            <div class="kpi-change positive"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l8 8H4z"/></svg>3 new this week</div>
-          </div>
-          <div class="kpi-card glass-card">
-            <div class="kpi-header"><div class="kpi-label">Active</div><div class="kpi-icon" style="background:rgba(0,255,135,0.1)">✅</div></div>
-            <div class="kpi-value">18</div>
-            <div class="kpi-change positive"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l8 8H4z"/></svg>Running live</div>
-          </div>
-          <div class="kpi-card glass-card">
-            <div class="kpi-header"><div class="kpi-label">Paused</div><div class="kpi-icon" style="background:rgba(251,191,36,0.1)">⏸️</div></div>
-            <div class="kpi-value">4</div>
-            <div class="kpi-change" style="color:var(--color-text-muted)">Needs attention</div>
-          </div>
-          <div class="kpi-card glass-card">
-            <div class="kpi-header"><div class="kpi-label">Executions Today</div><div class="kpi-icon" style="background:rgba(139,92,246,0.1)">⚡</div></div>
-            <div class="kpi-value">8,412</div>
-            <div class="kpi-change positive"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l8 8H4z"/></svg>+12% vs yesterday</div>
-          </div>
+        <div class="dash-stats-row">
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,245,255,.06) 0%,transparent 60%)"><div class="dash-stat-label">Total</div><div class="dash-stat-value" id="sTotal">—</div><div class="dash-stat-delta neutral" id="sDraft">—</div></div>
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,255,135,.06) 0%,transparent 60%)"><div class="dash-stat-label">Active</div><div class="dash-stat-value" id="sActive">—</div><div class="dash-stat-delta up">Running</div></div>
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(245,158,11,.06) 0%,transparent 60%)"><div class="dash-stat-label">Paused</div><div class="dash-stat-value" id="sPaused">—</div><div class="dash-stat-delta neutral">Idle</div></div>
+          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(139,92,246,.06) 0%,transparent 60%)"><div class="dash-stat-label">Total Runs</div><div class="dash-stat-value" id="sRuns">—</div><div class="dash-stat-delta up" id="sSR">—</div></div>
         </div>
-
-        <!-- Workflow List -->
-        <div class="wf-list-card glass-card">
-          <div class="table-header">
-            <h2 class="dash-chart-title">All Workflows</h2>
-            <div style="display:flex;gap:var(--space-3)">
-              <button class="dash-icon-btn" title="Filter"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></button>
-              <button class="dash-icon-btn" title="Grid view"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
-            </div>
+        <div class="dash-filter-bar">
+          <div class="dash-filter-wrap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="text" class="dash-filter-input" placeholder="Search by name…" id="fQ" />
           </div>
-
+          <select class="dash-filter-select" id="fSt"><option value="">All Status</option><option value="active">Active</option><option value="paused">Paused</option><option value="draft">Draft</option></select>
+          <select class="dash-filter-select" id="fTr"><option value="">All Triggers</option><option value="webhook">Webhook</option><option value="schedule">Schedule</option><option value="manual">Manual</option><option value="api">API</option><option value="email">Email</option><option value="form">Form</option></select>
+          <select class="dash-filter-select" id="fSo" style="margin-left:auto"><option value="updated_at">Last updated</option><option value="name">Name A–Z</option><option value="run_count">Most runs</option><option value="created_at">Newest</option></select>
+        </div>
+        <div class="dash-table-container">
+          <div class="dash-table-header"><div class="dash-table-title">All Workflows</div><div class="dash-table-count" id="tCt">—</div></div>
           <table class="dash-table">
-            <thead>
-              <tr>
-                <th><input type="checkbox" style="accent-color:var(--color-neon-cyan)"/></th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Trigger</th>
-                <th>Last Run</th>
-                <th>Executions</th>
-                <th>Success Rate</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="workflowList">
-              <!-- Populated by JS -->
-            </tbody>
+            <thead><tr><th>Workflow</th><th>Status</th><th>Trigger</th><th>Last Run</th><th>Runs</th><th>Success Rate</th><th>Actions</th></tr></thead>
+            <tbody id="wBody"><tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--color-text-muted)">Loading…</td></tr></tbody>
           </table>
-
-          <div class="table-pagination">
-            <span style="color:var(--color-text-muted);font-size:var(--fs-xs)">Showing 1–10 of 24 workflows</span>
-            <div class="pagination-btns">
-              <button class="page-btn disabled">←</button>
-              <button class="page-btn active">1</button>
-              <button class="page-btn">2</button>
-              <button class="page-btn">3</button>
-              <button class="page-btn">→</button>
-            </div>
-          </div>
+          <div class="dash-pagination"><div class="dash-pagination-info" id="pgI">—</div><div class="dash-pagination-controls" id="pgC"></div></div>
         </div>
-
       </div>
     </main>
   </div>
 
-  <script src="js/particles.js"></script>
-  <script src="js/dashboard.js"></script>
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="mhdr"><div class="mtitle" id="mT">New Workflow</div><button class="mclose" id="mX"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+      <div class="ff"><label>Workflow name *</label><input type="text" id="wN" placeholder="e.g. Customer Onboarding" /><div style="font-size:.72rem;color:#ef4444;margin-top:.2rem" id="wNE"></div></div>
+      <div class="ff"><label>Description</label><textarea id="wD" rows="2" placeholder="What does this workflow do?"></textarea></div>
+      <div class="frow">
+        <div class="ff"><label>Status</label><select id="wSt"><option value="draft">Draft</option><option value="active">Active</option><option value="paused">Paused</option></select></div>
+        <div class="ff"><label>Trigger</label><select id="wTr"><option value="webhook">Webhook</option><option value="schedule">Schedule</option><option value="manual">Manual</option><option value="api">API</option><option value="email">Email</option><option value="form">Form</option></select></div>
+      </div>
+      <div class="ff" id="cronW" style="display:none"><label>Cron expression</label><input type="text" id="wCr" placeholder="0 9 * * 1" style="font-family:var(--font-mono)" /><div style="font-size:.72rem;color:var(--color-text-muted);margin-top:.25rem">min hour day month weekday</div></div>
+      <input type="hidden" id="eId" />
+      <div class="mact"><button class="btn-ghost" id="mCanc">Cancel</button><button class="btn-primary" id="mSave">Create workflow</button></div>
+    </div>
+  </div>
+
+  <!-- Delete confirm -->
+  <div class="dov" id="dov">
+    <div class="dbox">
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5"><path d="M3 6h18M19 6l-1 14H6L5 6"/></svg>
+      </div>
+      <div style="font-size:1rem;font-weight:700;color:var(--color-text-primary);margin-bottom:.5rem">Delete workflow?</div>
+      <div style="font-size:.85rem;color:var(--color-text-muted);margin-bottom:1.25rem" id="dMsg">This cannot be undone.</div>
+      <div style="display:flex;gap:.75rem">
+        <button class="btn-ghost" style="flex:1" id="dCanc">Cancel</button>
+        <button style="flex:1;padding:.6rem;border-radius:8px;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#ef4444;font-size:.85rem;font-weight:600;cursor:pointer;font-family:var(--font-body)" id="dConf">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-client.js"></script><script src="js/particles.js"></script><script src="js/shell.js"></script>
   <script>
-    // Populate workflow table
-    const workflows = [
-      { name: 'Customer Onboarding',     id: '#wf-0001', status: 'active',  trigger: 'Webhook',       lastRun: '2m ago',   execs: '12.4K', rate: '99.8%' },
-      { name: 'Lead Enrichment',         id: '#wf-0002', status: 'active',  trigger: 'Schedule',      lastRun: '5m ago',   execs: '8.1K',  rate: '98.2%' },
-      { name: 'Invoice Generator',       id: '#wf-0003', status: 'error',   trigger: 'Stripe Event',  lastRun: '12m ago',  execs: '3.2K',  rate: '94.1%' },
-      { name: 'Slack Daily Digest',      id: '#wf-0004', status: 'active',  trigger: 'Schedule',      lastRun: '1h ago',   execs: '180',   rate: '100%'  },
-      { name: 'GitHub PR Review AI',     id: '#wf-0005', status: 'active',  trigger: 'GitHub Event',  lastRun: '8m ago',   execs: '4.7K',  rate: '97.5%' },
-      { name: 'Sales Report Weekly',     id: '#wf-0006', status: 'active',  trigger: 'Schedule',      lastRun: '3d ago',   execs: '156',   rate: '100%'  },
-      { name: 'Support Ticket Router',   id: '#wf-0007', status: 'active',  trigger: 'Webhook',       lastRun: '30s ago',  execs: '22.1K', rate: '96.3%' },
-      { name: 'Email Campaign Tracker',  id: '#wf-0008', status: 'paused',  trigger: 'Schedule',      lastRun: '2d ago',   execs: '892',   rate: '99.1%' },
-      { name: 'Deploy Pipeline Watcher', id: '#wf-0009', status: 'active',  trigger: 'GitHub Event',  lastRun: '15m ago',  execs: '1.2K',  rate: '95.0%' },
-      { name: 'Churn Prediction Alert',  id: '#wf-0010', status: 'paused',  trigger: 'Schedule',      lastRun: '4h ago',   execs: '44',    rate: '100%'  },
-    ];
+    const s=window.sb; let all=[],fil=[],delId=null; const PG=15; let pg=1;
+    const fmt=n=>window.fmtNum?.(n)??n, fmtT=t=>window.fmtTime?.(t)??t?.slice(0,10)??'—', fmtD=ms=>window.fmtDuration?.(ms)??ms;
 
-    const statusMap = {
-      active: '<span class="status-badge success">Active</span>',
-      paused: '<span class="status-badge" style="background:rgba(251,191,36,0.1);color:#fbbf24;border:1px solid rgba(251,191,36,0.2)">Paused</span>',
-      error:  '<span class="status-badge error">Error</span>',
-    };
-
-    const tbody = document.getElementById('workflowList');
-    if (tbody) {
-      workflows.forEach(wf => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><input type="checkbox" style="accent-color:var(--color-neon-cyan)"/></td>
-          <td>
-            <div class="wf-name">${wf.name}</div>
-            <div class="wf-id">${wf.id}</div>
-          </td>
-          <td>${statusMap[wf.status]}</td>
-          <td class="text-muted">${wf.trigger}</td>
-          <td class="text-muted">${wf.lastRun}</td>
-          <td class="mono">${wf.execs}</td>
-          <td>
-            <div style="display:flex;align-items:center;gap:var(--space-2)">
-              <div style="flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden">
-                <div style="height:100%;width:${wf.rate};background:var(--gradient-primary);border-radius:99px"></div>
-              </div>
-              <span class="mono" style="font-size:10px;min-width:36px">${wf.rate}</span>
-            </div>
-          </td>
-          <td>
-            <div style="display:flex;gap:var(--space-2)">
-              <button class="dash-icon-btn" title="Edit" style="width:28px;height:28px">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              </button>
-              <button class="dash-icon-btn" title="Run now" style="width:28px;height:28px">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
-              </button>
-              <button class="dash-icon-btn" title="More" style="width:28px;height:28px">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
+    async function load(){
+      const u=window.__currentUser; if(!u)return;
+      const{data,error}=await s.from('workflows').select('*').eq('user_id',u.id).order('updated_at',{ascending:false});
+      if(error){window.showToast?.('Error loading','error');return;}
+      all=data||[]; stats(); filt();
     }
+
+    function stats(){
+      const a=all.filter(w=>w.status==='active').length, p=all.filter(w=>w.status==='paused').length, d=all.filter(w=>w.status==='draft').length;
+      const r=all.reduce((a,w)=>a+(w.run_count||0),0), sc=all.reduce((a,w)=>a+(w.success_count||0),0);
+      document.getElementById('sTotal').textContent=all.length;
+      document.getElementById('sDraft').textContent=d+' draft';
+      document.getElementById('sActive').textContent=a;
+      document.getElementById('sPaused').textContent=p;
+      document.getElementById('sRuns').textContent=fmt(r);
+      document.getElementById('sSR').textContent=(r>0?((sc/r)*100).toFixed(1):'—')+'% success';
+    }
+
+    function filt(){
+      const q=document.getElementById('fQ').value.toLowerCase(),st=document.getElementById('fSt').value,tr=document.getElementById('fTr').value,so=document.getElementById('fSo').value;
+      fil=all.filter(w=>{
+        if(q&&!w.name.toLowerCase().includes(q)&&!(w.description||'').toLowerCase().includes(q))return false;
+        if(st&&w.status!==st)return false;
+        if(tr&&w.trigger_type!==tr)return false;
+        return true;
+      }).sort((a,b)=>{
+        if(so==='name')return a.name.localeCompare(b.name);
+        if(so==='run_count')return(b.run_count||0)-(a.run_count||0);
+        if(so==='created_at')return new Date(b.created_at)-new Date(a.created_at);
+        return new Date(b.updated_at)-new Date(a.updated_at);
+      });
+      pg=1; tbl();
+    }
+
+    function tbl(){
+      const start=(pg-1)*PG, page=fil.slice(start,start+PG), body=document.getElementById('wBody');
+      document.getElementById('tCt').textContent=fil.length+' workflows';
+      document.getElementById('pgI').textContent=fil.length?`Showing ${start+1}–${Math.min(start+PG,fil.length)} of ${fil.length}`:'No workflows';
+      if(!page.length){
+        body.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--color-text-muted)">${all.length===0?'No workflows yet. <button onclick="openM()" style="background:none;border:none;color:var(--color-neon-cyan);cursor:pointer;font-size:inherit;font-family:inherit">Create your first one →</button>':'No workflows match your filters.'}</td></tr>`;
+        pager();return;
+      }
+      body.innerHTML=page.map(w=>{
+        const r=w.run_count||0,sc=w.success_count||0,sr=r>0?((sc/r)*100).toFixed(1):null,srP=r>0?(sc/r)*100:0;
+        const badge=w.status==='active'?'active':w.status==='paused'?'inactive':'idle';
+        const nm=w.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+        return `<tr>
+          <td><div style="font-weight:600;color:var(--color-text-primary)">${w.name}</div><div style="font-size:.72rem;color:var(--color-text-muted)">${(w.description||'').slice(0,55)}${(w.description||'').length>55?'…':''}</div></td>
+          <td><span class="badge ${badge}" style="font-size:.68rem"><span class="badge-dot"></span>${w.status}</span></td>
+          <td><span style="font-size:.75rem;background:rgba(255,255,255,.05);padding:.15rem .5rem;border-radius:4px;color:var(--color-text-secondary)">${w.trigger_type}</span></td>
+          <td style="font-size:.8rem">${fmtT(w.last_run_at)}</td>
+          <td style="font-family:var(--font-mono);font-size:.8rem">${fmt(r)}</td>
+          <td>${sr!==null?`<div style="display:flex;align-items:center;gap:.4rem"><div style="flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;min-width:48px"><div style="height:100%;width:${srP}%;border-radius:99px;background:${srP>=98?'#00ff87':srP>=90?'var(--color-neon-cyan)':'#f59e0b'}"></div></div><span style="font-size:.72rem;color:var(--color-text-secondary)">${sr}%</span></div>`:'<span style="color:var(--color-text-muted);font-size:.78rem">—</span>'}</td>
+          <td><div class="table-actions">
+            <button class="action-icon-btn" title="Run" onclick="runWf('${w.id}','${nm}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>
+            <button class="action-icon-btn" title="${w.status==='active'?'Pause':'Activate'}" onclick="tog('${w.id}','${w.status}')">${w.status==='active'?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>':'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'}</button>
+            <button class="action-icon-btn" title="Edit" onclick="editWf('${w.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+            <button class="action-icon-btn danger" title="Delete" onclick="delWf('${w.id}','${nm}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6l-1 14H6L5 6"/></svg></button>
+          </div></td>
+        </tr>`;
+      }).join('');
+      pager();
+    }
+
+    function pager(){
+      const tot=Math.ceil(fil.length/PG), c=document.getElementById('pgC');
+      if(tot<=1){c.innerHTML='';return;}
+      let h=`<button class="page-btn" ${pg===1?'disabled':''} onclick="gp(${pg-1})">←</button>`;
+      for(let i=1;i<=tot;i++){if(i===1||i===tot||Math.abs(i-pg)<=1)h+=`<button class="page-btn ${i===pg?'active':''}" onclick="gp(${i})">${i}</button>`;else if(Math.abs(i-pg)===2)h+=`<span style="color:var(--color-text-muted);font-size:.8rem">…</span>`;}
+      h+=`<button class="page-btn" ${pg===tot?'disabled':''} onclick="gp(${pg+1})">→</button>`;
+      c.innerHTML=h;
+    }
+    function gp(n){pg=n;tbl();}
+
+    async function runWf(id,name){
+      const u=window.__currentUser;if(!u)return;
+      const{data:ex,error}=await s.from('executions').insert({workflow_id:id,user_id:u.id,workflow_name:name,status:'running',trigger_type:'manual',steps_total:5}).select().single();
+      if(error){window.showToast?.('Start failed','error');return;}
+      window.showToast?.(`Running "${name}"…`,'info');
+      const delay=2000+Math.random()*4000,ok=Math.random()>.1;
+      setTimeout(async()=>{
+        await s.from('executions').update({status:ok?'success':'failed',completed_at:new Date().toISOString(),duration_ms:Math.round(delay),steps_completed:ok?5:Math.floor(Math.random()*4)+1,error_message:ok?null:'Upstream timeout'}).eq('id',ex.id);
+        window.showToast?.(ok?`✓ "${name}" done`:`✗ "${name}" failed`,ok?'success':'error');
+        load();
+      },delay);
+    }
+
+    async function tog(id,cur){
+      const next=cur==='active'?'paused':'active';
+      const{error}=await s.from('workflows').update({status:next,updated_at:new Date().toISOString()}).eq('id',id);
+      if(error){window.showToast?.('Update failed','error');return;}
+      window.showToast?.(next==='active'?'Activated':'Paused','info');load();
+    }
+
+    function openM(wf){
+      const edit=!!wf;
+      document.getElementById('mT').textContent=edit?'Edit Workflow':'New Workflow';
+      document.getElementById('mSave').textContent=edit?'Save changes':'Create workflow';
+      document.getElementById('wN').value=wf?.name||'';
+      document.getElementById('wD').value=wf?.description||'';
+      document.getElementById('wSt').value=wf?.status||'draft';
+      document.getElementById('wTr').value=wf?.trigger_type||'webhook';
+      document.getElementById('wCr').value=wf?.schedule_cron||'';
+      document.getElementById('eId').value=wf?.id||'';
+      document.getElementById('wNE').textContent='';
+      document.getElementById('cronW').style.display=wf?.trigger_type==='schedule'?'block':'none';
+      document.getElementById('modal').classList.add('open');
+      setTimeout(()=>document.getElementById('wN').focus(),100);
+    }
+    function closeM(){document.getElementById('modal').classList.remove('open');}
+
+    document.getElementById('wTr').addEventListener('change',function(){document.getElementById('cronW').style.display=this.value==='schedule'?'block':'none';});
+    document.getElementById('newBtn').addEventListener('click',()=>openM());
+    document.getElementById('mX').addEventListener('click',closeM);
+    document.getElementById('mCanc').addEventListener('click',closeM);
+    document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeM();});
+
+    document.getElementById('mSave').addEventListener('click',async()=>{
+      const name=document.getElementById('wN').value.trim();
+      if(!name){document.getElementById('wNE').textContent='Name is required';return;}
+      const u=window.__currentUser;if(!u)return;
+      const btn=document.getElementById('mSave');
+      btn.disabled=true;btn.innerHTML='<span style="display:inline-flex;align-items:center;gap:.4rem"><span class="btn-spinner"></span>Saving…</span>';
+      const payload={name,description:document.getElementById('wD').value.trim(),status:document.getElementById('wSt').value,trigger_type:document.getElementById('wTr').value,schedule_cron:document.getElementById('wTr').value==='schedule'?document.getElementById('wCr').value:null,updated_at:new Date().toISOString()};
+      const eid=document.getElementById('eId').value;
+      let error;
+      if(eid){({error}=await s.from('workflows').update(payload).eq('id',eid));}
+      else{({error}=await s.from('workflows').insert({...payload,user_id:u.id,node_count:Math.floor(Math.random()*6)+3}));}
+      btn.disabled=false;btn.textContent=eid?'Save changes':'Create workflow';
+      if(error){window.showToast?.('Save failed','error');return;}
+      window.showToast?.(eid?'Workflow updated':'Workflow created ✓','success');
+      closeM();load();
+    });
+
+    function editWf(id){const w=all.find(w=>w.id===id);if(w)openM(w);}
+
+    function delWf(id,name){
+      delId=id;
+      document.getElementById('dMsg').textContent=`Delete "${name}"? All execution history will be removed.`;
+      document.getElementById('dov').classList.add('open');
+    }
+    document.getElementById('dCanc').addEventListener('click',()=>{document.getElementById('dov').classList.remove('open');delId=null;});
+    document.getElementById('dConf').addEventListener('click',async()=>{
+      if(!delId)return;
+      const btn=document.getElementById('dConf');btn.textContent='Deleting…';btn.disabled=true;
+      const{error}=await s.from('workflows').delete().eq('id',delId);
+      btn.textContent='Delete';btn.disabled=false;
+      document.getElementById('dov').classList.remove('open');
+      if(error){window.showToast?.('Delete failed','error');return;}
+      window.showToast?.('Workflow deleted','info');delId=null;load();
+    });
+
+    ['fQ','si'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',function(){const other=document.getElementById(id==='si'?'fQ':'si');if(other)other.value=this.value;filt();});});
+    document.getElementById('fSt').addEventListener('change',filt);
+    document.getElementById('fTr').addEventListener('change',filt);
+    document.getElementById('fSo').addEventListener('change',filt);
+
+    load();
   </script>
 </body>
 </html>

@@ -3,345 +3,406 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Create your NexaFlow account — Free for 14 days, no credit card required." />
   <title>Create Account — NexaFlow</title>
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-  <!-- Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/auth.css" />
 </head>
 <body>
-  <!-- Background -->
   <canvas id="bg-canvas"></canvas>
   <div class="grid-overlay"></div>
-  <div class="ambient-orb ambient-orb-1" style="background: radial-gradient(circle, var(--color-neon-purple), transparent)"></div>
-  <div class="ambient-orb ambient-orb-2"></div>
-  <div class="ambient-orb ambient-orb-3"></div>
-  <div class="scanline-effect"></div>
 
-  <div class="content-wrapper">
-    <div class="auth-layout auth-layout-signup">
+  <div class="auth-layout">
+    <!-- Left: form -->
+    <div class="auth-panel">
+      <a href="index.html" class="auth-back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to home
+      </a>
 
-      <!-- ===== LEFT PANEL ===== -->
-      <div class="auth-panel auth-left">
-        <div class="auth-left-inner">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">
+          <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+            <path d="M16 2L28 8V16C28 22.627 22.627 28 16 28C9.373 28 4 22.627 4 16V8L16 2Z" stroke="url(#sg)" stroke-width="2" fill="none"/>
+            <circle cx="16" cy="16" r="4" fill="url(#sg2)"/>
+            <path d="M16 8V12M16 20V24M8 16H12M20 16H24" stroke="url(#sg)" stroke-width="1.5" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="sg" x1="4" y1="2" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+              <linearGradient id="sg2" x1="12" y1="12" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#0080ff"/></linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="auth-logo-text">NexaFlow</span>
+      </div>
 
-          <!-- Back link -->
-          <a href="index.html" class="auth-back">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-            Back to home
-          </a>
+      <div class="auth-card">
+        <!-- Progress indicator -->
+        <div class="signup-progress" id="progressBar">
+          <div class="progress-step active" data-step="1"><span class="step-num">1</span><span class="step-label">Account</span></div>
+          <div class="progress-connector"></div>
+          <div class="progress-step" data-step="2"><span class="step-num">2</span><span class="step-label">Workspace</span></div>
+          <div class="progress-connector"></div>
+          <div class="progress-step" data-step="3"><span class="step-num">3</span><span class="step-label">Done</span></div>
+        </div>
 
-          <!-- Logo -->
-          <div class="auth-logo">
-            <div class="auth-logo-icon">
-              <svg viewBox="0 0 40 40" fill="none">
-                <polygon points="20,2 38,11 38,29 20,38 2,29 2,11" stroke="url(#sLogoGrad)" stroke-width="1.5" fill="none"/>
-                <polygon points="20,8 32,14.5 32,27.5 20,34 8,27.5 8,14.5" stroke="url(#sLogoGrad)" stroke-width="1" fill="none" opacity="0.5"/>
-                <circle cx="20" cy="20" r="4" fill="url(#sLogoGrad)"/>
-                <defs>
-                  <linearGradient id="sLogoGrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#00f5ff"/><stop offset="50%" stop-color="#0080ff"/><stop offset="100%" stop-color="#8b5cf6"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-            <span class="auth-logo-text">NexaFlow</span>
+        <div id="error-banner" style="display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;color:#ef4444"></div>
+
+        <!-- Step 1 -->
+        <div id="step1">
+          <div class="auth-card-header">
+            <h1 class="auth-title">Create your account</h1>
+            <p class="auth-subtitle">Start your free 14-day trial. No credit card required.</p>
           </div>
 
-          <!-- Progress Steps -->
-          <div class="signup-progress">
-            <div class="progress-step active" data-step="1">
-              <div class="progress-step-num">1</div>
-              <span>Account</span>
-            </div>
-            <div class="progress-step-line"></div>
-            <div class="progress-step" data-step="2">
-              <div class="progress-step-num">2</div>
-              <span>Profile</span>
-            </div>
-            <div class="progress-step-line"></div>
-            <div class="progress-step" data-step="3">
-              <div class="progress-step-num">3</div>
-              <span>Setup</span>
-            </div>
+          <div class="social-auth-grid">
+            <button class="social-btn" id="googleBtn" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#EA4335" d="M5.27 9.76A7.08 7.08 0 0112 4.9a6.8 6.8 0 014.87 1.99l3.62-3.62A11.8 11.8 0 0012 0 12 12 0 00.64 7.35l4.63 3.61z"/><path fill="#34A853" d="M16.04 18.01A7.27 7.27 0 0112 19.1a7.08 7.08 0 01-6.72-4.87l-4.65 3.56A12 12 0 0012 24a11.5 11.5 0 007.95-3.1l-3.91-2.89z"/><path fill="#4A90D9" d="M19.95 20.9a11.55 11.55 0 003.3-8.43 10.39 10.39 0 00-.17-1.97H12v4.63h6.4a5.25 5.25 0 01-2.36 3.35l3.91 2.42z"/><path fill="#FBBC05" d="M5.28 14.23A7.1 7.1 0 014.9 12a7.4 7.4 0 01.38-2.24L.65 6.15a12.07 12.07 0 000 11.72l4.63-3.64z"/></svg>
+              Google
+            </button>
+            <button class="social-btn" id="githubBtn" type="button">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </button>
           </div>
 
-          <!-- Form Card -->
-          <div class="auth-card glass-card">
+          <div class="auth-divider"><span>or sign up with email</span></div>
 
-            <!-- Step 1: Account Info -->
-            <div class="signup-step" id="step1">
-              <div class="auth-card-header">
-                <h1 class="auth-title">Create your account</h1>
-                <p class="auth-subtitle">Start your 14-day free trial — no credit card required</p>
+          <form id="step1Form" novalidate>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+              <div class="form-group">
+                <label class="form-label">First name</label>
+                <input type="text" id="firstName" placeholder="Jordan" class="form-input" autocomplete="given-name" />
+                <div class="form-error" id="firstName-error"></div>
               </div>
-
-              <!-- Social Auth -->
-              <div class="social-auth">
-                <a href="#" class="social-btn">
-                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                  </svg>
-                  Sign up with Google
-                </a>
-                <a href="#" class="social-btn">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-                  </svg>
-                  Sign up with GitHub
-                </a>
+              <div class="form-group">
+                <label class="form-label">Last name</label>
+                <input type="text" id="lastName" placeholder="Smith" class="form-input" autocomplete="family-name" />
               </div>
+            </div>
 
-              <div class="divider">or sign up with email</div>
+            <div class="form-group">
+              <label class="form-label">Work email</label>
+              <div class="form-input-wrap">
+                <svg class="form-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <input type="email" id="email" placeholder="you@company.com" class="form-input" autocomplete="email" />
+              </div>
+              <div class="form-error" id="email-error"></div>
+            </div>
 
-              <form class="auth-form" id="signupForm" novalidate>
-                <div class="form-row-2">
-                  <div class="form-group">
-                    <label class="form-label" for="firstName">First Name</label>
-                    <div class="input-wrapper">
-                      <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
-                      </svg>
-                      <input type="text" id="firstName" name="firstName" class="form-input" placeholder="John" autocomplete="given-name" required />
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="lastName">Last Name</label>
-                    <div class="input-wrapper">
-                      <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
-                      </svg>
-                      <input type="text" id="lastName" name="lastName" class="form-input" placeholder="Doe" autocomplete="family-name" required />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="signupEmail">Work Email</label>
-                  <div class="input-wrapper">
-                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                      <path d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
-                    </svg>
-                    <input type="email" id="signupEmail" name="email" class="form-input" placeholder="you@company.com" autocomplete="email" required />
-                  </div>
-                  <div class="form-error" id="signupEmailError"></div>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="signupPassword">Password</label>
-                  <div class="input-wrapper">
-                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                      <path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
-                    </svg>
-                    <input type="password" id="signupPassword" name="password" class="form-input" placeholder="Min 8 characters" autocomplete="new-password" required />
-                    <button type="button" class="input-toggle" id="toggleSignupPassword" aria-label="Toggle password visibility">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
-                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                      </svg>
-                    </button>
-                  </div>
-                  <!-- Password Strength -->
-                  <div class="strength-bar" id="strengthBar">
-                    <div class="strength-segment" id="seg1"></div>
-                    <div class="strength-segment" id="seg2"></div>
-                    <div class="strength-segment" id="seg3"></div>
-                    <div class="strength-segment" id="seg4"></div>
-                  </div>
-                  <div class="strength-label" id="strengthLabel"></div>
-                  <div class="form-error" id="signupPasswordError"></div>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="confirmPassword">Confirm Password</label>
-                  <div class="input-wrapper">
-                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                      <path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
-                    </svg>
-                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="Repeat your password" autocomplete="new-password" required />
-                  </div>
-                  <div class="form-error" id="confirmPasswordError"></div>
-                </div>
-
-                <!-- Terms -->
-                <div class="form-group">
-                  <label class="checkbox-label">
-                    <input type="checkbox" id="terms" name="terms" class="checkbox-input" required />
-                    <span class="checkbox-custom"></span>
-                    <span class="checkbox-text">
-                      I agree to the <a href="#" class="auth-link">Terms of Service</a>
-                      and <a href="#" class="auth-link">Privacy Policy</a>
-                    </span>
-                  </label>
-                  <div class="form-error" id="termsError"></div>
-                </div>
-
-                <label class="checkbox-label">
-                  <input type="checkbox" id="marketing" name="marketing" class="checkbox-input" />
-                  <span class="checkbox-custom"></span>
-                  <span class="checkbox-text">Send me product updates and announcements (optional)</span>
-                </label>
-
-                <button type="submit" class="btn btn-primary auth-submit" id="signupBtn">
-                  <span class="btn-text">Create Free Account</span>
-                  <svg class="btn-icon" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
-                  </svg>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="form-input-wrap">
+                <svg class="form-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                <input type="password" id="password" placeholder="Min. 8 characters" class="form-input" id="password" autocomplete="new-password" />
+                <button type="button" class="form-input-toggle" id="pwToggle">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
-              </form>
+              </div>
+              <div class="password-strength-bar" id="strengthBar">
+                <div class="strength-segment" id="s1"></div>
+                <div class="strength-segment" id="s2"></div>
+                <div class="strength-segment" id="s3"></div>
+                <div class="strength-segment" id="s4"></div>
+              </div>
+              <div class="form-error" id="pw-error"></div>
+            </div>
 
-              <!-- Sign In Link -->
-              <div class="auth-switch">
-                Already have an account?
-                <a href="login.html" class="auth-link">Sign in →</a>
+            <div class="form-group">
+              <label class="form-label">Confirm password</label>
+              <div class="form-input-wrap">
+                <svg class="form-input-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                <input type="password" id="confirmPw" placeholder="Repeat password" class="form-input" autocomplete="new-password" />
+              </div>
+              <div class="form-error" id="confirm-error"></div>
+            </div>
+
+            <div class="form-group" style="flex-direction:row;align-items:flex-start;gap:0.5rem;margin-bottom:1.25rem">
+              <label class="custom-checkbox" style="margin-top:2px">
+                <input type="checkbox" id="termsCheck" />
+                <span class="checkbox-mark"></span>
+              </label>
+              <label for="termsCheck" style="font-size:0.82rem;color:var(--color-text-secondary);cursor:pointer;line-height:1.5">
+                I agree to the <a href="#" style="color:var(--color-neon-cyan)">Terms of Service</a> and <a href="#" style="color:var(--color-neon-cyan)">Privacy Policy</a>
+              </label>
+            </div>
+
+            <button type="submit" class="btn-primary btn-full" id="step1Btn">Continue</button>
+          </form>
+
+          <p class="auth-switch">Already have an account? <a href="login.html">Sign in</a></p>
+        </div>
+
+        <!-- Step 2 -->
+        <div id="step2" style="display:none">
+          <div class="auth-card-header">
+            <h1 class="auth-title">Set up your workspace</h1>
+            <p class="auth-subtitle">Tell us about your company to personalize your experience</p>
+          </div>
+          <form id="step2Form" novalidate>
+            <div class="form-group">
+              <label class="form-label">Company / workspace name</label>
+              <input type="text" id="company" placeholder="Acme Corp" class="form-input" />
+              <div class="form-error" id="company-error"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Your role</label>
+              <select class="form-input" id="jobTitle" style="cursor:pointer">
+                <option value="">Select your role…</option>
+                <option>Founder / CEO</option>
+                <option>CTO / Engineering</option>
+                <option>Operations</option>
+                <option>Product</option>
+                <option>Marketing</option>
+                <option>Sales</option>
+                <option>Finance</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Team size</label>
+              <select class="form-input" id="teamSize" style="cursor:pointer">
+                <option value="">Select team size…</option>
+                <option>Just me</option>
+                <option>2–10</option>
+                <option>11–50</option>
+                <option>51–200</option>
+                <option>200+</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:1.5rem">
+              <label class="form-label">What will you mainly use NexaFlow for?</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+                <label class="use-case-option" id="uc1">
+                  <input type="radio" name="usecase" value="automation" style="display:none"/>
+                  <span>🤖 Workflow automation</span>
+                </label>
+                <label class="use-case-option" id="uc2">
+                  <input type="radio" name="usecase" value="ai_agents" style="display:none"/>
+                  <span>🧠 AI agents</span>
+                </label>
+                <label class="use-case-option" id="uc3">
+                  <input type="radio" name="usecase" value="data" style="display:none"/>
+                  <span>📊 Data processing</span>
+                </label>
+                <label class="use-case-option" id="uc4">
+                  <input type="radio" name="usecase" value="integration" style="display:none"/>
+                  <span>🔗 Integration hub</span>
+                </label>
               </div>
             </div>
+            <button type="submit" class="btn-primary btn-full" id="step2Btn">Create workspace</button>
+          </form>
+        </div>
 
+        <!-- Step 3: success -->
+        <div id="step3" style="display:none;text-align:center;padding:1rem 0">
+          <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(0,255,135,0.2),rgba(0,245,255,0.2));border:2px solid #00ff87;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00ff87" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
+          <h2 style="font-size:1.4rem;font-weight:800;color:var(--color-text-primary);margin-bottom:0.5rem">You're all set!</h2>
+          <p style="color:var(--color-text-muted);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.6">Your workspace has been created with sample workflows and AI agents ready to go.</p>
+          <button class="btn-primary btn-full" id="goDashBtn">Open dashboard →</button>
+        </div>
+      </div>
+    </div>
 
-          <!-- Trust Badges -->
-          <div class="trust-badges">
-            <div class="trust-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              No Credit Card
-            </div>
-            <div class="trust-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-              14-Day Free Trial
-            </div>
-            <div class="trust-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-              Cancel Anytime
-            </div>
-          </div>
+    <!-- Right: visual panel -->
+    <div class="auth-hero-panel">
+      <div class="auth-hero-orb" style="top:10%;right:15%;width:320px;height:320px;background:radial-gradient(circle,rgba(139,92,246,0.12) 0%,transparent 70%)"></div>
+      <div class="auth-hero-orb" style="bottom:20%;left:10%;width:240px;height:240px;background:radial-gradient(circle,rgba(0,245,255,0.10) 0%,transparent 70%)"></div>
 
+      <div class="auth-included-list">
+        <div style="font-size:0.85rem;font-weight:700;color:var(--color-text-primary);margin-bottom:1rem">What's included in your free trial:</div>
+        <div style="display:flex;flex-direction:column;gap:0.625rem">
+          <div class="auth-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00ff87" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>10 workflows — no credit card needed</div>
+          <div class="auth-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00ff87" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>5,000 executions per month</div>
+          <div class="auth-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00ff87" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>5 AI agents (Claude-powered)</div>
+          <div class="auth-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00ff87" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>50+ integrations</div>
+          <div class="auth-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00ff87" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Full analytics & execution logs</div>
+          <div class="auth-feature-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00ff87" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Community + email support</div>
         </div>
       </div>
 
-      <!-- ===== RIGHT PANEL ===== -->
-      <div class="auth-panel auth-right">
-        <div class="auth-right-inner">
-
-          <div class="right-orb right-orb-1" style="background: radial-gradient(circle, var(--color-neon-purple), transparent)"></div>
-          <div class="right-orb right-orb-2"></div>
-
-          <!-- Plan Comparison -->
-          <div class="signup-plans">
-            <h3 class="signup-plans-title">What's included in your free trial</h3>
-
-            <div class="signup-plan-list">
-              <div class="signup-plan-item">
-                <div class="plan-item-icon">🚀</div>
-                <div>
-                  <strong>Unlimited Workflows</strong>
-                  <p>Build as many automations as you need</p>
-                </div>
-              </div>
-              <div class="signup-plan-item">
-                <div class="plan-item-icon">🤖</div>
-                <div>
-                  <strong>Neural AI Agents</strong>
-                  <p>Self-learning automation powered by GPT-5</p>
-                </div>
-              </div>
-              <div class="signup-plan-item">
-                <div class="plan-item-icon">🔌</div>
-                <div>
-                  <strong>300+ Integrations</strong>
-                  <p>Connect Slack, GitHub, Salesforce & more</p>
-                </div>
-              </div>
-              <div class="signup-plan-item">
-                <div class="plan-item-icon">📊</div>
-                <div>
-                  <strong>Real-Time Analytics</strong>
-                  <p>Full visibility into every workflow run</p>
-                </div>
-              </div>
-              <div class="signup-plan-item">
-                <div class="plan-item-icon">🛡️</div>
-                <div>
-                  <strong>Enterprise Security</strong>
-                  <p>SOC 2, HIPAA & GDPR compliance</p>
-                </div>
-              </div>
-              <div class="signup-plan-item">
-                <div class="plan-item-icon">💬</div>
-                <div>
-                  <strong>Priority Support</strong>
-                  <p>Dedicated onboarding & live chat</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Social Proof Numbers -->
-          <div class="signup-social-proof glass-card">
-            <div class="proof-stat">
-              <div class="proof-stat-val">50K+</div>
-              <div class="proof-stat-lbl">Happy Teams</div>
-            </div>
-            <div class="proof-divider"></div>
-            <div class="proof-stat">
-              <div class="proof-stat-val">★ 4.9</div>
-              <div class="proof-stat-lbl">G2 Rating</div>
-            </div>
-            <div class="proof-divider"></div>
-            <div class="proof-stat">
-              <div class="proof-stat-val">2.4M</div>
-              <div class="proof-stat-lbl">Daily Executions</div>
-            </div>
-          </div>
-
-          <!-- Recent signups -->
-          <div class="recent-signups glass-card">
-            <div class="recent-signups-header">
-              <span class="status-dot" style="width:6px;height:6px;background:#00ff87;border-radius:50%;display:inline-block;box-shadow:0 0 6px #00ff87;animation:pulse 2s infinite"></span>
-              Recent sign-ups
-            </div>
-            <div class="recent-signup-list" id="recentSignups">
-              <div class="recent-signup-item">
-                <div class="rs-avatar" style="background:linear-gradient(135deg,#00f5ff,#0080ff)">A</div>
-                <div class="rs-info">
-                  <div class="rs-name">Alex from Stripe</div>
-                  <div class="rs-time">2 minutes ago</div>
-                </div>
-              </div>
-              <div class="recent-signup-item">
-                <div class="rs-avatar" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">S</div>
-                <div class="rs-info">
-                  <div class="rs-name">Sophie from Linear</div>
-                  <div class="rs-time">5 minutes ago</div>
-                </div>
-              </div>
-              <div class="recent-signup-item">
-                <div class="rs-avatar" style="background:linear-gradient(135deg,#00ff87,#00b4d8)">M</div>
-                <div class="rs-info">
-                  <div class="rs-name">Marcus from Vercel</div>
-                  <div class="rs-time">11 minutes ago</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+      <!-- Social proof -->
+      <div style="margin-top:2rem;padding:1.25rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px">
+        <div style="font-size:0.75rem;color:var(--color-text-muted);margin-bottom:0.875rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em">Joined in the last 24h</div>
+        <div id="signupFeed" style="display:flex;flex-direction:column;gap:0.5rem"></div>
+        <div style="font-size:0.78rem;color:var(--color-text-muted);margin-top:0.75rem;text-align:center">
+          <strong style="color:var(--color-text-primary)">2,847</strong> teams signed up this month
         </div>
       </div>
-
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/seed.js"></script>
   <script src="js/particles.js"></script>
-  <script src="js/auth.js"></script>
+  <script>
+    // Redirect if logged in
+    (async () => {
+      const s = await window.getSession();
+      if (s) window.location.href = 'dashboard.html';
+    })();
+
+    // Password strength
+    document.getElementById('password').addEventListener('input', function () {
+      const v = this.value;
+      let score = 0;
+      if (v.length >= 8)  score++;
+      if (/[A-Z]/.test(v)) score++;
+      if (/[0-9]/.test(v)) score++;
+      if (/[^A-Za-z0-9]/.test(v)) score++;
+      const colors = ['', '#ef4444', '#f59e0b', '#0080ff', '#00ff87'];
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById('s' + i).style.background = i <= score ? colors[score] : 'rgba(255,255,255,0.08)';
+      }
+    });
+
+    // Password toggle
+    document.getElementById('pwToggle').addEventListener('click', () => {
+      const p = document.getElementById('password');
+      p.type = p.type === 'password' ? 'text' : 'password';
+    });
+
+    // Use-case radio style
+    document.querySelectorAll('.use-case-option input').forEach(radio => {
+      radio.addEventListener('change', function () {
+        document.querySelectorAll('.use-case-option').forEach(l => l.style.cssText = '');
+        this.closest('.use-case-option').style.cssText = 'border-color:rgba(0,245,255,0.4);background:rgba(0,245,255,0.08);color:var(--color-neon-cyan)';
+      });
+    });
+
+    // Add use-case option styles
+    const style = document.createElement('style');
+    style.textContent = `.use-case-option{display:flex;align-items:center;gap:0.5rem;padding:0.6rem 0.875rem;border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-size:0.82rem;color:var(--color-text-secondary);cursor:pointer;transition:all 0.2s}.use-case-option:hover{border-color:rgba(0,245,255,0.2);color:var(--color-text-primary)}`;
+    document.head.appendChild(style);
+
+    // Step management
+    let currentStep = 1;
+    let registeredUser = null;
+
+    function goToStep(n) {
+      document.getElementById('step' + currentStep).style.display = 'none';
+      document.querySelectorAll('.progress-step').forEach((s, i) => {
+        s.classList.toggle('active', i + 1 === n);
+        s.classList.toggle('completed', i + 1 < n);
+      });
+      currentStep = n;
+      document.getElementById('step' + n).style.display = 'block';
+    }
+
+    function showError(msg) {
+      const b = document.getElementById('error-banner');
+      b.textContent = msg;
+      b.style.display = 'block';
+    }
+
+    // Step 1: create account
+    document.getElementById('step1Form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      document.getElementById('error-banner').style.display = 'none';
+      ['firstName', 'email', 'pw', 'confirm'].forEach(id => {
+        const el = document.getElementById(id + '-error');
+        if (el) el.textContent = '';
+      });
+
+      const firstName  = document.getElementById('firstName').value.trim();
+      const lastName   = document.getElementById('lastName').value.trim();
+      const email      = document.getElementById('email').value.trim();
+      const password   = document.getElementById('password').value;
+      const confirmPw  = document.getElementById('confirmPw').value;
+      const terms      = document.getElementById('termsCheck').checked;
+      const btn        = document.getElementById('step1Btn');
+
+      if (!firstName) { document.getElementById('firstName-error').textContent = 'First name is required'; return; }
+      if (!email || !email.includes('@')) { document.getElementById('email-error').textContent = 'Valid email is required'; return; }
+      if (password.length < 8) { document.getElementById('pw-error').textContent = 'Password must be at least 8 characters'; return; }
+      if (password !== confirmPw) { document.getElementById('confirm-error').textContent = 'Passwords do not match'; return; }
+      if (!terms) { showError('Please accept the Terms of Service to continue'); return; }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:0.5rem"><span class="btn-spinner"></span>Creating account…</span>';
+
+      const fullName = [firstName, lastName].filter(Boolean).join(' ');
+      const { data, error } = await window.sb.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName } }
+      });
+
+      if (error) {
+        btn.disabled = false;
+        btn.textContent = 'Continue';
+        showError(error.message);
+        return;
+      }
+
+      registeredUser = data.user;
+      btn.disabled = false;
+      btn.textContent = 'Continue';
+      goToStep(2);
+    });
+
+    // Step 2: workspace setup
+    document.getElementById('step2Form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const company = document.getElementById('company').value.trim();
+      const btn = document.getElementById('step2Btn');
+
+      if (!company) { document.getElementById('company-error').textContent = 'Workspace name is required'; return; }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:0.5rem"><span class="btn-spinner"></span>Setting up workspace…</span>';
+
+      // Wait for session (email-confirmed users auto sign-in; non-confirmed don't)
+      // Try to sign in to get session
+      const session = await window.getSession();
+
+      if (session) {
+        // Update workspace settings
+        await window.sb.from('workspace_settings')
+          .update({ workspace_name: company })
+          .eq('user_id', session.user.id);
+
+        // Seed demo data
+        try { await window.seedDemoData(session.user.id); } catch {}
+      }
+
+      btn.disabled = false;
+      goToStep(3);
+    });
+
+    // Step 3: go to dashboard
+    document.getElementById('goDashBtn').addEventListener('click', () => {
+      window.location.href = 'dashboard.html';
+    });
+
+    // OAuth
+    document.getElementById('googleBtn').addEventListener('click', () =>
+      window.sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/dashboard.html' } }));
+    document.getElementById('githubBtn').addEventListener('click', () =>
+      window.sb.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: window.location.origin + '/dashboard.html' } }));
+
+    // Social proof signup feed
+    const names = ['Alex T.', 'Maria K.', 'James R.', 'Priya S.', 'Tom H.', 'Sarah M.', 'David L.', 'Emma W.', 'Raj P.', 'Lin C.'];
+    const companies = ['from Stripe', 'from Vercel', 'from Notion', 'from Linear', 'from GitHub'];
+    const feed = document.getElementById('signupFeed');
+
+    function addFeedEntry() {
+      const name = names[Math.floor(Math.random() * names.length)];
+      const co   = companies[Math.floor(Math.random() * companies.length)];
+      const div  = document.createElement('div');
+      div.style.cssText = 'display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;color:var(--color-text-secondary);animation:fadeInUp 0.3s ease';
+      div.innerHTML = `<span style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#00f5ff,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:var(--color-bg-primary);flex-shrink:0">${name[0]}</span><span>${name} <span style="color:var(--color-text-muted)">${co}</span> just signed up</span>`;
+      feed.prepend(div);
+      if (feed.children.length > 4) feed.lastChild.remove();
+    }
+
+    addFeedEntry(); addFeedEntry(); addFeedEntry();
+    setInterval(addFeedEntry, 6000);
+  </script>
 </body>
 </html>

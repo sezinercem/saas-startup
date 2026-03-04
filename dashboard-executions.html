@@ -10,270 +10,438 @@
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/dashboard.css" />
   <link rel="stylesheet" href="styles/dashboard-inner.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <style>
+    .exec-log-panel {
+      position: fixed; right: 0; top: 0; bottom: 0; width: 420px;
+      background: #0a0a0f; border-left: 1px solid rgba(0,245,255,0.15);
+      transform: translateX(100%); transition: transform .3s ease;
+      z-index: 200; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .exec-log-panel.open { transform: translateX(0); }
+    .exec-log-header {
+      padding: 20px 24px; border-bottom: 1px solid rgba(0,245,255,0.1);
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .exec-log-header h3 { font-size: 14px; font-weight: 600; color: #e8f4f8; margin: 0 0 4px; }
+    .exec-log-header p { font-size: 12px; color: rgba(232,244,248,0.5); margin: 0; font-family: 'JetBrains Mono', monospace; }
+    .exec-log-close {
+      margin-left: auto; background: none; border: none; color: rgba(232,244,248,0.4);
+      cursor: pointer; font-size: 18px; line-height: 1; padding: 4px;
+      transition: color .2s; flex-shrink: 0;
+    }
+    .exec-log-close:hover { color: #e8f4f8; }
+    .exec-log-meta {
+      padding: 16px 24px; border-bottom: 1px solid rgba(0,245,255,0.08);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .exec-meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .exec-meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: rgba(232,244,248,0.4); }
+    .exec-meta-value { font-size: 13px; color: #e8f4f8; font-family: 'JetBrains Mono', monospace; }
+    .exec-log-steps {
+      padding: 16px 24px; border-bottom: 1px solid rgba(0,245,255,0.08);
+    }
+    .exec-log-steps h4 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: rgba(232,244,248,0.5); margin: 0 0 12px; }
+    .step-item {
+      display: flex; align-items: center; gap: 10px; padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .step-item:last-child { border-bottom: none; }
+    .step-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .step-dot.success { background: #00ff88; box-shadow: 0 0 6px #00ff88; }
+    .step-dot.failed { background: #ff4d6d; box-shadow: 0 0 6px #ff4d6d; }
+    .step-dot.running { background: #00f5ff; box-shadow: 0 0 6px #00f5ff; animation: pulse 1s infinite; }
+    .step-dot.pending { background: rgba(232,244,248,0.2); }
+    .step-name { font-size: 12px; color: #e8f4f8; flex: 1; }
+    .step-dur { font-size: 11px; color: rgba(232,244,248,0.4); font-family: 'JetBrains Mono', monospace; }
+    .exec-log-output {
+      flex: 1; overflow-y: auto; padding: 16px 24px;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    }
+    .exec-log-output h4 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: rgba(232,244,248,0.5); margin: 0 0 12px; }
+    .log-line { padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .log-line .ts { color: rgba(232,244,248,0.3); margin-right: 8px; }
+    .log-line.info .msg { color: rgba(232,244,248,0.7); }
+    .log-line.success .msg { color: #00ff88; }
+    .log-line.error .msg { color: #ff4d6d; }
+    .log-line.warn .msg { color: #ffd700; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3);
+      color: #00ff88; font-size: 11px; padding: 3px 10px; border-radius: 20px;
+    }
+    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: #00ff88; animation: pulse 1s infinite; }
+    .cancel-btn {
+      background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.3);
+      color: #ff4d6d; padding: 4px 10px; border-radius: 6px; font-size: 11px;
+      cursor: pointer; transition: all .2s;
+    }
+    .cancel-btn:hover { background: rgba(255,77,109,0.2); }
+    .retry-btn {
+      background: rgba(0,245,255,0.1); border: 1px solid rgba(0,245,255,0.3);
+      color: #00f5ff; padding: 4px 10px; border-radius: 6px; font-size: 11px;
+      cursor: pointer; transition: all .2s;
+    }
+    .retry-btn:hover { background: rgba(0,245,255,0.2); }
+  </style>
 </head>
 <body>
-  <canvas id="bg-canvas"></canvas>
-  <div class="grid-overlay"></div>
-  <div class="ambient-orb" style="top:-15%;left:30%;width:600px;height:600px;background:radial-gradient(circle,rgba(0,245,255,0.05) 0%,transparent 70%)"></div>
-
-  <div class="dash-layout">
-    <aside class="dash-sidebar">
-      <div class="dash-sidebar-logo">
-        <div class="sidebar-logo-icon">
-          <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
-            <path d="M16 2L28 8V16C28 22.627 22.627 28 16 28C9.373 28 4 22.627 4 16V8L16 2Z" stroke="url(#sg)" stroke-width="2" fill="none"/>
-            <circle cx="16" cy="16" r="4" fill="url(#sg2)"/>
-            <path d="M16 8V12M16 20V24M8 16H12M20 16H24" stroke="url(#sg)" stroke-width="1.5" stroke-linecap="round"/>
-            <defs>
-              <linearGradient id="sg" x1="4" y1="2" x2="28" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
-              <linearGradient id="sg2" x1="12" y1="12" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#00f5ff"/><stop offset="1" stop-color="#0080ff"/></linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <span class="sidebar-logo-text">NexaFlow</span>
-      </div>
-      <nav class="dash-sidebar-nav">
-        <div class="sidebar-nav-section">
-          <div class="sidebar-nav-label">Main</div>
-          <a href="dashboard.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Overview</a>
-          <a href="dashboard-workflows.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h8M8 12h5M8 18h3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Workflows</a>
-          <a href="dashboard-agents.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/></svg>AI Agents</a>
-          <a href="dashboard-executions.html" class="sidebar-link active"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Executions</a>
-          <a href="dashboard-analytics.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20h18M5 20V12l7-7 7 7v8"/></svg>Analytics</a>
-        </div>
-        <div class="sidebar-nav-section">
-          <div class="sidebar-nav-label">Configure</div>
-          <a href="dashboard-integrations.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>Integrations</a>
-          <a href="dashboard-team.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Team</a>
-          <a href="dashboard-settings.html" class="sidebar-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/></svg>Settings</a>
-        </div>
-      </nav>
-      <div class="sidebar-user">
-        <div class="sidebar-user-avatar">JS</div>
-        <div class="sidebar-user-info"><div class="sidebar-user-name">Jordan Smith</div><div class="sidebar-user-role">Admin</div></div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4;margin-left:auto;flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
-    </aside>
-
-    <main class="dash-main">
-      <header class="dash-topbar">
-        <div class="dash-topbar-left">
-          <h2 class="dash-page-title">Executions</h2>
-          <div class="dash-breadcrumb" style="margin:0;font-size:0.78rem"><a href="dashboard.html">Dashboard</a><span class="sep">/</span><span class="current">Executions</span></div>
-        </div>
-        <div class="dash-topbar-right">
-          <div style="display:flex;align-items:center;gap:0.35rem;font-size:0.78rem;color:#00ff87;background:rgba(0,255,135,0.08);padding:0.4rem 0.75rem;border-radius:8px;border:1px solid rgba(0,255,135,0.15)">
-            <span style="width:6px;height:6px;border-radius:50%;background:#00ff87;animation:pulse 2s infinite"></span>
-            Live — updating every 3s
-          </div>
-          <button class="btn-ghost" style="padding:0.5rem 1rem;font-size:0.8rem">Export CSV</button>
-        </div>
-      </header>
-
-      <div class="dash-content">
-
-        <!-- Stats -->
-        <div class="dash-stats-row">
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,245,255,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">Today's Executions</div>
-            <div class="dash-stat-value" id="execToday">84,201</div>
-            <div class="dash-stat-delta up">↑ Live counting</div>
-          </div>
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,255,135,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">Currently Running</div>
-            <div class="dash-stat-value" id="execRunning">47</div>
-            <div class="dash-stat-delta neutral">Across 18 workflows</div>
-          </div>
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(239,68,68,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">Failed Today</div>
-            <div class="dash-stat-value" id="execFailed">12</div>
-            <div class="dash-stat-delta up">↓ 8 fewer than yesterday</div>
-          </div>
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(139,92,246,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">Avg Duration</div>
-            <div class="dash-stat-value">4.2s</div>
-            <div class="dash-stat-delta up">↓ 0.3s faster</div>
-          </div>
-        </div>
-
-        <!-- Filter bar -->
-        <div class="dash-filter-bar">
-          <div class="dash-filter-wrap">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            <input type="text" class="dash-filter-input" placeholder="Search by workflow, ID, or trigger…" id="execSearch" />
-          </div>
-          <select class="dash-filter-select" id="execStatus">
-            <option value="">All Status</option>
-            <option value="success">Success</option>
-            <option value="running">Running</option>
-            <option value="failed">Failed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-          <select class="dash-filter-select" id="execTime">
-            <option>Last hour</option>
-            <option selected>Last 24h</option>
-            <option>Last 7 days</option>
-          </select>
-        </div>
-
-        <!-- Executions table -->
-        <div class="dash-table-container">
-          <div class="dash-table-header">
-            <div class="dash-table-title">Execution Log</div>
-            <div class="dash-table-count" id="execCount">84,201 today</div>
-          </div>
-          <table class="dash-table">
-            <thead>
-              <tr>
-                <th>Execution ID</th>
-                <th>Workflow</th>
-                <th>Trigger</th>
-                <th>Started</th>
-                <th>Duration</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="execTableBody"></tbody>
-          </table>
-          <div class="dash-pagination">
-            <div class="dash-pagination-info" id="execPagination">Showing 1–25 of 84,201 executions</div>
-            <div class="dash-pagination-controls">
-              <button class="page-btn" disabled>←</button>
-              <button class="page-btn active">1</button>
-              <button class="page-btn">2</button>
-              <button class="page-btn">3</button>
-              <span style="color:var(--color-text-muted);font-size:0.8rem">…</span>
-              <button class="page-btn">3368</button>
-              <button class="page-btn">→</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Execution Detail (inline log) -->
-        <div class="inner-chart-card" style="margin-top:1.5rem">
-          <div class="inner-chart-header">
-            <div class="inner-chart-title">Execution Detail — <span id="detailExecId" style="font-family:var(--font-mono);color:var(--color-neon-cyan);font-size:0.8rem">Select a row to inspect</span></div>
-          </div>
-          <div class="log-stream" id="execDetailLog">
-            <div class="log-line" style="color:var(--color-text-muted);font-style:italic">
-              <span class="log-msg">Click any execution row above to view its step-by-step log output here…</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </main>
-  </div>
-
-  <!-- Execution Detail Panel -->
-  <div class="detail-panel-overlay" id="panelOverlay"></div>
-  <div class="detail-panel" id="execDetailPanel">
-    <div class="detail-panel-header">
+<div class="dash-layout">
+  <!-- sidebar injected by shell.js -->
+  <main class="dash-main">
+    <div class="dash-topbar">
       <div>
-        <h3 style="font-size:1rem;font-weight:700;color:var(--color-text-primary);margin-bottom:0.25rem" id="detailPanelId">exec-xxxxx</h3>
-        <div id="detailPanelStatus"></div>
+        <h1 class="dash-page-title">Executions</h1>
+        <p class="dash-page-sub">Full run history for all workflows</p>
       </div>
-      <button class="detail-panel-close" id="panelClose">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      </button>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="live-badge"><span class="live-dot"></span>Live</span>
+        <span id="running-count" style="font-size:12px;color:rgba(232,244,248,0.5)">Loading…</span>
+      </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:1.25rem" id="detailPanelBody"></div>
+
+    <!-- Stats Row -->
+    <div class="dash-stats-row" id="stats-row">
+      <div class="dash-stat-card"><div class="dsc-label">Total Runs</div><div class="dsc-value" id="s-total">—</div></div>
+      <div class="dash-stat-card"><div class="dsc-label">Successful</div><div class="dsc-value" style="color:#00ff88" id="s-success">—</div></div>
+      <div class="dash-stat-card"><div class="dsc-label">Failed</div><div class="dsc-value" style="color:#ff4d6d" id="s-failed">—</div></div>
+      <div class="dash-stat-card"><div class="dsc-label">Avg Duration</div><div class="dsc-value" id="s-avg">—</div></div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="dash-filter-bar" style="margin-top:24px">
+      <input id="q" class="dash-filter-input" placeholder="Search executions…" oninput="filt()" />
+      <select id="f-status" class="dash-filter-select" onchange="filt()">
+        <option value="">All Statuses</option>
+        <option value="running">Running</option>
+        <option value="success">Success</option>
+        <option value="failed">Failed</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+      <select id="f-trigger" class="dash-filter-select" onchange="filt()">
+        <option value="">All Triggers</option>
+        <option value="manual">Manual</option>
+        <option value="webhook">Webhook</option>
+        <option value="schedule">Schedule</option>
+        <option value="api">API</option>
+      </select>
+      <select id="f-sort" class="dash-filter-select" onchange="filt()">
+        <option value="started_at">Newest First</option>
+        <option value="duration_ms">By Duration</option>
+        <option value="workflow_name">By Workflow</option>
+      </select>
+    </div>
+
+    <!-- Table -->
+    <div class="dash-table-wrap" style="margin-top:16px">
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th>Execution ID</th>
+            <th>Workflow</th>
+            <th>Status</th>
+            <th>Trigger</th>
+            <th>Started</th>
+            <th>Duration</th>
+            <th>Steps</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="exec-tbody">
+          <tr><td colspan="8" style="text-align:center;padding:40px;color:rgba(232,244,248,0.3)">Loading executions…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="dash-pagination" id="pager"></div>
+  </main>
+</div>
+
+<!-- Execution Log Panel -->
+<div class="exec-log-panel" id="log-panel">
+  <div class="exec-log-header">
+    <div>
+      <h3 id="lp-name">Execution Details</h3>
+      <p id="lp-id">—</p>
+    </div>
+    <span id="lp-status-badge"></span>
+    <button class="exec-log-close" onclick="closePanel()">✕</button>
   </div>
+  <div class="exec-log-meta">
+    <div class="exec-meta-item"><span class="exec-meta-label">Workflow</span><span class="exec-meta-value" id="lp-workflow">—</span></div>
+    <div class="exec-meta-item"><span class="exec-meta-label">Trigger</span><span class="exec-meta-value" id="lp-trigger">—</span></div>
+    <div class="exec-meta-item"><span class="exec-meta-label">Started</span><span class="exec-meta-value" id="lp-started">—</span></div>
+    <div class="exec-meta-item"><span class="exec-meta-label">Duration</span><span class="exec-meta-value" id="lp-duration">—</span></div>
+  </div>
+  <div class="exec-log-steps">
+    <h4>Steps</h4>
+    <div id="lp-steps">—</div>
+  </div>
+  <div class="exec-log-output">
+    <h4>Log Output</h4>
+    <div id="lp-logs">—</div>
+  </div>
+</div>
 
-  <script src="js/particles.js"></script>
-  <script>
-    const statuses = ['success', 'success', 'success', 'success', 'success', 'success', 'success', 'success', 'running', 'failed', 'cancelled'];
-    const workflows = ['Customer Onboarding', 'Billing Reconciliation', 'Support Triage', 'Weekly Reports', 'Lead Scoring', 'Invoice Validation', 'Email Campaigns', 'Social Monitoring', 'Contract Review', 'Code Reviews'];
-    const triggers = ['Webhook', 'Schedule', 'Manual', 'API', 'Email', 'Form Submit'];
+<script src="js/shell.js"></script>
+<script>
+const PG = 20;
+let all = [], filtered = [], pg = 1, sub;
 
-    function randomExec(i) {
-      const status = statuses[Math.floor(Math.random() * statuses.length)];
-      const wf = workflows[Math.floor(Math.random() * workflows.length)];
-      const trigger = triggers[Math.floor(Math.random() * triggers.length)];
-      const minsAgo = Math.floor(Math.random() * 1440);
-      const dur = status === 'running' ? '—' : (Math.random() * 30 + 0.1).toFixed(1) + 's';
-      const id = 'exec-' + String(Math.floor(Math.random() * 999999)).padStart(6, '0');
-      const time = minsAgo < 60 ? minsAgo + 'm ago' : Math.floor(minsAgo / 60) + 'h ago';
-      return { id, wf, trigger, time, dur, status };
+async function load() {
+  const s = window.__currentUser;
+  if (!s) return;
+  const uid = s.id;
+
+  const { data, error } = await window.sb
+    .from('executions')
+    .select('*')
+    .eq('user_id', uid)
+    .order('started_at', { ascending: false })
+    .limit(500);
+
+  if (error) { console.error(error); return; }
+  all = data || [];
+  stats();
+  filt();
+  subscribeRealtime(uid);
+}
+
+function stats() {
+  const total = all.length;
+  const succ = all.filter(e => e.status === 'success').length;
+  const fail = all.filter(e => e.status === 'failed').length;
+  const durs = all.filter(e => e.duration_ms).map(e => e.duration_ms);
+  const avg = durs.length ? Math.round(durs.reduce((a,b)=>a+b,0)/durs.length) : 0;
+  const running = all.filter(e => e.status === 'running').length;
+
+  document.getElementById('s-total').textContent = total.toLocaleString();
+  document.getElementById('s-success').textContent = succ.toLocaleString();
+  document.getElementById('s-failed').textContent = fail.toLocaleString();
+  document.getElementById('s-avg').textContent = avg ? window.fmtDuration(avg) : '—';
+  document.getElementById('running-count').textContent = running > 0 ? `${running} running now` : 'All idle';
+}
+
+function filt() {
+  const q = document.getElementById('q').value.toLowerCase();
+  const fs = document.getElementById('f-status').value;
+  const ft = document.getElementById('f-trigger').value;
+  const sort = document.getElementById('f-sort').value;
+
+  filtered = all.filter(e => {
+    if (q && !e.workflow_name.toLowerCase().includes(q) && !e.id.includes(q)) return false;
+    if (fs && e.status !== fs) return false;
+    if (ft && e.trigger_type !== ft) return false;
+    return true;
+  });
+
+  if (sort === 'duration_ms') filtered.sort((a,b) => (b.duration_ms||0) - (a.duration_ms||0));
+  else if (sort === 'workflow_name') filtered.sort((a,b) => a.workflow_name.localeCompare(b.workflow_name));
+  // default: already ordered by started_at desc
+
+  pg = 1;
+  tbl();
+  pager();
+}
+
+function tbl() {
+  const tbody = document.getElementById('exec-tbody');
+  const slice = filtered.slice((pg-1)*PG, pg*PG);
+
+  if (!slice.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:rgba(232,244,248,0.3)">No executions found</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = slice.map(e => {
+    const stMap = { success:'active', failed:'error', running:'running', cancelled:'inactive' };
+    const stLabel = e.status.charAt(0).toUpperCase()+e.status.slice(1);
+    const trMap = { manual:'manual', webhook:'webhook', schedule:'schedule', api:'api', email:'email', form:'form' };
+    const shortId = e.id.split('-')[0];
+    const steps = e.steps_completed != null ? `${e.steps_completed}/${e.steps_total||5}` : '—';
+    const runningBtn = e.status === 'running'
+      ? `<button class="cancel-btn" onclick="cancelExec('${e.id}')">Cancel</button>`
+      : e.status === 'failed'
+        ? `<button class="retry-btn" onclick="retryExec('${e.id}')">Retry</button>`
+        : '';
+    return `<tr style="cursor:pointer" onclick="openPanel('${e.id}')">
+      <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(0,245,255,0.8)">${shortId}</span></td>
+      <td>${e.workflow_name}</td>
+      <td><span class="badge ${stMap[e.status]||''}">${stLabel}</span></td>
+      <td><span style="text-transform:capitalize;font-size:12px">${e.trigger_type||'manual'}</span></td>
+      <td style="font-size:12px;color:rgba(232,244,248,0.6)">${window.fmtTime(e.started_at)}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:12px">${e.duration_ms ? window.fmtDuration(e.duration_ms) : e.status==='running'?'<span style="color:#00f5ff">Running…</span>':'—'}</td>
+      <td style="font-size:12px">${steps}</td>
+      <td onclick="event.stopPropagation()">${runningBtn}</td>
+    </tr>`;
+  }).join('');
+}
+
+function pager() {
+  const total = Math.ceil(filtered.length / PG);
+  const el = document.getElementById('pager');
+  if (total <= 1) { el.innerHTML = ''; return; }
+
+  let html = `<button onclick="gp(${pg-1})" ${pg===1?'disabled':''}>← Prev</button>`;
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || Math.abs(i - pg) <= 2) {
+      html += `<button class="${i===pg?'active':''}" onclick="gp(${i})">${i}</button>`;
+    } else if (Math.abs(i - pg) === 3) {
+      html += `<span style="padding:0 4px;color:rgba(232,244,248,0.3)">…</span>`;
     }
+  }
+  html += `<button onclick="gp(${pg+1})" ${pg===total?'disabled':''}>Next →</button>`;
+  el.innerHTML = html;
+}
 
-    function renderTable() {
-      const tbody = document.getElementById('execTableBody');
-      tbody.innerHTML = '';
-      for (let i = 0; i < 25; i++) {
-        const ex = randomExec(i);
-        const statusClass = ex.status === 'success' ? 'success' : ex.status === 'running' ? 'running' : ex.status === 'failed' ? 'failed' : 'inactive';
-        const row = document.createElement('tr');
-        row.style.cursor = 'pointer';
-        row.innerHTML = `
-          <td style="font-family:var(--font-mono);font-size:0.78rem;color:var(--color-neon-cyan)">${ex.id}</td>
-          <td style="font-weight:600;color:var(--color-text-primary)">${ex.wf}</td>
-          <td><span style="font-size:0.75rem;background:rgba(255,255,255,0.05);padding:0.15rem 0.5rem;border-radius:4px;color:var(--color-text-secondary)">${ex.trigger}</span></td>
-          <td>${ex.time}</td>
-          <td style="font-family:var(--font-mono);font-size:0.8rem">${ex.dur}</td>
-          <td><span class="badge ${statusClass}"><span class="badge-dot"></span>${ex.status}</span></td>
-          <td>
-            <div class="table-actions">
-              <button class="action-icon-btn" title="Inspect"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-              <button class="action-icon-btn" title="Re-run"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></button>
-            </div>
-          </td>
-        `;
-        row.addEventListener('click', () => showExecDetail(ex));
-        tbody.appendChild(row);
-      }
+function gp(n) {
+  const total = Math.ceil(filtered.length / PG);
+  if (n < 1 || n > total) return;
+  pg = n; tbl(); pager();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function cancelExec(id) {
+  await window.sb.from('executions').update({
+    status: 'cancelled',
+    completed_at: new Date().toISOString()
+  }).eq('id', id);
+  const idx = all.findIndex(e => e.id === id);
+  if (idx >= 0) { all[idx].status = 'cancelled'; all[idx].completed_at = new Date().toISOString(); }
+  stats(); filt();
+  window.showToast('Execution cancelled', 'warning');
+}
+
+async function retryExec(id) {
+  const orig = all.find(e => e.id === id);
+  if (!orig) return;
+  const uid = window.__currentUser.id;
+  const { data: newExec } = await window.sb.from('executions').insert({
+    workflow_id: orig.workflow_id,
+    user_id: uid,
+    workflow_name: orig.workflow_name,
+    status: 'running',
+    trigger_type: 'manual',
+    started_at: new Date().toISOString(),
+    steps_total: orig.steps_total || 5,
+    steps_completed: 0
+  }).select().single();
+
+  if (newExec) {
+    all.unshift(newExec);
+    stats(); filt();
+    window.showToast(`Retrying ${orig.workflow_name}`, 'info');
+    simulateComplete(newExec.id);
+  }
+}
+
+function simulateComplete(execId) {
+  const delay = 2000 + Math.random() * 4000;
+  setTimeout(async () => {
+    const success = Math.random() > 0.2;
+    const dur = Math.round(delay);
+    await window.sb.from('executions').update({
+      status: success ? 'success' : 'failed',
+      completed_at: new Date().toISOString(),
+      duration_ms: dur,
+      steps_completed: success ? 5 : Math.floor(Math.random() * 4) + 1,
+      error_message: success ? null : 'Step failed: timeout exceeded'
+    }).eq('id', execId);
+    const idx = all.findIndex(e => e.id === execId);
+    if (idx >= 0) {
+      all[idx].status = success ? 'success' : 'failed';
+      all[idx].duration_ms = dur;
+      all[idx].completed_at = new Date().toISOString();
     }
+    stats(); filt();
+  }, delay);
+}
 
-    renderTable();
+function openPanel(id) {
+  const e = all.find(x => x.id === id);
+  if (!e) return;
 
-    const logSteps = [
-      ['info', 'Execution started', 'Trigger received — processing payload (342 bytes)'],
-      ['info', 'Step 1/6', 'HTTP Request node — GET https://api.stripe.com/v1/customers — 200 OK (124ms)'],
-      ['info', 'Step 2/6', 'AI Agent · EmailClassifier — classifying message content'],
-      ['success', 'Step 2/6', 'Classification: "billing_inquiry" (confidence: 0.94) — routing to billing branch'],
-      ['info', 'Step 3/6', 'Database node — querying PostgreSQL — SELECT * FROM invoices WHERE…'],
-      ['success', 'Step 3/6', 'Query returned 3 rows in 41ms'],
-      ['info', 'Step 4/6', 'Transform node — mapping fields to output schema'],
-      ['info', 'Step 5/6', 'HTTP POST — Sending response to Zendesk ticket #89,234'],
-      ['success', 'Step 5/6', 'Zendesk API responded 200 OK — ticket updated'],
-      ['info', 'Step 6/6', 'Slack notification node — posting to #billing-alerts'],
-      ['success', 'Execution complete', 'All 6 steps succeeded — duration: 2.14s — exit code: 0'],
+  document.getElementById('lp-name').textContent = e.workflow_name;
+  document.getElementById('lp-id').textContent = e.id;
+  const stMap = { success:'active', failed:'error', running:'running', cancelled:'inactive' };
+  document.getElementById('lp-status-badge').innerHTML = `<span class="badge ${stMap[e.status]||''}">${e.status}</span>`;
+  document.getElementById('lp-workflow').textContent = e.workflow_name;
+  document.getElementById('lp-trigger').textContent = e.trigger_type || 'manual';
+  document.getElementById('lp-started').textContent = e.started_at ? new Date(e.started_at).toLocaleString() : '—';
+  document.getElementById('lp-duration').textContent = e.duration_ms ? window.fmtDuration(e.duration_ms) : e.status === 'running' ? 'Running…' : '—';
+
+  // Steps
+  const stepsTotal = e.steps_total || 5;
+  const stepsComp = e.steps_completed || 0;
+  const stepNames = ['Trigger received','Validate input','Process data','Transform output','Deliver result'];
+  let stepsHtml = '';
+  for (let i = 0; i < stepsTotal; i++) {
+    let dotClass = 'pending';
+    let dur = '—';
+    if (i < stepsComp) { dotClass = 'success'; dur = Math.round(Math.random()*500+100)+'ms'; }
+    else if (i === stepsComp && e.status === 'running') dotClass = 'running';
+    else if (e.status === 'failed' && i === stepsComp) dotClass = 'failed';
+    stepsHtml += `<div class="step-item"><span class="step-dot ${dotClass}"></span><span class="step-name">${stepNames[i]||'Step '+(i+1)}</span><span class="step-dur">${dur}</span></div>`;
+  }
+  document.getElementById('lp-steps').innerHTML = stepsHtml;
+
+  // Logs
+  const logs = e.log_output || [];
+  let logsHtml = '';
+  if (logs.length > 0) {
+    logsHtml = logs.map(l => {
+      const level = l.level || 'info';
+      return `<div class="log-line ${level}"><span class="ts">${l.ts||''}</span><span class="msg">${l.msg||l}</span></div>`;
+    }).join('');
+  } else {
+    const defaultLogs = [
+      { ts: '00:00.000', level: 'info', msg: 'Execution started' },
+      { ts: '00:00.120', level: 'info', msg: `Trigger: ${e.trigger_type || 'manual'}` },
+      { ts: '00:00.340', level: 'info', msg: 'Loading workflow configuration' },
+      { ts: '00:01.200', level: 'info', msg: 'Step 1 complete: Trigger received' },
     ];
+    if (stepsComp >= 2) defaultLogs.push({ ts: '00:01.800', level: 'info', msg: 'Step 2 complete: Input validated' });
+    if (stepsComp >= 3) defaultLogs.push({ ts: '00:02.500', level: 'info', msg: 'Step 3 complete: Data processed' });
+    if (e.status === 'success') defaultLogs.push({ ts: '00:03.100', level: 'success', msg: '✓ Execution completed successfully' });
+    if (e.status === 'failed') defaultLogs.push({ ts: '00:02.900', level: 'error', msg: `✗ ${e.error_message || 'Execution failed'}` });
+    if (e.status === 'running') defaultLogs.push({ ts: '00:02.100', level: 'info', msg: 'Processing…' });
+    logsHtml = defaultLogs.map(l => `<div class="log-line ${l.level}"><span class="ts">[${l.ts}]</span><span class="msg"> ${l.msg}</span></div>`).join('');
+  }
+  document.getElementById('lp-logs').innerHTML = logsHtml;
 
-    function showExecDetail(ex) {
-      const logEl = document.getElementById('execDetailLog');
-      document.getElementById('detailExecId').textContent = ex.id;
-      logEl.innerHTML = '';
+  document.getElementById('log-panel').classList.add('open');
+}
 
-      const times = ['14:31:22.001', '14:31:22.108', '14:31:22.410', '14:31:22.534', '14:31:22.762', '14:31:22.803', '14:31:22.899', '14:31:23.012', '14:31:23.136', '14:31:23.204', '14:31:23.315'];
-      logSteps.forEach((step, i) => {
-        const line = document.createElement('div');
-        line.className = 'log-line';
-        line.innerHTML = `<span class="log-time">${times[i]}</span><span class="log-level ${step[0]}">${step[0].toUpperCase()}</span><span class="log-msg">[${step[1]}] ${step[2]}</span>`;
-        logEl.appendChild(line);
-      });
-    }
+function closePanel() {
+  document.getElementById('log-panel').classList.remove('open');
+}
 
-    // Live counter
-    let execCount = 84201;
-    let runCount = 47;
-    setInterval(() => {
-      execCount += Math.floor(Math.random() * 8) + 1;
-      runCount = Math.max(30, Math.min(80, runCount + Math.floor(Math.random() * 7) - 3));
-      document.getElementById('execToday').textContent = execCount.toLocaleString();
-      document.getElementById('execRunning').textContent = runCount;
-    }, 3000);
+function subscribeRealtime(uid) {
+  if (sub) sub.unsubscribe();
+  sub = window.sb.channel('exec-changes')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'executions', filter: `user_id=eq.${uid}` }, payload => {
+      all.unshift(payload.new);
+      stats(); filt();
+    })
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'executions', filter: `user_id=eq.${uid}` }, payload => {
+      const idx = all.findIndex(e => e.id === payload.new.id);
+      if (idx >= 0) all[idx] = payload.new;
+      stats(); filt();
+    })
+    .subscribe();
+}
 
-    // Panel close
-    document.getElementById('panelClose').addEventListener('click', () => {
-      document.getElementById('execDetailPanel').classList.remove('open');
-      document.getElementById('panelOverlay').classList.remove('open');
-    });
-    document.getElementById('panelOverlay').addEventListener('click', () => {
-      document.getElementById('execDetailPanel').classList.remove('open');
-      document.getElementById('panelOverlay').classList.remove('open');
-    });
-  </script>
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePanel();
+});
+
+window.addEventListener('shellReady', load);
+if (window.__shellReady) load();
+</script>
 </body>
 </html>

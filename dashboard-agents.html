@@ -10,468 +10,514 @@
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/dashboard.css" />
   <link rel="stylesheet" href="styles/dashboard-inner.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <style>
+    .agents-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 20px; }
+    .agent-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 24px; position: relative; overflow: hidden;
+      cursor: pointer; transition: all .3s;
+    }
+    .agent-card:hover { border-color: rgba(0,245,255,0.3); background: rgba(0,245,255,0.03); transform: translateY(-2px); }
+    .agent-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:3px;
+      background: var(--grad);
+    }
+    .agent-emoji { font-size: 36px; margin-bottom: 12px; display: block; }
+    .agent-name { font-size: 15px; font-weight: 600; color: #e8f4f8; margin: 0 0 4px; }
+    .agent-type { font-size: 11px; color: rgba(232,244,248,0.4); text-transform: uppercase; letter-spacing: .06em; margin: 0 0 12px; }
+    .agent-desc { font-size: 12px; color: rgba(232,244,248,0.6); line-height: 1.5; margin-bottom: 16px; min-height: 36px; }
+    .agent-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+    .agent-stat { text-align: center; }
+    .agent-stat-val { font-size: 16px; font-weight: 700; color: #e8f4f8; font-family: 'JetBrains Mono', monospace; }
+    .agent-stat-lbl { font-size: 10px; color: rgba(232,244,248,0.4); }
+    .activity-bars { display: flex; align-items: flex-end; gap: 2px; height: 32px; margin-bottom: 14px; }
+    .activity-bar { flex: 1; border-radius: 2px 2px 0 0; transition: height .8s ease; }
+    .agent-footer { display: flex; align-items: center; justify-content: space-between; }
+    .agent-model { font-size: 10px; color: rgba(232,244,248,0.35); font-family: 'JetBrains Mono', monospace; }
+    .agent-actions { display: flex; gap: 6px; }
+    .agent-btn {
+      padding: 5px 12px; border-radius: 6px; font-size: 11px; cursor: pointer;
+      border: 1px solid; transition: all .2s;
+    }
+    .agent-btn.pause {
+      background: rgba(255,200,0,0.1); border-color: rgba(255,200,0,0.3); color: #ffc800;
+    }
+    .agent-btn.pause:hover { background: rgba(255,200,0,0.2); }
+    .agent-btn.activate {
+      background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.3); color: #00ff88;
+    }
+    .agent-btn.activate:hover { background: rgba(0,255,136,0.2); }
+    .agent-btn.edit {
+      background: rgba(0,245,255,0.1); border-color: rgba(0,245,255,0.3); color: #00f5ff;
+    }
+    .agent-btn.edit:hover { background: rgba(0,245,255,0.2); }
+    .agent-btn.delete {
+      background: rgba(255,77,109,0.1); border-color: rgba(255,77,109,0.3); color: #ff4d6d;
+    }
+    .agent-btn.delete:hover { background: rgba(255,77,109,0.2); }
+
+    /* Detail Panel */
+    .agent-panel {
+      position: fixed; right: 0; top: 0; bottom: 0; width: 440px;
+      background: #0a0a0f; border-left: 1px solid rgba(0,245,255,0.15);
+      transform: translateX(100%); transition: transform .3s ease;
+      z-index: 200; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .agent-panel.open { transform: translateX(0); }
+    .agent-panel-header {
+      padding: 24px; border-bottom: 1px solid rgba(0,245,255,0.1);
+      display: flex; align-items: center; gap: 16px;
+    }
+    .agent-panel-emoji { font-size: 40px; }
+    .agent-panel-info { flex: 1; }
+    .agent-panel-info h3 { font-size: 16px; font-weight: 600; color: #e8f4f8; margin: 0 0 4px; }
+    .agent-panel-info p { font-size: 12px; color: rgba(232,244,248,0.4); margin: 0; text-transform: uppercase; letter-spacing: .06em; }
+    .panel-close {
+      background: none; border: none; color: rgba(232,244,248,0.4);
+      cursor: pointer; font-size: 20px; padding: 4px; transition: color .2s;
+    }
+    .panel-close:hover { color: #e8f4f8; }
+    .agent-panel-body { flex: 1; overflow-y: auto; padding: 24px; }
+    .panel-section { margin-bottom: 24px; }
+    .panel-section h4 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: rgba(232,244,248,0.4); margin: 0 0 12px; }
+    .panel-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .panel-stat-box {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px; padding: 14px;
+    }
+    .panel-stat-box .val { font-size: 22px; font-weight: 700; color: #e8f4f8; font-family: 'JetBrains Mono',monospace; }
+    .panel-stat-box .lbl { font-size: 11px; color: rgba(232,244,248,0.4); margin-top: 4px; }
+    .live-log {
+      background: rgba(0,0,0,0.4); border: 1px solid rgba(0,245,255,0.1);
+      border-radius: 10px; padding: 14px; height: 160px; overflow-y: auto;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    }
+    .log-line { padding: 2px 0; }
+    .log-line .ts { color: rgba(232,244,248,0.3); margin-right: 8px; }
+    .log-line.info .msg { color: rgba(232,244,248,0.7); }
+    .log-line.success .msg { color: #00ff88; }
+    .log-line.error .msg { color: #ff4d6d; }
+
+    /* Create/Edit Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+      z-index: 300; display: none; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #0f1117; border: 1px solid rgba(0,245,255,0.2); border-radius: 20px;
+      padding: 32px; width: 520px; max-width: 95vw; max-height: 85vh; overflow-y: auto;
+    }
+    .modal-title { font-size: 20px; font-weight: 700; color: #e8f4f8; margin: 0 0 4px; }
+    .modal-sub { font-size: 13px; color: rgba(232,244,248,0.5); margin: 0 0 24px; }
+    .form-row { margin-bottom: 18px; }
+    .form-row label { display: block; font-size: 12px; color: rgba(232,244,248,0.6); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .06em; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 12px 14px; color: #e8f4f8; font-size: 14px;
+      font-family: inherit; box-sizing: border-box; transition: border-color .2s;
+    }
+    .form-textarea { min-height: 80px; resize: vertical; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none; border-color: rgba(0,245,255,0.5);
+    }
+    .form-select option { background: #0f1117; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; }
+    .btn-cancel {
+      padding: 10px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(232,244,248,0.7); border-radius: 10px; cursor: pointer; font-size: 14px; transition: all .2s;
+    }
+    .btn-cancel:hover { background: rgba(255,255,255,0.1); }
+    .btn-save {
+      padding: 10px 24px; background: linear-gradient(135deg,#00f5ff,#0080ff);
+      border: none; color: #000; border-radius: 10px; cursor: pointer; font-size: 14px;
+      font-weight: 600; transition: all .2s;
+    }
+    .btn-save:hover { opacity: .85; }
+  </style>
 </head>
 <body>
-  <!-- Ambient Background -->
-  <canvas id="bg-canvas"></canvas>
-  <div class="grid-overlay"></div>
-  <div class="ambient-orb" style="top:-20%;left:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(139,92,246,0.08) 0%,transparent 70%)"></div>
-  <div class="ambient-orb" style="bottom:-20%;right:-5%;width:500px;height:500px;background:radial-gradient(circle,rgba(0,245,255,0.06) 0%,transparent 70%)"></div>
-
-  <div class="dash-layout">
-    <!-- ========== SIDEBAR ========== -->
-    <aside class="dash-sidebar">
-      <div class="dash-sidebar-logo">
-        <div class="sidebar-logo-icon">
-          <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
-            <path d="M16 2L28 8V16C28 22.627 22.627 28 16 28C9.373 28 4 22.627 4 16V8L16 2Z" stroke="url(#sg)" stroke-width="2" fill="none"/>
-            <circle cx="16" cy="16" r="4" fill="url(#sg2)"/>
-            <path d="M16 8V12M16 20V24M8 16H12M20 16H24" stroke="url(#sg)" stroke-width="1.5" stroke-linecap="round"/>
-            <defs>
-              <linearGradient id="sg" x1="4" y1="2" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#00f5ff"/><stop offset="1" stop-color="#8b5cf6"/>
-              </linearGradient>
-              <linearGradient id="sg2" x1="12" y1="12" x2="20" y2="20" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#00f5ff"/><stop offset="1" stop-color="#0080ff"/>
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <span class="sidebar-logo-text">NexaFlow</span>
-      </div>
-
-      <nav class="dash-sidebar-nav">
-        <div class="sidebar-nav-section">
-          <div class="sidebar-nav-label">Main</div>
-          <a href="dashboard.html" class="sidebar-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            Overview
-          </a>
-          <a href="dashboard-workflows.html" class="sidebar-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h8M8 12h5M8 18h3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-            Workflows
-          </a>
-          <a href="dashboard-agents.html" class="sidebar-link active">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M18 8l2 2-2 2"/></svg>
-            AI Agents
-          </a>
-          <a href="dashboard-executions.html" class="sidebar-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-            Executions
-          </a>
-          <a href="dashboard-analytics.html" class="sidebar-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20h18M5 20V12l7-7 7 7v8"/></svg>
-            Analytics
-          </a>
-        </div>
-
-        <div class="sidebar-nav-section">
-          <div class="sidebar-nav-label">Configure</div>
-          <a href="dashboard-integrations.html" class="sidebar-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-            Integrations
-          </a>
-          <a href="dashboard-team.html" class="sidebar-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-            Team
-          </a>
-          <a href="dashboard-settings.html" class="sidebar-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-            Settings
-          </a>
-        </div>
-      </nav>
-
-      <div class="sidebar-user">
-        <div class="sidebar-user-avatar">JS</div>
-        <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Jordan Smith</div>
-          <div class="sidebar-user-role">Admin</div>
-        </div>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:0.4;margin-left:auto;flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
-    </aside>
-
-    <!-- ========== MAIN ========== -->
-    <main class="dash-main">
-      <!-- Topbar -->
-      <header class="dash-topbar">
-        <div class="dash-topbar-left">
-          <h2 class="dash-page-title">AI Agents</h2>
-          <div class="dash-breadcrumb" style="margin:0;font-size:0.78rem">
-            <a href="dashboard.html">Dashboard</a>
-            <span class="sep">/</span>
-            <span class="current">AI Agents</span>
-          </div>
-        </div>
-        <div class="dash-topbar-right">
-          <div class="dash-search-wrap">
-            <svg class="dash-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            <input type="text" placeholder="Search agents…" class="dash-search-input" />
-            <kbd class="dash-search-kbd">⌘K</kbd>
-          </div>
-          <button class="dash-icon-btn" title="Notifications">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-            <span class="notif-dot"></span>
-          </button>
-          <a href="dashboard-agents.html" class="btn-primary" style="padding:0.5rem 1rem;font-size:0.8rem;display:flex;align-items:center;gap:0.4rem;text-decoration:none">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            New Agent
-          </a>
-        </div>
-      </header>
-
-      <!-- Content -->
-      <div class="dash-content">
-
-        <!-- Stats -->
-        <div class="dash-stats-row">
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,245,255,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">Total Agents</div>
-            <div class="dash-stat-value" id="totalAgents">24</div>
-            <div class="dash-stat-delta up">↑ 4 this month</div>
-          </div>
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(0,255,135,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">Active Now</div>
-            <div class="dash-stat-value" id="activeAgents">18</div>
-            <div class="dash-stat-delta up">75% utilization</div>
-          </div>
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(139,92,246,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">Tasks Completed</div>
-            <div class="dash-stat-value">847K</div>
-            <div class="dash-stat-delta up">↑ 12.3% vs last week</div>
-          </div>
-          <div class="dash-stat-card" style="--stat-gradient:linear-gradient(135deg,rgba(245,158,11,0.06) 0%,transparent 60%)">
-            <div class="dash-stat-label">Avg. Response Time</div>
-            <div class="dash-stat-value">1.8s</div>
-            <div class="dash-stat-delta up">↓ 0.3s improvement</div>
-          </div>
-        </div>
-
-        <!-- Filter Bar -->
-        <div class="dash-filter-bar">
-          <div class="dash-filter-wrap">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            <input type="text" placeholder="Search agents by name or type…" class="dash-filter-input" id="agentSearch" />
-          </div>
-          <select class="dash-filter-select" id="agentTypeFilter">
-            <option value="">All Types</option>
-            <option value="classifier">Classifier</option>
-            <option value="extractor">Extractor</option>
-            <option value="writer">Writer</option>
-            <option value="analyzer">Analyzer</option>
-            <option value="router">Router</option>
-            <option value="validator">Validator</option>
-          </select>
-          <select class="dash-filter-select" id="agentStatusFilter">
-            <option value="">All Status</option>
-            <option value="active">Active</option>
-            <option value="idle">Idle</option>
-            <option value="error">Error</option>
-          </select>
-          <div style="margin-left:auto;display:flex;gap:0.5rem">
-            <button class="action-icon-btn" id="viewGrid" title="Grid view" style="width:32px;height:32px;color:var(--color-neon-cyan);border-color:rgba(0,245,255,0.3)">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-            </button>
-            <button class="action-icon-btn" id="viewList" title="List view">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Agents Grid -->
-        <div class="agents-grid" id="agentsGrid"></div>
-
-        <!-- Agent Activity Log -->
-        <div class="inner-chart-card">
-          <div class="inner-chart-header">
-            <div class="inner-chart-title">Live Agent Activity Stream</div>
-            <div style="display:flex;align-items:center;gap:0.5rem">
-              <span style="display:flex;align-items:center;gap:0.35rem;font-size:0.75rem;color:#00ff87">
-                <span style="width:6px;height:6px;border-radius:50%;background:#00ff87;animation:pulse 2s infinite"></span>
-                Live
-              </span>
-              <button class="action-icon-btn">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-              </button>
-            </div>
-          </div>
-          <div class="log-stream" id="agentLog">
-            <div class="log-line">
-              <span class="log-time">14:12:08</span>
-              <span class="log-level success">SUCCESS</span>
-              <span class="log-msg">EmailClassifier · Processed 47 emails in batch — 46 classified, 1 routed to human review</span>
-            </div>
-            <div class="log-line">
-              <span class="log-time">14:12:05</span>
-              <span class="log-level info">INFO</span>
-              <span class="log-msg">DataExtractor · Starting extraction from Salesforce CRM — 1,240 records queued</span>
-            </div>
-            <div class="log-line">
-              <span class="log-time">14:11:59</span>
-              <span class="log-level success">SUCCESS</span>
-              <span class="log-msg">ContentWriter · Generated 3 product descriptions — avg. 247 words, tone: professional</span>
-            </div>
-            <div class="log-line">
-              <span class="log-time">14:11:54</span>
-              <span class="log-level warn">WARN</span>
-              <span class="log-msg">SentimentAnalyzer · Rate limit approaching — 892/1000 API calls used this hour</span>
-            </div>
-            <div class="log-line">
-              <span class="log-time">14:11:48</span>
-              <span class="log-level info">INFO</span>
-              <span class="log-msg">LeadRouter · Scoring 23 new leads — applying model v4.2.1</span>
-            </div>
-            <div class="log-line">
-              <span class="log-time">14:11:41</span>
-              <span class="log-level success">SUCCESS</span>
-              <span class="log-msg">InvoiceValidator · 18/18 invoices passed validation — dispatching to payment queue</span>
-            </div>
-            <div class="log-line">
-              <span class="log-time">14:11:33</span>
-              <span class="log-level error">ERROR</span>
-              <span class="log-msg">SlackAgent · Connection timeout after 30s — retrying in 60s (attempt 2/3)</span>
-            </div>
-            <div class="log-line">
-              <span class="log-time">14:11:28</span>
-              <span class="log-level debug">DEBUG</span>
-              <span class="log-msg">ReportGenerator · Fetching Q1 data from 4 sources — BigQuery, Stripe, HubSpot, Mixpanel</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </main>
-  </div>
-
-  <!-- Agent Detail Panel -->
-  <div class="detail-panel-overlay" id="panelOverlay"></div>
-  <div class="detail-panel" id="agentDetailPanel">
-    <div class="detail-panel-header">
+<div class="dash-layout">
+  <!-- sidebar injected by shell.js -->
+  <main class="dash-main">
+    <div class="dash-topbar">
       <div>
-        <h3 style="font-size:1rem;font-weight:700;color:var(--color-text-primary);margin-bottom:0.25rem" id="detailAgentName">Agent Name</h3>
-        <div id="detailAgentBadge"></div>
+        <h1 class="dash-page-title">AI Agents</h1>
+        <p class="dash-page-sub">Configure and monitor your autonomous agents</p>
       </div>
-      <button class="detail-panel-close" id="panelClose">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      </button>
+      <button class="btn-save" style="padding:10px 20px;border-radius:10px;font-size:13px" onclick="openCreate()">+ New Agent</button>
     </div>
 
-    <div style="display:flex;flex-direction:column;gap:1.25rem">
-      <!-- Mini stats -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem">
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.875rem;text-align:center">
-          <div style="font-size:1.25rem;font-weight:800;font-family:var(--font-display);color:var(--color-text-primary)" id="detailTasks">—</div>
-          <div style="font-size:0.7rem;color:var(--color-text-muted);margin-top:0.2rem">Tasks Run</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.875rem;text-align:center">
-          <div style="font-size:1.25rem;font-weight:800;font-family:var(--font-display);color:#00ff87" id="detailSuccess">—</div>
-          <div style="font-size:0.7rem;color:var(--color-text-muted);margin-top:0.2rem">Success Rate</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:0.875rem;text-align:center">
-          <div style="font-size:1.25rem;font-weight:800;font-family:var(--font-display);color:var(--color-neon-cyan)" id="detailAvgTime">—</div>
-          <div style="font-size:0.7rem;color:var(--color-text-muted);margin-top:0.2rem">Avg Time</div>
-        </div>
-      </div>
+    <!-- Stats -->
+    <div class="dash-stats-row">
+      <div class="dash-stat-card"><div class="dsc-label">Total Agents</div><div class="dsc-value" id="s-total">—</div></div>
+      <div class="dash-stat-card"><div class="dsc-label">Active</div><div class="dsc-value" style="color:#00ff88" id="s-active">—</div></div>
+      <div class="dash-stat-card"><div class="dsc-label">Idle</div><div class="dsc-value" style="color:#00f5ff" id="s-idle">—</div></div>
+      <div class="dash-stat-card"><div class="dsc-label">Tasks Completed</div><div class="dsc-value" id="s-tasks">—</div></div>
+    </div>
 
-      <!-- Description -->
-      <div>
-        <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-muted);margin-bottom:0.5rem">Description</div>
-        <p style="font-size:0.875rem;color:var(--color-text-secondary);line-height:1.6" id="detailDesc">—</p>
-      </div>
+    <!-- Filters -->
+    <div class="dash-filter-bar" style="margin-top:24px">
+      <input id="q" class="dash-filter-input" placeholder="Search agents…" oninput="filt()" />
+      <select id="f-status" class="dash-filter-select" onchange="filt()">
+        <option value="">All Statuses</option>
+        <option value="active">Active</option>
+        <option value="idle">Idle</option>
+        <option value="error">Error</option>
+      </select>
+      <select id="f-type" class="dash-filter-select" onchange="filt()">
+        <option value="">All Types</option>
+        <option value="classifier">Classifier</option>
+        <option value="extractor">Extractor</option>
+        <option value="writer">Writer</option>
+        <option value="analyzer">Analyzer</option>
+        <option value="router">Router</option>
+        <option value="validator">Validator</option>
+        <option value="generator">Generator</option>
+      </select>
+    </div>
 
-      <!-- Config -->
-      <div>
-        <div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-muted);margin-bottom:0.75rem">Configuration</div>
-        <div style="display:flex;flex-direction:column;gap:0.5rem" id="detailConfig"></div>
-      </div>
+    <!-- Agents Grid -->
+    <div class="agents-grid" id="agents-grid" style="margin-top:20px">
+      <div style="text-align:center;padding:60px;color:rgba(232,244,248,0.3);grid-column:1/-1">Loading agents…</div>
+    </div>
+  </main>
+</div>
 
-      <!-- Actions -->
-      <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
-        <button class="btn-primary" style="flex:1;padding:0.6rem 1rem;font-size:0.8rem">Edit Agent</button>
-        <button class="btn-ghost" style="flex:1;padding:0.6rem 1rem;font-size:0.8rem">View Logs</button>
-        <button class="btn-ghost" style="padding:0.6rem;color:#ef4444;border-color:rgba(239,68,68,0.2)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2"/></svg>
-        </button>
+<!-- Agent Detail Panel -->
+<div class="agent-panel" id="agent-panel">
+  <div class="agent-panel-header">
+    <span class="agent-panel-emoji" id="ap-emoji">🤖</span>
+    <div class="agent-panel-info">
+      <h3 id="ap-name">Agent Name</h3>
+      <p id="ap-type">type</p>
+    </div>
+    <span id="ap-status"></span>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="agent-panel-body">
+    <div class="panel-section">
+      <h4>Performance</h4>
+      <div class="panel-stat-grid">
+        <div class="panel-stat-box"><div class="val" id="ap-tasks">—</div><div class="lbl">Tasks Completed</div></div>
+        <div class="panel-stat-box"><div class="val" id="ap-rate">—</div><div class="lbl">Success Rate</div></div>
+        <div class="panel-stat-box"><div class="val" id="ap-resp">—</div><div class="lbl">Avg Response</div></div>
+        <div class="panel-stat-box"><div class="val" id="ap-model">—</div><div class="lbl">Model</div></div>
       </div>
     </div>
+    <div class="panel-section">
+      <h4>Description</h4>
+      <p id="ap-desc" style="font-size:13px;color:rgba(232,244,248,0.6);line-height:1.6;margin:0"></p>
+    </div>
+    <div class="panel-section">
+      <h4>Live Activity</h4>
+      <div class="live-log" id="ap-log"></div>
+    </div>
   </div>
+</div>
 
-  <script src="js/particles.js"></script>
-  <script>
-    /* =============================================
-       AGENT DATA
-    ============================================= */
-    const agents = [
-      { id: 'ag-001', name: 'EmailClassifier', emoji: '📧', type: 'Classifier', status: 'active', model: 'claude-sonnet-4-6', tasks: '124K', success: '99.2%', avgTime: '0.4s', color: ['#00f5ff', '#0080ff'], desc: 'Automatically classifies incoming emails by intent, priority, and department. Routes to the correct team or triggers follow-up workflows.', config: [['Model', 'claude-sonnet-4-6'], ['Batch Size', '50 emails'], ['Confidence Threshold', '0.85']] },
-      { id: 'ag-002', name: 'DataExtractor', emoji: '🔍', type: 'Extractor', status: 'active', model: 'claude-haiku-4-5', tasks: '89K', success: '98.7%', avgTime: '1.2s', color: ['#8b5cf6', '#ec4899'], desc: 'Extracts structured data from unstructured sources: PDFs, emails, web pages, and APIs. Outputs clean JSON for downstream processing.', config: [['Model', 'claude-haiku-4-5'], ['Output Format', 'JSON'], ['Max Pages', '50']] },
-      { id: 'ag-003', name: 'ContentWriter', emoji: '✍️', type: 'Writer', status: 'active', model: 'claude-opus-4-6', tasks: '31K', success: '97.4%', avgTime: '3.8s', color: ['#00ff87', '#00b4d8'], desc: 'Generates high-quality written content including blog posts, product descriptions, email copy, and social media posts at scale.', config: [['Model', 'claude-opus-4-6'], ['Max Tokens', '2000'], ['Tone', 'Professional']] },
-      { id: 'ag-004', name: 'SentimentAnalyzer', emoji: '💬', type: 'Analyzer', status: 'active', model: 'claude-haiku-4-5', tasks: '203K', success: '99.8%', avgTime: '0.2s', color: ['#f59e0b', '#ef4444'], desc: 'Real-time sentiment and emotion analysis for customer feedback, reviews, support tickets, and social media mentions.', config: [['Model', 'claude-haiku-4-5'], ['Languages', '48'], ['Output', 'Score + Label']] },
-      { id: 'ag-005', name: 'LeadRouter', emoji: '🎯', type: 'Router', status: 'active', model: 'claude-sonnet-4-6', tasks: '67K', success: '98.1%', avgTime: '0.9s', color: ['#00f5ff', '#8b5cf6'], desc: 'Scores and routes inbound leads to the right sales rep based on ICP match, deal size, geography, and team capacity.', config: [['Model', 'claude-sonnet-4-6'], ['Routing Rules', '14'], ['CRM Sync', 'Salesforce']] },
-      { id: 'ag-006', name: 'InvoiceValidator', emoji: '🧾', type: 'Validator', status: 'idle', model: 'claude-haiku-4-5', tasks: '45K', success: '100%', avgTime: '1.5s', color: ['#00ff87', '#8b5cf6'], desc: 'Validates invoice data for compliance, checks for duplicates, flags anomalies, and routes approved invoices to payment queue.', config: [['Model', 'claude-haiku-4-5'], ['Validation Rules', '23'], ['ERP Integration', 'NetSuite']] },
-      { id: 'ag-007', name: 'SlackAgent', emoji: '💬', type: 'Connector', status: 'error', model: 'claude-sonnet-4-6', tasks: '18K', success: '94.2%', avgTime: '0.7s', color: ['#ef4444', '#f59e0b'], desc: 'Monitors Slack channels for action items, summarizes threads, creates tasks, and sends automated notifications and reports.', config: [['Model', 'claude-sonnet-4-6'], ['Channels', '12'], ['Triggers', '8']] },
-      { id: 'ag-008', name: 'ReportGenerator', emoji: '📊', type: 'Writer', status: 'active', model: 'claude-opus-4-6', tasks: '8.2K', success: '99.1%', avgTime: '12s', color: ['#0080ff', '#00f5ff'], desc: 'Generates comprehensive business reports, executive summaries, and data narratives by synthesizing data from multiple sources.', config: [['Model', 'claude-opus-4-6'], ['Data Sources', '4'], ['Format', 'PDF + Markdown']] },
-      { id: 'ag-009', name: 'SupportTriager', emoji: '🎫', type: 'Classifier', status: 'active', model: 'claude-sonnet-4-6', tasks: '156K', success: '98.9%', avgTime: '0.5s', color: ['#ec4899', '#8b5cf6'], desc: 'Triages incoming support tickets, assigns priority, categorizes issues, suggests solutions, and escalates critical items automatically.', config: [['Model', 'claude-sonnet-4-6'], ['Priority Levels', '4'], ['Auto-resolve', 'Enabled']] },
-      { id: 'ag-010', name: 'ContractAnalyzer', emoji: '📄', type: 'Analyzer', status: 'active', model: 'claude-opus-4-6', tasks: '3.4K', success: '99.7%', avgTime: '18s', color: ['#f59e0b', '#00ff87'], desc: 'Analyzes contracts and legal documents for key clauses, risks, obligations, and compliance issues. Generates structured summaries.', config: [['Model', 'claude-opus-4-6'], ['Max Pages', '200'], ['Risk Flags', '47']] },
-      { id: 'ag-011', name: 'CodeReviewer', emoji: '👨‍💻', type: 'Analyzer', status: 'idle', model: 'claude-sonnet-4-6', tasks: '22K', success: '97.8%', avgTime: '4.1s', color: ['#00f5ff', '#00ff87'], desc: 'Reviews pull requests for code quality, security vulnerabilities, performance issues, and style guide compliance. Posts inline comments.', config: [['Model', 'claude-sonnet-4-6'], ['Languages', '12'], ['Rules', '86']] },
-      { id: 'ag-012', name: 'TranslationAgent', emoji: '🌍', type: 'Writer', status: 'active', model: 'claude-sonnet-4-6', tasks: '77K', success: '99.4%', avgTime: '1.1s', color: ['#8b5cf6', '#00b4d8'], desc: 'Translates content across 48 languages while maintaining tone, context, and brand voice. Handles technical, legal, and marketing content.', config: [['Model', 'claude-sonnet-4-6'], ['Languages', '48'], ['Glossary', 'Custom']] },
-    ];
+<!-- Create/Edit Modal -->
+<div class="modal-overlay" id="agent-modal">
+  <div class="modal-box">
+    <h2 class="modal-title" id="modal-title">New Agent</h2>
+    <p class="modal-sub" id="modal-sub">Configure your AI agent</p>
+    <input type="hidden" id="edit-id" />
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Agent Name *</label>
+        <input id="f-name" class="form-input" placeholder="Email Classifier" />
+      </div>
+      <div class="form-row">
+        <label>Emoji</label>
+        <input id="f-emoji" class="form-input" placeholder="🤖" maxlength="2" />
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Description</label>
+      <textarea id="f-desc" class="form-textarea" placeholder="What does this agent do?"></textarea>
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Type *</label>
+        <select id="f-type-m" class="form-select">
+          <option value="classifier">Classifier</option>
+          <option value="extractor">Extractor</option>
+          <option value="writer">Writer</option>
+          <option value="analyzer">Analyzer</option>
+          <option value="router">Router</option>
+          <option value="validator">Validator</option>
+          <option value="generator">Generator</option>
+          <option value="support">Support</option>
+          <option value="translation">Translation</option>
+          <option value="review">Review</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Model</label>
+        <select id="f-model" class="form-select">
+          <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+          <option value="claude-opus-4-6">Claude Opus 4.6</option>
+          <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Status</label>
+        <select id="f-status-m" class="form-select">
+          <option value="active">Active</option>
+          <option value="idle">Idle</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Gradient From</label>
+        <input id="f-color-from" class="form-input" type="color" value="#00f5ff" style="height:46px;cursor:pointer" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveAgent()">Save Agent</button>
+    </div>
+  </div>
+</div>
 
-    /* =============================================
-       RENDER AGENT CARDS
-    ============================================= */
-    function renderAgents(list) {
-      const grid = document.getElementById('agentsGrid');
-      grid.innerHTML = '';
+<script src="js/shell.js"></script>
+<script>
+let all = [], filtered = [], logInterval;
 
-      list.forEach(agent => {
-        const bars = Array.from({ length: 20 }, (_, i) => {
-          const height = Math.random() * 80 + 20;
-          const color = agent.status === 'error' ? '#ef4444' : agent.color[0];
-          return `<div class="agent-activity-bar-item" style="height:${height}%;background:${color};opacity:${0.3 + Math.random()*0.5}"></div>`;
-        }).join('');
+async function load() {
+  const uid = window.__currentUser?.id;
+  if (!uid) return;
 
-        const statusClass = agent.status === 'active' ? 'active' : agent.status === 'idle' ? 'idle' : 'error';
+  const { data, error } = await window.sb
+    .from('agents')
+    .select('*')
+    .eq('user_id', uid)
+    .order('created_at', { ascending: false });
 
-        const card = document.createElement('div');
-        card.className = 'agent-card';
-        card.dataset.id = agent.id;
-        card.innerHTML = `
-          <div class="agent-card-header">
-            <div style="display:flex;align-items:center;gap:0.75rem">
-              <div class="agent-avatar-lg" style="background:linear-gradient(135deg,${agent.color[0]}22,${agent.color[1]}22);border:1px solid ${agent.color[0]}33;font-size:1.5rem">${agent.emoji}</div>
-              <div>
-                <div class="agent-card-title">${agent.name}</div>
-                <div class="agent-card-type">${agent.type} · ${agent.model}</div>
-              </div>
-            </div>
-            <span class="badge ${statusClass}"><span class="badge-dot"></span>${agent.status}</span>
-          </div>
-          <div class="agent-activity-bar">${bars}</div>
-          <div class="agent-card-stats">
-            <div>
-              <div class="agent-card-stat-label">Tasks</div>
-              <div class="agent-card-stat-value">${agent.tasks}</div>
-            </div>
-            <div>
-              <div class="agent-card-stat-label">Success</div>
-              <div class="agent-card-stat-value" style="color:#00ff87">${agent.success}</div>
-            </div>
-            <div>
-              <div class="agent-card-stat-label">Avg Time</div>
-              <div class="agent-card-stat-value" style="color:${agent.color[0]}">${agent.avgTime}</div>
-            </div>
-          </div>
-        `;
+  if (error) { console.error(error); return; }
+  all = data || [];
+  renderStats();
+  filt();
+}
 
-        card.addEventListener('click', () => openDetail(agent));
-        grid.appendChild(card);
-      });
-    }
+function renderStats() {
+  document.getElementById('s-total').textContent = all.length;
+  document.getElementById('s-active').textContent = all.filter(a => a.status === 'active').length;
+  document.getElementById('s-idle').textContent = all.filter(a => a.status === 'idle').length;
+  const tasks = all.reduce((s, a) => s + (a.tasks_completed || 0), 0);
+  document.getElementById('s-tasks').textContent = window.fmtNum(tasks);
+}
 
-    renderAgents(agents);
+function filt() {
+  const q = document.getElementById('q').value.toLowerCase();
+  const fs = document.getElementById('f-status').value;
+  const ft = document.getElementById('f-type').value;
 
-    /* =============================================
-       DETAIL PANEL
-    ============================================= */
-    function openDetail(agent) {
-      document.getElementById('detailAgentName').textContent = agent.name;
-      document.getElementById('detailAgentBadge').innerHTML = `<span class="badge ${agent.status === 'active' ? 'active' : agent.status === 'idle' ? 'idle' : 'error'}" style="font-size:0.7rem"><span class="badge-dot"></span>${agent.status}</span>`;
-      document.getElementById('detailTasks').textContent = agent.tasks;
-      document.getElementById('detailSuccess').textContent = agent.success;
-      document.getElementById('detailAvgTime').textContent = agent.avgTime;
-      document.getElementById('detailDesc').textContent = agent.desc;
+  filtered = all.filter(a => {
+    if (q && !a.name.toLowerCase().includes(q) && !(a.description||'').toLowerCase().includes(q)) return false;
+    if (fs && a.status !== fs) return false;
+    if (ft && a.type !== ft) return false;
+    return true;
+  });
+  renderGrid();
+}
 
-      const configHtml = agent.config.map(([k, v]) => `
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:6px">
-          <span style="font-size:0.78rem;color:var(--color-text-muted)">${k}</span>
-          <span style="font-size:0.78rem;font-weight:600;color:var(--color-text-primary);font-family:var(--font-mono)">${v}</span>
+function renderGrid() {
+  const grid = document.getElementById('agents-grid');
+  if (!filtered.length) {
+    grid.innerHTML = '<div style="text-align:center;padding:60px;color:rgba(232,244,248,0.3);grid-column:1/-1">No agents found</div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(a => {
+    const stMap = { active: '#00ff88', idle: '#00f5ff', error: '#ff4d6d' };
+    const color = stMap[a.status] || '#e8f4f8';
+    const grad = `linear-gradient(135deg, ${a.color_from||'#00f5ff'}, ${a.color_to||'#0080ff'})`;
+    const bars = Array.from({length:14}, () => {
+      const h = a.status === 'idle' ? Math.floor(Math.random()*20+4) : Math.floor(Math.random()*90+10);
+      return `<div class="activity-bar" style="height:${h}%;background:${a.color_from||'#00f5ff'};opacity:${a.status==='idle'?0.3:0.7}"></div>`;
+    }).join('');
+
+    const toggleBtn = a.status === 'active'
+      ? `<button class="agent-btn pause" onclick="event.stopPropagation();toggleStatus('${a.id}','active')">Pause</button>`
+      : `<button class="agent-btn activate" onclick="event.stopPropagation();toggleStatus('${a.id}','${a.status}')">Activate</button>`;
+
+    return `<div class="agent-card" style="--grad:${grad}" onclick="openPanel('${a.id}')">
+      <span class="agent-emoji">${a.emoji||'🤖'}</span>
+      <h3 class="agent-name">${a.name}</h3>
+      <p class="agent-type">${a.type} · <span style="color:${color}">${a.status}</span></p>
+      <p class="agent-desc">${a.description||'No description provided.'}</p>
+      <div class="agent-stats">
+        <div class="agent-stat"><div class="agent-stat-val">${window.fmtNum(a.tasks_completed||0)}</div><div class="agent-stat-lbl">Tasks</div></div>
+        <div class="agent-stat"><div class="agent-stat-val">${a.success_rate||99}%</div><div class="agent-stat-lbl">Success</div></div>
+        <div class="agent-stat"><div class="agent-stat-val">${a.avg_response_ms||500}ms</div><div class="agent-stat-lbl">Avg Resp</div></div>
+      </div>
+      <div class="activity-bars">${bars}</div>
+      <div class="agent-footer">
+        <span class="agent-model">${a.model||'claude-sonnet-4-6'}</span>
+        <div class="agent-actions" onclick="event.stopPropagation()">
+          ${toggleBtn}
+          <button class="agent-btn edit" onclick="openEdit('${a.id}')">Edit</button>
+          <button class="agent-btn delete" onclick="delAgent('${a.id}')">Del</button>
         </div>
-      `).join('');
-      document.getElementById('detailConfig').innerHTML = configHtml;
+      </div>
+    </div>`;
+  }).join('');
+}
 
-      document.getElementById('agentDetailPanel').classList.add('open');
-      document.getElementById('panelOverlay').classList.add('open');
+async function toggleStatus(id, current) {
+  const newStatus = current === 'active' ? 'idle' : 'active';
+  await window.sb.from('agents').update({ status: newStatus }).eq('id', id);
+  const idx = all.findIndex(a => a.id === id);
+  if (idx >= 0) all[idx].status = newStatus;
+  renderStats(); filt();
+  window.showToast(`Agent ${newStatus === 'active' ? 'activated' : 'paused'}`, 'success');
+}
+
+async function delAgent(id) {
+  if (!confirm('Delete this agent? This cannot be undone.')) return;
+  await window.sb.from('agents').delete().eq('id', id);
+  all = all.filter(a => a.id !== id);
+  renderStats(); filt();
+  window.showToast('Agent deleted', 'warning');
+}
+
+function openPanel(id) {
+  const a = all.find(x => x.id === id);
+  if (!a) return;
+  const panel = document.getElementById('agent-panel');
+
+  document.getElementById('ap-emoji').textContent = a.emoji || '🤖';
+  document.getElementById('ap-name').textContent = a.name;
+  document.getElementById('ap-type').textContent = a.type;
+  const stMap = { active: 'active', idle: 'running', error: 'error' };
+  document.getElementById('ap-status').innerHTML = `<span class="badge ${stMap[a.status]||''}">${a.status}</span>`;
+  document.getElementById('ap-tasks').textContent = window.fmtNum(a.tasks_completed || 0);
+  document.getElementById('ap-rate').textContent = (a.success_rate || 99) + '%';
+  document.getElementById('ap-resp').textContent = (a.avg_response_ms || 500) + 'ms';
+  document.getElementById('ap-model').textContent = (a.model || 'claude-sonnet-4-6').replace('claude-', '').replace('-4-6', ' 4.6').replace('-4-5-20251001', ' 4.5');
+  document.getElementById('ap-desc').textContent = a.description || 'No description provided.';
+
+  panel.classList.add('open');
+  startLiveLog(a);
+}
+
+function startLiveLog(agent) {
+  const logEl = document.getElementById('ap-log');
+  logEl.innerHTML = '';
+  if (logInterval) clearInterval(logInterval);
+
+  const messages = [
+    { level: 'info', msg: 'Agent initialized' },
+    { level: 'info', msg: `Model: ${agent.model||'claude-sonnet-4-6'}` },
+    { level: 'success', msg: 'Ready to process tasks' },
+    { level: 'info', msg: 'Watching for new inputs…' },
+    { level: 'info', msg: 'Processing batch #' + Math.floor(Math.random()*9000+1000) },
+    { level: 'success', msg: 'Task completed in ' + Math.floor(Math.random()*800+200) + 'ms' },
+    { level: 'info', msg: 'Confidence: ' + (Math.random()*0.1+0.89).toFixed(3) },
+    { level: 'info', msg: 'Queue depth: ' + Math.floor(Math.random()*5) },
+  ];
+  let i = 0;
+
+  const addLine = () => {
+    const l = messages[i % messages.length];
+    const ts = new Date().toTimeString().split(' ')[0];
+    const line = document.createElement('div');
+    line.className = `log-line ${l.level}`;
+    line.innerHTML = `<span class="ts">[${ts}]</span><span class="msg"> ${l.msg}</span>`;
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+    if (logEl.children.length > 30) logEl.removeChild(logEl.firstChild);
+    i++;
+  };
+  addLine();
+  logInterval = setInterval(addLine, agent.status === 'active' ? 1200 : 3000);
+}
+
+function closePanel() {
+  document.getElementById('agent-panel').classList.remove('open');
+  if (logInterval) clearInterval(logInterval);
+}
+
+function openCreate() {
+  document.getElementById('modal-title').textContent = 'New Agent';
+  document.getElementById('modal-sub').textContent = 'Configure your AI agent';
+  document.getElementById('edit-id').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-emoji').value = '🤖';
+  document.getElementById('f-desc').value = '';
+  document.getElementById('f-type-m').value = 'classifier';
+  document.getElementById('f-model').value = 'claude-sonnet-4-6';
+  document.getElementById('f-status-m').value = 'active';
+  document.getElementById('f-color-from').value = '#00f5ff';
+  document.getElementById('agent-modal').classList.add('open');
+}
+
+function openEdit(id) {
+  const a = all.find(x => x.id === id);
+  if (!a) return;
+  document.getElementById('modal-title').textContent = 'Edit Agent';
+  document.getElementById('modal-sub').textContent = 'Update agent configuration';
+  document.getElementById('edit-id').value = a.id;
+  document.getElementById('f-name').value = a.name;
+  document.getElementById('f-emoji').value = a.emoji || '🤖';
+  document.getElementById('f-desc').value = a.description || '';
+  document.getElementById('f-type-m').value = a.type || 'classifier';
+  document.getElementById('f-model').value = a.model || 'claude-sonnet-4-6';
+  document.getElementById('f-status-m').value = a.status || 'active';
+  document.getElementById('f-color-from').value = a.color_from || '#00f5ff';
+  document.getElementById('agent-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('agent-modal').classList.remove('open');
+}
+
+async function saveAgent() {
+  const editId = document.getElementById('edit-id').value;
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { window.showToast('Agent name is required', 'error'); return; }
+  const uid = window.__currentUser?.id;
+
+  const payload = {
+    user_id: uid,
+    name,
+    emoji: document.getElementById('f-emoji').value || '🤖',
+    description: document.getElementById('f-desc').value.trim(),
+    type: document.getElementById('f-type-m').value,
+    model: document.getElementById('f-model').value,
+    status: document.getElementById('f-status-m').value,
+    color_from: document.getElementById('f-color-from').value,
+    color_to: '#0080ff',
+  };
+
+  if (editId) {
+    const { data } = await window.sb.from('agents').update(payload).eq('id', editId).select().single();
+    if (data) {
+      const idx = all.findIndex(a => a.id === editId);
+      if (idx >= 0) all[idx] = { ...all[idx], ...data };
     }
+    window.showToast('Agent updated', 'success');
+  } else {
+    const { data } = await window.sb.from('agents').insert(payload).select().single();
+    if (data) all.unshift(data);
+    window.showToast('Agent created', 'success');
+  }
 
-    document.getElementById('panelClose').addEventListener('click', closeDetail);
-    document.getElementById('panelOverlay').addEventListener('click', closeDetail);
+  closeModal();
+  renderStats(); filt();
+}
 
-    function closeDetail() {
-      document.getElementById('agentDetailPanel').classList.remove('open');
-      document.getElementById('panelOverlay').classList.remove('open');
-    }
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closePanel(); closeModal(); }
+});
 
-    /* =============================================
-       SEARCH & FILTER
-    ============================================= */
-    function filterAgents() {
-      const q = document.getElementById('agentSearch').value.toLowerCase();
-      const type = document.getElementById('agentTypeFilter').value.toLowerCase();
-      const status = document.getElementById('agentStatusFilter').value.toLowerCase();
-
-      const filtered = agents.filter(a => {
-        const matchQ = !q || a.name.toLowerCase().includes(q) || a.type.toLowerCase().includes(q);
-        const matchType = !type || a.type.toLowerCase().includes(type);
-        const matchStatus = !status || a.status === status;
-        return matchQ && matchType && matchStatus;
-      });
-
-      renderAgents(filtered);
-    }
-
-    document.getElementById('agentSearch').addEventListener('input', filterAgents);
-    document.getElementById('agentTypeFilter').addEventListener('change', filterAgents);
-    document.getElementById('agentStatusFilter').addEventListener('change', filterAgents);
-
-    /* =============================================
-       LIVE LOG STREAM
-    ============================================= */
-    const logMessages = [
-      ['info', 'EmailClassifier', 'Processing new batch of 50 emails from support@company.com'],
-      ['success', 'DataExtractor', 'Extracted 234 records from Salesforce — writing to warehouse'],
-      ['info', 'SentimentAnalyzer', 'Analyzing 89 Trustpilot reviews — avg sentiment: +0.72'],
-      ['success', 'LeadRouter', 'Scored 12 leads — 8 routed to Enterprise, 4 to SMB team'],
-      ['warn', 'ContentWriter', 'Token limit approaching — splitting document into 2 chunks'],
-      ['success', 'InvoiceValidator', 'Validated 6 invoices from Stripe — all cleared for payment'],
-      ['debug', 'SupportTriager', 'Loading knowledge base v3.8 — 12,400 resolved tickets indexed'],
-      ['info', 'ReportGenerator', 'Fetching weekly metrics from BigQuery — 4.2M rows queried'],
-      ['success', 'CodeReviewer', 'PR #847 reviewed — 3 suggestions, 0 blocking issues'],
-      ['error', 'SlackAgent', 'OAuth token expired — attempting refresh'],
-      ['success', 'TranslationAgent', 'Translated 1,200 strings to Spanish, French, German — 100% complete'],
-      ['info', 'ContractAnalyzer', 'Analyzing MSA for Acme Corp — 48 pages, extracting key clauses'],
-    ];
-
-    const logEl = document.getElementById('agentLog');
-
-    setInterval(() => {
-      const entry = logMessages[Math.floor(Math.random() * logMessages.length)];
-      const now = new Date();
-      const time = now.toTimeString().slice(0, 8);
-
-      const line = document.createElement('div');
-      line.className = 'log-line';
-      line.style.animation = 'fadeInUp 0.3s ease';
-      line.innerHTML = `
-        <span class="log-time">${time}</span>
-        <span class="log-level ${entry[0]}">${entry[0].toUpperCase()}</span>
-        <span class="log-msg">${entry[1]} · ${entry[2]}</span>
-      `;
-
-      logEl.prepend(line);
-
-      const lines = logEl.querySelectorAll('.log-line');
-      if (lines.length > 30) lines[lines.length - 1].remove();
-    }, 3500);
-
-    /* =============================================
-       LIVE COUNTER TICK
-    ============================================= */
-    let taskCount = 847000;
-    setInterval(() => {
-      taskCount += Math.floor(Math.random() * 30) + 5;
-      document.querySelector('#agentsGrid') && null; // keep interval alive
-    }, 2000);
-  </script>
+window.addEventListener('shellReady', load);
+if (window.__shellReady) load();
+</script>
 </body>
 </html>
