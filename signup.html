@@ -204,6 +204,9 @@
           <h2 style="font-size:1.4rem;font-weight:800;color:var(--color-text-primary);margin-bottom:0.5rem">You're all set!</h2>
           <p style="color:var(--color-text-muted);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.6">Your workspace has been created with sample workflows and AI agents ready to go.</p>
           <button class="btn-primary btn-full" id="goDashBtn">Open dashboard →</button>
+          <div id="confirm-email-msg" style="display:none;background:rgba(0,245,255,0.07);border:1px solid rgba(0,245,255,0.2);border-radius:10px;padding:1rem;font-size:0.85rem;color:var(--color-text-secondary);line-height:1.6">
+            📧 <strong style="color:var(--color-text-primary)">Check your email</strong> — we sent a confirmation link. Click it to activate your account, then <a href="login.html" style="color:var(--color-neon-cyan);font-weight:600">sign in here</a>.
+          </div>
         </div>
       </div>
     </div>
@@ -283,16 +286,7 @@
     // Step management
     let currentStep = 1;
     let registeredUser = null;
-
-    function goToStep(n) {
-      document.getElementById('step' + currentStep).style.display = 'none';
-      document.querySelectorAll('.progress-step').forEach((s, i) => {
-        s.classList.toggle('active', i + 1 === n);
-        s.classList.toggle('completed', i + 1 < n);
-      });
-      currentStep = n;
-      document.getElementById('step' + n).style.display = 'block';
-    }
+    let _creds = null; // store for fallback sign-in
 
     function showError(msg) {
       const b = document.getElementById('error-banner');
@@ -341,6 +335,7 @@
       }
 
       registeredUser = data.user;
+      _creds = { email, password }; // save for fallback sign-in
       btn.disabled = false;
       btn.textContent = 'Continue';
       goToStep(2);
@@ -357,9 +352,14 @@
       btn.disabled = true;
       btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:0.5rem"><span class="btn-spinner"></span>Setting up workspace…</span>';
 
-      // Wait for session (email-confirmed users auto sign-in; non-confirmed don't)
-      // Try to sign in to get session
-      const session = await window.getSession();
+      // Get session — may be null if Supabase requires email confirmation
+      let session = await window.getSession();
+
+      // If no session yet, try signing in with stored credentials (works when email confirm is disabled)
+      if (!session && _creds) {
+        const { data: signInData } = await window.sb.auth.signInWithPassword(_creds);
+        session = signInData?.session || null;
+      }
 
       if (session) {
         // Update workspace settings
@@ -368,12 +368,35 @@
           .eq('user_id', session.user.id);
 
         // Seed demo data
-        try { await window.seedDemoData(session.user.id); } catch {}
+        try { await window.seedDemoData(session.user.id); } catch(err) { console.warn('Seed error:', err); }
       }
 
       btn.disabled = false;
-      goToStep(3);
+      goToStep(3, !!session);
     });
+
+    function goToStep(n, hasSession) {
+      document.getElementById('step' + currentStep).style.display = 'none';
+      document.querySelectorAll('.progress-step').forEach((s, i) => {
+        s.classList.toggle('active', i + 1 === n);
+        s.classList.toggle('completed', i + 1 < n);
+      });
+      currentStep = n;
+      document.getElementById('step' + n).style.display = 'block';
+
+      // Step 3: show correct message based on whether we have a session
+      if (n === 3) {
+        const dashBtn = document.getElementById('goDashBtn');
+        const confirmMsg = document.getElementById('confirm-email-msg');
+        if (hasSession === false) {
+          if (dashBtn) dashBtn.style.display = 'none';
+          if (confirmMsg) confirmMsg.style.display = 'block';
+        } else {
+          if (dashBtn) dashBtn.style.display = '';
+          if (confirmMsg) confirmMsg.style.display = 'none';
+        }
+      }
+    }
 
     // Step 3: go to dashboard
     document.getElementById('goDashBtn').addEventListener('click', () => {
